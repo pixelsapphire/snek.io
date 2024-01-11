@@ -1,18 +1,20 @@
-#ifndef PROJEKT_PLAYER_HPP
-#define PROJEKT_PLAYER_HPP
+#ifndef SNEK_IO_PLAYER_HPP
+#define SNEK_IO_PLAYER_HPP
 
 #include <SFML/Graphics.hpp>
 
-class player : public sf::RectangleShape {
+namespace snek {
 
-    float speed = 100;
+    class player : public sf::RectangleShape {
 
-public:
+        float speed = 100;
 
-    player();
+    public:
 
-    void update(const sf::Time& delta_time);
-};
+        player();
 
+        void update(const sf::Time& delta_time);
+    };
+}
 
-#endif //PROJEKT_PLAYER_HPP
+#endif //SNEK_IO_PLAYER_HPP

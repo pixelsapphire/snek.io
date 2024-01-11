@@ -1,22 +1,25 @@
-#ifndef PROJEKT_GAME_HPP
-#define PROJEKT_GAME_HPP
+#ifndef SNEK_IO_GAME_HPP
+#define SNEK_IO_GAME_HPP
 
 #include <SFML/Graphics.hpp>
 #include "player.hpp"
 
-class game : sf::RenderWindow {
+namespace snek {
 
-    sf::Clock clock;
-    player player;
+    class game {
 
-public:
+        sf::RenderWindow window;
+        sf::Clock clock;
+        snek::player player;
 
-    game();
+    public:
 
-    ~game();
+        game();
 
-    void run();
-};
+        ~game();
 
+        void run();
+    };
+}
 
-#endif //PROJEKT_GAME_HPP
+#endif //SNEK_IO_GAME_HPP

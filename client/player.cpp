@@ -1,12 +1,12 @@
 #include <SFML/Window.hpp>
 #include "player.hpp"
 
-player::player() : sf::RectangleShape(sf::Vector2f(50, 50)) {
+snek::player::player() : sf::RectangleShape(sf::Vector2f(50, 50)) {
     setFillColor(sf::Color::Red);
     setPosition(sf::Vector2f(100, 100));
 }
 
-void player::update(const sf::Time& delta_time) {
+void snek::player::update(const sf::Time& delta_time) {
     const float velocity = delta_time.asSeconds() * speed;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
         move(sf::Vector2f(0, -1) * velocity);
