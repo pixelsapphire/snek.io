@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
 #include "entity.hpp"
 
 namespace snek {
@@ -14,9 +15,15 @@ namespace snek {
 
     public:
 
-        void update(sf::RenderTarget& target, const sf::Time& delta_time);
+        virtual ~scene() = default;
 
-        void add(const std::shared_ptr<snek::entity>& drawable);
+        void step_frame(sf::RenderTarget& target, const sf::Time& delta_time);
+
+        virtual void update(const sf::Time& delta_time) {};
+
+        virtual bool handle_event(const sf::Event& event) { return false; };
+
+        void add(std::shared_ptr<snek::entity> drawable);
     };
 }
 

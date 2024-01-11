@@ -1,8 +1,8 @@
 #include "game.hpp"
-#include "scene_main.hpp"
+#include "scene_nickname.hpp"
 
 snek::game::game() : window(sf::VideoMode(sf::Vector2u(800, 600)), "Projekt na sieciuhy"),
-                     current_scene(std::make_unique<snek::scene_main>()) {
+                     current_scene(std::make_unique<snek::scene_nickname>()) {
     window.setFramerateLimit(60);
 }
 
@@ -17,9 +17,10 @@ void snek::game::run() {
         clock.restart();
         sf::Event event{};
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) window.close();
+            const bool handled = current_scene->handle_event(event);
+            if (not handled and event.type == sf::Event::Closed) window.close();
         }
-        current_scene->update(window, delta_time);
+        current_scene->step_frame(window, delta_time);
         window.display();
         window.clear(sf::Color::Black);
     }
