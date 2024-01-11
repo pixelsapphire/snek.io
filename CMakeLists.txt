@@ -7,14 +7,14 @@ file(COPY assets/ DESTINATION assets)
 
 if (APPLE)
     add_compile_options("-stdlib=libc++" "-lc++abi" "-v")
-    include_directories(lib/SFML-3.0.0/macos/include)
-    link_directories(lib/SFML-3.0.0/macos/lib)
+    include_directories(lib/SFML-2.6.1/macos_arm64/include)
+    link_directories(lib/SFML-2.6.1/macos_arm64/lib)
 endif (APPLE)
 
 if (WIN32)
-    file(COPY lib/SFML-3.0.0/windoez/bin/ DESTINATION .)
-    include_directories(lib/SFML-3.0.0/windoez/include)
-    link_directories(lib/SFML-3.0.0/windoez/lib)
+    file(COPY lib/SFML-2.6.1/windoez_vc/bin/ DESTINATION .)
+    include_directories(lib/SFML-2.6.1/windoez_vc/include)
+    link_directories(lib/SFML-2.6.1/windoez_vc/lib)
 endif (WIN32)
 
 add_executable(snek_io_client

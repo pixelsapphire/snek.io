@@ -1,7 +1,7 @@
 #include "game.hpp"
 #include "scene_nickname.hpp"
 
-snek::game::game() : window(sf::VideoMode(sf::Vector2u(800, 600)), "Projekt na sieciuhy"),
+snek::game::game() : window(sf::VideoMode(800, 600), "Projekt na sieciuhy"),
                      current_scene(std::make_unique<snek::scene_nickname>()) {
     window.setFramerateLimit(60);
 }

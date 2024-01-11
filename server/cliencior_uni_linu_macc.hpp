@@ -30,7 +30,6 @@ public:
     }
 
     void handle_event(const char buffer[]) {
-
     }
 
 };
