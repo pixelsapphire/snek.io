@@ -1,25 +1,26 @@
 #include "game.hpp"
+#include "scene_main.hpp"
 
-game::game() : sf::RenderWindow(sf::VideoMode(sf::Vector2u(800, 600)), "Projekt na sieciuhy") {
-    setFramerateLimit(60);
+snek::game::game() : window(sf::VideoMode(sf::Vector2u(800, 600)), "Projekt na sieciuhy"),
+                     current_scene(std::make_unique<snek::scene_main>()) {
+    window.setFramerateLimit(60);
 }
 
-game::~game() {
-    sf::Window::close();
+snek::game::~game() {
+    window.close();
 }
 
-void game::run() {
+void snek::game::run() {
     clock.restart();
-    while (isOpen()) {
+    while (window.isOpen()) {
         const sf::Time delta_time = clock.getElapsedTime();
         clock.restart();
         sf::Event event{};
-        while (pollEvent(event)) {
-            if (event.type == sf::Event::Closed) close();
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) window.close();
         }
-        player.update(delta_time);
-        draw(player);
-        display();
-        clear(sf::Color::Black);
+        current_scene->update(window, delta_time);
+        window.display();
+        window.clear(sf::Color::Black);
     }
 }

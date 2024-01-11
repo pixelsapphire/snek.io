@@ -1,18 +1,26 @@
-#ifndef PROJEKT_PLAYER_HPP
-#define PROJEKT_PLAYER_HPP
+#ifndef SNEK_IO_PLAYER_HPP
+#define SNEK_IO_PLAYER_HPP
 
 #include <SFML/Graphics.hpp>
+#include "entity.hpp"
 
-class player : public sf::RectangleShape {
+namespace snek {
 
-    float speed = 100;
+    class player : public snek::entity {
 
-public:
+        float speed = 100;
+        sf::RectangleShape head;
 
-    player();
+    public:
 
-    void update(const sf::Time& delta_time);
-};
+        player();
 
+        void update(const sf::Time& delta_time) override;
 
-#endif //PROJEKT_PLAYER_HPP
+        void draw(sf::RenderTarget& target) override;
+
+        void set_position(float x, float y) override;
+    };
+}
+
+#endif //SNEK_IO_PLAYER_HPP
