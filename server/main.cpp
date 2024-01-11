@@ -1,110 +1,136 @@
 #include <cstdio>
-#include <cstdlib>
+#include <iostream>
 #include <cstring>
-#include <sys/socket.h>
-#include <netinet/in.h>
+#include <ctime>
 #include <unistd.h>
-#include <cctype>
+#include <netinet/in.h>
+#include <vector>
+#include <poll.h>
+#include <cstdlib>
+#include "cliencior_uni_linu_macc.hpp"
+#include <chrono>
 
 #define SERVER_PORT 8080
-#define MAX_CLIENTS 20
+#define CLIENT_LIMIT 20
+#define WAIT4EVENT_MILISEC 1500
+#define CLIENT_TIMEOUT_MILISEC 10000
 
 int main() {
-    // Create a socket
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket < 0) {
         perror("socket");
-        exit(1);
+        return -1;
     }
 
-    // Bind the socket to a port
-    sockaddr_in server_addr{.sin_family = AF_INET, .sin_port = htons(SERVER_PORT), .sin_addr={.s_addr=INADDR_ANY}};
+    // Set up the server address structure
+    sockaddr_in server_addr;
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = INADDR_ANY;
+    server_addr.sin_port = htons(SERVER_PORT);
 
+    // Bind the server socket to the specified address
     if (bind(server_socket, (struct sockaddr*) &server_addr, sizeof(server_addr)) < 0) {
         perror("bind");
-        exit(1);
+        close(server_socket);
+        return -1;
     }
 
-    // Listen for connections
-    if (listen(server_socket, MAX_CLIENTS) < 0) {
+    // Listen for incoming connections
+    if (listen(server_socket, CLIENT_LIMIT) < 0) {
         perror("listen");
-        exit(1);
+        close(server_socket);
+        return -1;
     }
 
-    // Create a list of client sockets
-    int client_sockets[MAX_CLIENTS];
-    for (int& client_socket : client_sockets) client_socket = -1;
+    std::vector<client_uni> client_sockets;
 
-    // Accept connections and handle client requests
-    while (1) {
-        // Accept a connection from a client
-        sockaddr_in client_addr;
-        socklen_t client_addr_len = sizeof(client_addr);
-        int client_socket = accept(server_socket, (struct sockaddr*) &client_addr, &client_addr_len);
-        if (client_socket < 0) {
-            perror("accept");
-            continue;
+    // Main server loop with poll
+    while (true) {
+        std::vector<pollfd> poll_fds;
+
+        // Add server socket to the pollfd list
+        pollfd server_poll_fd;
+        server_poll_fd.fd = server_socket;
+        server_poll_fd.events = POLLIN;
+        poll_fds.push_back(server_poll_fd);
+
+        // Add client sockets to the pollfd list
+        for (const auto& client : client_sockets) {
+            pollfd client_poll_fd;
+            client_poll_fd.fd = client.getSocket();
+            client_poll_fd.events = POLLIN;
+            poll_fds.push_back(client_poll_fd);
         }
 
-        // Send "Hello" to the client
-        char hello_message[10];
-        strcpy(hello_message, "Hello\n");
-        if (send(client_socket, hello_message, strlen(hello_message), 0) < 0) {
-            perror("send");
-            close(client_socket);
-            continue;
+        // Use poll to wait for events on any of the sockets
+        int ready_fds = poll(poll_fds.data(), poll_fds.size(), WAIT4EVENT_MILISEC);
+        if (ready_fds < 0) {
+            perror("poll");
+            break;
         }
 
-        // Add the client socket to the list
-        for (int& i : client_sockets)
-            if (i == -1) {
-                i = client_socket;
-                break;
+        // Check for incoming connections on the server socket
+        if (client_sockets.size() < CLIENT_LIMIT && poll_fds[0].revents & POLLIN) {
+            sockaddr_in client_addr;
+            socklen_t client_addr_len = sizeof(client_addr);
+            int client_socket = accept(server_socket, (struct sockaddr*) &client_addr, &client_addr_len);
+            if (client_socket < 0) {
+                perror("accept");
+                continue;
             }
 
-        // Handle client requests
-        while (1) {
-            // Receive a message from the client
-            char message[100];
-            ssize_t bytes_received = recv(client_socket, message, sizeof(message), 0);
-            if (bytes_received < 0) {
-                perror("recv");
-                close(client_socket);
-                for (int& i : client_sockets)
-                    if (i == client_socket) {
-                        i = -1;
-                        break;
+            // Add the new client socket to the vector
+            client_sockets.emplace_back(client_socket);
+        }
+
+        // Check for data from clients and handle disconnections
+        for (auto it = client_sockets.begin() + 1; it != client_sockets.end(); it++ ) {
+            if (poll_fds[it - client_sockets.begin()].revents & POLLIN) {
+                char buffer[100];
+                ssize_t bytes_received = recv(it->getSocket(), buffer, sizeof(buffer), 0);
+                if (bytes_received <= 0) {
+                    // Handle disconnection or error
+                    if (bytes_received == 0) {
+                        std::cout << "Client disconnected: " << it->getSocket() << std::endl;
+                    } else {
+                        perror("recv");
                     }
-                break;
+
+                    close(it->getSocket());
+                    it = client_sockets.erase(it);
+                    continue;
+                }
+
+                // Handle received data (capitalizing message in this case)
+                //it->handleEvent(buffer);
+                for (int i = 0; i < bytes_received; i++) {
+                    buffer[i] = char(toupper(buffer[i]));
+                }
+
+
+                // Send the modified message back to the client
+                if (send(it->getSocket(), buffer, bytes_received, 0) < 0) {
+                    perror("send");
+                    close(it->getSocket());
+                    it = client_sockets.erase(it);
+                    continue;
+                }
+
+                // Update last activity time
+                it->updateActivityTime();
             }
 
-            // Check if the client has disconnected
-            if (bytes_received == 0) {
-                // Client has disconnected
-                close(client_socket);
-                for (int& i : client_sockets)
-                    if (i == client_socket) {
-                        i = -1;
-                        break;
-                    }
-                break;
-            }
-
-            // Capitalize the message
-            for (int i = 0; i < bytes_received; i++) message[i] = char(toupper(message[i]));
-
-            // Send the message back to the client
-            if (send(client_socket, message, bytes_received, 0) < 0) {
-                perror("send");
-                close(client_socket);
-                for (int& i : client_sockets)
-                    if (i == client_socket) {
-                        i = -1;
-                        break;
-                    }
-                break;
+            if( it->getTimePassedFromLastActivity() > CLIENT_TIMEOUT_MILISEC){
+                close(it->getSocket());
+                client_sockets.erase(it--);
             }
         }
+
+    }
+
+    // Close client sockets
+    for (const auto& client : client_sockets) {
+        close(client.getSocket());
     }
 
     // Close the server socket
