@@ -15,10 +15,13 @@ if (WIN32 OR MSVC)
     link_directories(lib/SFML-3.0.0/windoez/lib)
 endif (WIN32 OR MSVC)
 
-add_executable(snek_io
-    main.cpp
-    game.cpp
-    player.cpp
+add_executable(snek_io_client
+    client/main.cpp
+    client/game.cpp
+    client/player.cpp
 )
-target_link_libraries(snek_io sfml-audio sfml-graphics sfml-system sfml-window)
+target_link_libraries(snek_io_client sfml-audio sfml-graphics sfml-system sfml-window)
 
+add_executable(snek_io_server
+        server/main.cpp
+)
