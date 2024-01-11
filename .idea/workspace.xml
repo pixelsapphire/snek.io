@@ -20,7 +20,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="56f2635f-3510-4341-92bb-04a8cabb6c8e" name="Changes" comment="" />
+    <list default="true" id="56f2635f-3510-4341-92bb-04a8cabb6c8e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/player.cpp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -143,7 +145,7 @@
       <updated>1700752427689</updated>
       <workItem from="1700752428863" duration="5029000" />
       <workItem from="1704990550671" duration="190000" />
-      <workItem from="1704990753471" duration="3611000" />
+      <workItem from="1704990753471" duration="4566000" />
     </task>
     <servers />
   </component>

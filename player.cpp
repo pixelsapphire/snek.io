@@ -8,12 +8,12 @@ player::player() : sf::RectangleShape(sf::Vector2f(50, 50)) {
 
 void player::update(const sf::Time& delta_time) {
     const float velocity = delta_time.asSeconds() * speed;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
         move(sf::Vector2f(0, -1) * velocity);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
         move(sf::Vector2f(0, 1) * velocity);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
         move(sf::Vector2f(-1, 0) * velocity);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
         move(sf::Vector2f(1, 0) * velocity);
 }
