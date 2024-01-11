@@ -3,6 +3,8 @@ project(snek_io)
 
 set(CMAKE_CXX_STANDARD 23)
 
+file(COPY assets/ DESTINATION assets)
+
 if (APPLE)
     add_compile_options("-stdlib=libc++" "-lc++abi" "-v")
     include_directories(lib/SFML-3.0.0/macos/include)
