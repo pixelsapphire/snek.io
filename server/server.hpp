@@ -11,6 +11,8 @@
 #include <iostream>
 #include <cstring>
 #include <winsock2.h>
+#include "cliencior.hpp"
+#include <vector>
 
 #pragma comment(lib, "ws2_32.lib")
 
