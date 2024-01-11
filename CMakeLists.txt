@@ -11,11 +11,11 @@ if (APPLE)
     link_directories(lib/SFML-3.0.0/macos/lib)
 endif (APPLE)
 
-if (WIN32 OR MSVC)
+if (WIN32)
     file(COPY lib/SFML-3.0.0/windoez/bin/ DESTINATION .)
     include_directories(lib/SFML-3.0.0/windoez/include)
     link_directories(lib/SFML-3.0.0/windoez/lib)
-endif (WIN32 OR MSVC)
+endif (WIN32)
 
 add_executable(snek_io_client
     client/main.cpp
@@ -24,6 +24,7 @@ add_executable(snek_io_client
     client/scene.cpp
     client/scene_main.cpp
     client/scene_nickname.cpp
+    client/utility.cpp
 )
 target_link_libraries(snek_io_client sfml-audio sfml-graphics sfml-system sfml-window)
 

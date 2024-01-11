@@ -289,7 +289,7 @@ private:
 ///    sf::Sprite sprite(texture.getTexture());
 ///    window.draw(sprite);
 ///
-///    // End the current frame and display its contents on screen
+///    // End the current step_frame and display its contents on screen
 ///    window.display();
 /// }
 /// \endcode

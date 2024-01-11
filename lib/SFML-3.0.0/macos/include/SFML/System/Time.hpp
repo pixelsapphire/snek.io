@@ -496,12 +496,12 @@ constexpr Time& operator%=(Time& left, Time right);
 /// \endcode
 ///
 /// \code
-/// void update(sf::Time elapsed)
+/// void step_frame(sf::Time elapsed)
 /// {
 ///    position += speed * elapsed.asSeconds();
 /// }
 ///
-/// update(sf::milliseconds(100));
+/// step_frame(sf::milliseconds(100));
 /// \endcode
 ///
 /// \see sf::Clock

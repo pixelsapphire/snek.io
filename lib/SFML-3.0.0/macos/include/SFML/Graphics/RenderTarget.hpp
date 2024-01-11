@@ -75,7 +75,7 @@ public:
     ////////////////////////////////////////////////////////////
     /// \brief Clear the entire target with a single color
     ///
-    /// This function is usually called once every frame,
+    /// This function is usually called once every step_frame,
     /// to clear the previous contents of the target.
     ///
     /// \param color Fill color to use to clear the render target

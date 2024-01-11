@@ -216,7 +216,7 @@ public:
     /// \brief Limit the framerate to a maximum fixed frequency
     ///
     /// If a limit is set, the window will use a small delay after
-    /// each call to display() to ensure that the current frame
+    /// each call to display() to ensure that the current step_frame
     /// lasted long enough to match the framerate limit.
     /// SFML will try to match the given limit as much as it can,
     /// but since it internally uses sf::sleep, whose precision
@@ -251,7 +251,7 @@ public:
     /// \brief Display on screen what has been rendered to the window so far
     ///
     /// This function is typically called after all OpenGL rendering
-    /// has been done for the current frame, in order to show
+    /// has been done for the current step_frame, in order to show
     /// it on screen.
     ///
     ////////////////////////////////////////////////////////////
@@ -350,7 +350,7 @@ private:
 ///
 ///    // OpenGL drawing commands go here...
 ///
-///    // End the current frame and display its contents on screen
+///    // End the current step_frame and display its contents on screen
 ///    window.display();
 /// }
 /// \endcode

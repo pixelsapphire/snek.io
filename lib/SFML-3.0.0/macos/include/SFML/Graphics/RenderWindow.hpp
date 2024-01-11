@@ -211,7 +211,7 @@ private:
 ///            window.close();
 ///    }
 ///
-///    // Clear the whole window before rendering a new frame
+///    // Clear the whole window before rendering a new step_frame
 ///    window.clear();
 ///
 ///    // Draw some graphical entities
@@ -219,7 +219,7 @@ private:
 ///    window.draw(circle);
 ///    window.draw(text);
 ///
-///    // End the current frame and display its contents on screen
+///    // End the current step_frame and display its contents on screen
 ///    window.display();
 /// }
 /// \endcode
@@ -263,7 +263,7 @@ private:
 ///     window.draw(text);
 ///     window.popGLStates();
 ///
-///     // Finally, display the rendered frame on screen
+///     // Finally, display the rendered step_frame on screen
 ///     window.display();
 /// }
 /// \endcode
