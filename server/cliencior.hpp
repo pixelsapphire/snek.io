@@ -1,7 +1,3 @@
-//
-// Created by stas on 11.01.2024.
-//
-
 #ifndef SNEK_IO_CLIENCIOR_HPP
 #define SNEK_IO_CLIENCIOR_HPP
 
