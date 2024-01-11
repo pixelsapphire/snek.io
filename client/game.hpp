@@ -2,7 +2,7 @@
 #define SNEK_IO_GAME_HPP
 
 #include <SFML/Graphics.hpp>
-#include "player.hpp"
+#include "scene.hpp"
 
 namespace snek {
 
@@ -10,7 +10,7 @@ namespace snek {
 
         sf::RenderWindow window;
         sf::Clock clock;
-        snek::player player;
+        std::unique_ptr<snek::scene> current_scene;
 
     public:
 
