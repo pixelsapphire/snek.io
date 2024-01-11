@@ -57,7 +57,7 @@ int main() {
         // Add client sockets to the pollfd list
         for (const auto& client : client_sockets) {
             pollfd client_poll_fd;
-            client_poll_fd.fd = client.getSocket();
+            client_poll_fd.fd = client.get_socket();
             client_poll_fd.events = POLLIN;
             poll_fds.push_back(client_poll_fd);
         }
@@ -87,41 +87,41 @@ int main() {
         for (auto it = client_sockets.begin() + 1; it != client_sockets.end(); it++ ) {
             if (poll_fds[it - client_sockets.begin()].revents & POLLIN) {
                 char buffer[100];
-                ssize_t bytes_received = recv(it->getSocket(), buffer, sizeof(buffer), 0);
+                ssize_t bytes_received = recv(it->get_socket(), buffer, sizeof(buffer), 0);
                 if (bytes_received <= 0) {
                     // Handle disconnection or error
                     if (bytes_received == 0) {
-                        std::cout << "Client disconnected: " << it->getSocket() << std::endl;
+                        std::cout << "Client disconnected: " << it->get_socket() << std::endl;
                     } else {
                         perror("recv");
                     }
 
-                    close(it->getSocket());
+                    close(it->get_socket());
                     it = client_sockets.erase(it);
                     continue;
                 }
 
                 // Handle received data (capitalizing message in this case)
-                //it->handleEvent(buffer);
+                //it->handle_event(buffer);
                 for (int i = 0; i < bytes_received; i++) {
                     buffer[i] = char(toupper(buffer[i]));
                 }
 
 
                 // Send the modified message back to the client
-                if (send(it->getSocket(), buffer, bytes_received, 0) < 0) {
+                if (send(it->get_socket(), buffer, bytes_received, 0) < 0) {
                     perror("send");
-                    close(it->getSocket());
+                    close(it->get_socket());
                     it = client_sockets.erase(it);
                     continue;
                 }
 
                 // Update last activity time
-                it->updateActivityTime();
+                it->update_activity_time();
             }
 
-            if( it->getTimePassedFromLastActivity() > CLIENT_TIMEOUT_MILISEC){
-                close(it->getSocket());
+            if(it->get_time_passed_from_last_activity() > CLIENT_TIMEOUT_MILISEC){
+                close(it->get_socket());
                 client_sockets.erase(it--);
             }
         }
@@ -130,7 +130,7 @@ int main() {
 
     // Close client sockets
     for (const auto& client : client_sockets) {
-        close(client.getSocket());
+        close(client.get_socket());
     }
 
     // Close the server socket

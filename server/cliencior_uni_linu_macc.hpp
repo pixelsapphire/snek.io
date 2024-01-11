@@ -1,35 +1,36 @@
-//
-// Created by stas on 11.01.2024.
-//
-
 #ifndef SNEK_IO_CLIENCIOR_UNI_LINU_MACC_HPP
 #define SNEK_IO_CLIENCIOR_UNI_LINU_MACC_HPP
 
 #endif //SNEK_IO_CLIENCIOR_UNI_LINU_MACC_HPP
+
 #include <unistd.h>
 #include <netinet/in.h>
 #include <chrono>
 
 class client_uni {
+
+    int socket;
+    std::chrono::time_point<std::chrono::high_resolution_clock> last_activity_time;
+
 public:
-    explicit client_uni(int socket) : socket(socket), lastActivityTime(std::chrono::high_resolution_clock::now()) {}
 
-    [[nodiscard]] int getSocket() const { return socket; }
+    explicit client_uni(int socket) : socket(socket), last_activity_time(std::chrono::high_resolution_clock::now()) {}
 
-    [[nodiscard]] long long getTimePassedFromLastActivity() const {
-        return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - lastActivityTime).count();; }
+    [[nodiscard]] int get_socket() const { return socket; }
 
-    void updateActivityTime() { lastActivityTime = time(nullptr); }
+    [[nodiscard]] long long get_time_passed_from_last_activity() const {
+        return std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::high_resolution_clock::now() - last_activity_time).count();
+    }
+
+    void update_activity_time() { last_activity_time = std::chrono::high_resolution_clock::now(); }
 
     bool operator==(const client_uni& other) const {
         return this->socket == other.socket;
     }
 
-    void handleEvent(const char buffer []) {
+    void handle_event(const char buffer[]) {
 
     }
 
-private:
-    int socket;
-    std::chrono::time_point<std::chrono::high_resolution_clock> lastActivityTime;
 };
