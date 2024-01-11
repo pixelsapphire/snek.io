@@ -19,9 +19,10 @@ add_executable(snek_io_client
     client/main.cpp
     client/game.cpp
     client/player.cpp
+        server/cliencior.hpp
 )
 target_link_libraries(snek_io_client sfml-audio sfml-graphics sfml-system sfml-window)
 
 add_executable(snek_io_server
-        server/main.cpp
+    server/main.cpp
 )
