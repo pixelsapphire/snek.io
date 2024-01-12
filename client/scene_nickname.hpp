@@ -14,7 +14,6 @@ namespace snek {
 
         std::function<void(const std::string&)> on_nickname_selected;
         std::string nickname;
-        sf::Font font;
         std::shared_ptr<snek::basic_entity<sf::Text>> nickname_prompt, nickname_view, button_text;
         std::shared_ptr<snek::basic_entity<sf::RectangleShape>> accept_button;
 
