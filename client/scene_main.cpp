@@ -1,3 +1,4 @@
+#include <cmath>
 #include "scene_main.hpp"
 
 snek::scene_main::scene_main(const std::function<void(const sf::Vector2f& position)>& on_player_movement,

@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <chrono>
 #include <string>
+#include <algorithm>
 
 class client_uni {
 
@@ -38,7 +39,7 @@ public:
         message = std::string (buffer);
         std::transform(message.begin(), message.end(), message.begin(),
                        [](unsigned char c) { return std::toupper(c); });
-        this->hasMessage = true;
+        hasMessage = true;
     }
 
     std::string getMessage() {

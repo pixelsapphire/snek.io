@@ -11,7 +11,7 @@
 #define SERVER_PORT 8080
 #define CLIENT_LIMIT 20
 #define WAIT4EVENT_MILISEC 1500
-#define CLIENT_TIMEOUT_MILISEC 10000
+#define CLIENT_TIMEOUT_MILISEC 100000
 
 int main() {
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -74,14 +74,15 @@ int main() {
             }
             else{
                 // Add the new client socket to the vector
+                std::cout << "new client added"<<std::endl;
                 client_sockets.emplace_back(client_socket);
             }
         }
 
         // Obsługa zdarzeń POLLIN
-        for (auto it = client_sockets.begin(); it != client_sockets.end(); ++it) {
+        for (auto it = client_sockets.begin(); it != client_sockets.end(); it++) {
 
-            if (poll_fds[it - client_sockets.begin()].revents & POLLIN) {
+            if (poll_fds[it - client_sockets.begin() + 1].revents & POLLIN) {
                 char buffer[100];
                 ssize_t bytes_received = recv(it->getSocket(), buffer, sizeof(buffer), 0);
                 if (bytes_received <= 0) {
@@ -96,6 +97,7 @@ int main() {
                     continue;
                 }
 
+                std::cout << "recieved data from client " << std::endl;
                 //Handle recieved data
                 it->recieveData(buffer);
                 it->update_activity_time();
@@ -103,17 +105,22 @@ int main() {
         }
 
         // Obsługa zdarzeń POLLOUT
-        for (auto it = client_sockets.begin(); it != client_sockets.end(); ++it) {
-            if (it->hasMessageToSend() && poll_fds[it - client_sockets.begin()].revents & POLLOUT) {
+        for (auto it = client_sockets.begin(); it != client_sockets.end(); it++) {
+            if (it->hasMessageToSend() && poll_fds[it - client_sockets.begin() + 1].revents & POLLOUT) {
                 // Obsługa zdarzeń POLLOUT dla danego klienta
                 std::string message = it->getMessage();
                 ssize_t bytes_sent = send(it->getSocket(), message.c_str(), message.size(), 0);
 
-                if (bytes_sent == 0) {
+                if (bytes_sent > 0) {
+                    // Wiadomość została wysłana poprawnie
+                    std::cout << "Wysłano wiadomość do klienta: " << it->getSocket() << std::endl;
+                } else if (bytes_sent == 0) {
+                    // Połączenie zostało zamknięte przez klienta
                     std::cout << "Połączenie zostało zamknięte przez klienta: " << it->getSocket() << std::endl;
                     close(it->getSocket());
                     client_sockets.erase(it--);
                 } else {
+                    // Błąd podczas wysyłania
                     perror("send");
                     close(it->getSocket());
                     client_sockets.erase(it--);
@@ -121,10 +128,11 @@ int main() {
             }
         }
 
-        for (auto it = client_sockets.begin(); it != client_sockets.end(); ++it) {
+        for (auto it = client_sockets.begin(); it != client_sockets.end(); it++) {
             if (it->get_time_passed_from_last_activity().count() > CLIENT_TIMEOUT_MILISEC) {
                 close(it->getSocket());
                 client_sockets.erase(it--);
+                std::cout << " Client timeout yeet! " << std::endl;
             }
         }
 
