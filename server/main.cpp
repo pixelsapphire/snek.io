@@ -1,14 +1,12 @@
 #include <cstdio>
 #include <iostream>
-#include <cstring>
-#include <ctime>
 #include <unistd.h>
 #include <netinet/in.h>
 #include <vector>
 #include <poll.h>
-#include <cstdlib>
+#include <cstring>
 #include "cliencior_uni_linu_macc.hpp"
-#include <chrono>
+
 
 #define SERVER_PORT 8080
 #define CLIENT_LIMIT 20
@@ -23,10 +21,8 @@ int main() {
     }
 
     // Set up the server address structure
-    sockaddr_in server_addr;
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = INADDR_ANY;
-    server_addr.sin_port = htons(SERVER_PORT);
+    sockaddr_in server_addr{.sin_family = AF_INET, .sin_port = htons(SERVER_PORT),
+                            .sin_addr={.s_addr = INADDR_ANY}};
 
     // Bind the server socket to the specified address
     if (bind(server_socket, (struct sockaddr*) &server_addr, sizeof(server_addr)) < 0) {
@@ -49,9 +45,7 @@ int main() {
         std::vector<pollfd> poll_fds;
 
         // Add server socket to the pollfd list
-        pollfd server_poll_fd;
-        server_poll_fd.fd = server_socket;
-        server_poll_fd.events = POLLIN;
+        pollfd server_poll_fd{.fd = server_socket, .events = POLLIN};
         poll_fds.push_back(server_poll_fd);
 
         // Add client sockets to the pollfd list
@@ -71,16 +65,17 @@ int main() {
 
         // Check for incoming connections on the server socket
         if (client_sockets.size() < CLIENT_LIMIT && poll_fds[0].revents & POLLIN) {
-            sockaddr_in client_addr;
+            sockaddr_in client_addr{};
             socklen_t client_addr_len = sizeof(client_addr);
             int client_socket = accept(server_socket, (struct sockaddr*) &client_addr, &client_addr_len);
             if (client_socket < 0) {
                 perror("accept");
-                continue;
+                //continue;
             }
-
-            // Add the new client socket to the vector
-            client_sockets.emplace_back(client_socket);
+            else{
+                // Add the new client socket to the vector
+                client_sockets.emplace_back(client_socket);
+            }
         }
 
         // Check for data from clients and handle disconnections
@@ -97,27 +92,28 @@ int main() {
                     }
 
                     close(it->get_socket());
-                    it = client_sockets.erase(it);
+                    client_sockets.erase(it--);
                     continue;
                 }
 
-                // Handle received data (capitalizing message in this case)
+                //Handle recieved data
+                char buffer_copy[100];
+                std::memcpy(buffer_copy, buffer, bytes_received);
                 //it->handle_event(buffer);
                 for (int i = 0; i < bytes_received; i++) {
-                    buffer[i] = char(toupper(buffer[i]));
+                    buffer_copy[i] = char(toupper(buffer_copy[i]));
                 }
 
+                it->update_activity_time();
 
+                //tgo pozniej ma tu nie być!!! 
                 // Send the modified message back to the client
-                if (send(it->get_socket(), buffer, bytes_received, 0) < 0) {
+                if (send(it->get_socket(), buffer_copy, bytes_received, 0) < 0) {
                     perror("send");
                     close(it->get_socket());
-                    it = client_sockets.erase(it);
-                    continue;
+                    client_sockets.erase(it--);
                 }
 
-                // Update last activity time
-                it->update_activity_time();
             }
 
             if (it->get_time_passed_from_last_activity().count() > CLIENT_TIMEOUT_MILISEC) {

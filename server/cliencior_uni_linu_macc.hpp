@@ -1,8 +1,6 @@
 #ifndef SNEK_IO_CLIENCIOR_UNI_LINU_MACC_HPP
 #define SNEK_IO_CLIENCIOR_UNI_LINU_MACC_HPP
 
-#endif //SNEK_IO_CLIENCIOR_UNI_LINU_MACC_HPP
-
 #include <unistd.h>
 #include <netinet/in.h>
 #include <chrono>
@@ -33,3 +31,5 @@ public:
     }
 
 };
+
+#endif //SNEK_IO_CLIENCIOR_UNI_LINU_MACC_HPP
