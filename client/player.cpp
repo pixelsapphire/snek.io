@@ -21,6 +21,10 @@ void snek::player::draw(sf::RenderTarget& target) const {
     target.draw(head);
 }
 
+const sf::Vector2f& snek::player::get_position() const {
+    return head.getPosition();
+}
+
 void snek::player::set_position(float x, float y) {
     head.setPosition({x, y});
 }

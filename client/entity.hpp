@@ -10,11 +10,19 @@ namespace snek {
 
     public:
 
+        virtual ~entity() = default;
+
         virtual void update(const sf::Time& delta_time) = 0;
 
         virtual void draw(sf::RenderTarget& target) const = 0;
 
+        [[nodiscard]] virtual const sf::Vector2f& get_position() const = 0;
+
         virtual void set_position(float x, float y) = 0;
+
+        void set_position(const sf::Vector2f& position) { set_position(position.x, position.y); }
+
+        void move(const sf::Vector2f& offset) { set_position(get_position() + offset); }
     };
 
     template<typename T>
@@ -38,6 +46,8 @@ namespace snek {
         void update(const sf::Time& delta_time) override {}
 
         void draw(sf::RenderTarget& target) const override { target.draw(object); }
+
+        [[nodiscard]] const sf::Vector2f& get_position() const override { return object.getPosition(); }
 
         void set_position(float x, float y) override { object.setPosition({x, y}); }
 

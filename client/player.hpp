@@ -19,6 +19,8 @@ namespace snek {
 
         void draw(sf::RenderTarget& target) const override;
 
+        [[nodiscard]] const sf::Vector2f& get_position() const override;
+
         void set_position(float x, float y) override;
     };
 }
