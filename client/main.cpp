@@ -2,6 +2,6 @@
 
 int main() {
     snek::game the_game;
-    the_game.run();
+    the_game.launch();
     return 0;
 }

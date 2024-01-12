@@ -18,6 +18,7 @@ if (WIN32)
 endif (WIN32)
 
 add_executable(snek_io_client
+    client/assets.cpp
     client/main.cpp
     client/game.cpp
     client/player.cpp
