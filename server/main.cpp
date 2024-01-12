@@ -84,7 +84,8 @@ int main() {
         }
 
         // Check for data from clients and handle disconnections
-        for (auto it = client_sockets.begin() + 1; it != client_sockets.end(); it++ ) {
+        auto it = client_sockets.begin() + 1;
+        while (it != client_sockets.end()) {
             if (poll_fds[it - client_sockets.begin()].revents & POLLIN) {
                 char buffer[100];
                 ssize_t bytes_received = recv(it->get_socket(), buffer, sizeof(buffer), 0);
@@ -122,8 +123,9 @@ int main() {
 
             if(it->get_time_passed_from_last_activity() > CLIENT_TIMEOUT_MILISEC){
                 close(it->get_socket());
-                client_sockets.erase(it--);
+                it = client_sockets.erase(it);
             }
+            else it++;
         }
 
     }
