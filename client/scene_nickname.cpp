@@ -2,10 +2,12 @@
 #include "scene_nickname.hpp"
 #include "utility.hpp"
 
-snek::scene_nickname::scene_nickname() : nickname_prompt(snek::make_entity<sf::Text>()),
-                                         nickname_view(snek::make_entity<sf::Text>()),
-                                         button_text(snek::make_entity<sf::Text>()),
-                                         accept_button(snek::make_entity<sf::RectangleShape>(sf::Vector2f(200, 60))) {
+snek::scene_nickname::scene_nickname(std::function<void(const std::string&)> on_nickname_selected)
+        : on_nickname_selected(std::move(on_nickname_selected)),
+          nickname_prompt(snek::make_entity<sf::Text>()),
+          nickname_view(snek::make_entity<sf::Text>()),
+          button_text(snek::make_entity<sf::Text>()),
+          accept_button(snek::make_entity<sf::RectangleShape>(sf::Vector2f(200, 60))) {
 
     if (not font.loadFromFile("assets/font/jetbrains_mono.ttf"))
         throw std::runtime_error("Failed to load assets");
@@ -55,7 +57,7 @@ bool snek::scene_nickname::handle_event(const sf::Event& event) {
     } else if (event.type == sf::Event::MouseButtonPressed) {
         if (event.mouseButton.button == sf::Mouse::Left and
             (*accept_button)->getGlobalBounds().contains(snek::conv::to_vec2f(event.mouseButton)))
-            std::cout << "PLAYING AS " << nickname << std::endl;
+            on_nickname_selected(nickname);
     }
     return false;
 }
