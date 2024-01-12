@@ -4,17 +4,20 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <chrono>
+#include <string>
 
 class client_uni {
 
     int socket;
+    bool hasMessage;
     std::chrono::time_point<std::chrono::high_resolution_clock> last_activity_time;
+    std::string message;
 
 public:
 
-    explicit client_uni(int socket) : socket(socket), last_activity_time(std::chrono::high_resolution_clock::now()) {}
+    explicit client_uni(int socket) : socket(socket), hasMessage(false), last_activity_time(std::chrono::high_resolution_clock::now()) {}
 
-    [[nodiscard]] int get_socket() const { return socket; }
+    [[nodiscard]] int getSocket() const { return socket; }
 
     [[nodiscard]] std::chrono::milliseconds get_time_passed_from_last_activity() const {
         return std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -27,7 +30,20 @@ public:
         return this->socket == other.socket;
     }
 
-    void handle_event(const char buffer[]) {
+    [[nodiscard]] bool hasMessageToSend() const {
+        return hasMessage;
+    }
+
+    void recieveData(const char buffer[]) {
+        message = std::string (buffer);
+        std::transform(message.begin(), message.end(), message.begin(),
+                       [](unsigned char c) { return std::toupper(c); });
+        this->hasMessage = true;
+    }
+
+    std::string getMessage() {
+        hasMessage = false;
+        return message;
     }
 
 };
