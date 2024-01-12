@@ -1,7 +1,8 @@
 #include "scene_main.hpp"
 
-snek::scene_main::scene_main(const std::function<void(const sf::Vector2f& position)>& on_player_movement)
-        : player_moved(on_player_movement) {}
+snek::scene_main::scene_main(const std::function<void(const sf::Vector2f& position)>& on_player_movement,
+                             const std::function<std::map<std::string, sf::Vector2f>()>& positions_provider)
+        : player_moved(on_player_movement), fetch_positions(positions_provider) {}
 
 void snek::scene_main::spawn_player(const std::string& nickname, const sf::Vector2f& position, bool client) {
     auto player = std::make_shared<snek::player>(nickname);
@@ -27,4 +28,7 @@ void snek::scene_main::update(const sf::Time& delta_time) {
     if (offset.x != 0 and offset.y != 0) offset /= std::sqrt(2.f);
     client_player->move(offset * velocity);
     player_moved(client_player->get_position());
+    const auto& positions = fetch_positions();
+    for (const auto& [nickname, player] : other_players)
+        player->set_position(positions.at(nickname).x, positions.at(nickname).y);
 }
