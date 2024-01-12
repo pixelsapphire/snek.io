@@ -50,9 +50,9 @@ int main() {
 
         // Add client sockets to the pollfd list
         for (const auto& client : client_sockets) {
-            pollfd client_poll_fd;
-            client_poll_fd.fd = client.get_socket();
-            client_poll_fd.events = POLLIN;
+            pollfd client_poll_fd{.fd = client.getSocket(), .events =
+            short(client.hasMessageToSend() ? POLLIN | POLLOUT : POLLIN)};
+
             poll_fds.push_back(client_poll_fd);
         }
 
@@ -78,46 +78,52 @@ int main() {
             }
         }
 
-        // Check for data from clients and handle disconnections
+        // Obsługa zdarzeń POLLIN
         for (auto it = client_sockets.begin(); it != client_sockets.end(); ++it) {
+
             if (poll_fds[it - client_sockets.begin()].revents & POLLIN) {
                 char buffer[100];
-                ssize_t bytes_received = recv(it->get_socket(), buffer, sizeof(buffer), 0);
+                ssize_t bytes_received = recv(it->getSocket(), buffer, sizeof(buffer), 0);
                 if (bytes_received <= 0) {
-                    // Handle disconnection or error
                     if (bytes_received == 0) {
-                        std::cout << "Client disconnected: " << it->get_socket() << std::endl;
+                        std::cout << "Client disconnected: " << it->getSocket() << std::endl;
                     } else {
                         perror("recv");
                     }
 
-                    close(it->get_socket());
+                    close(it->getSocket());
                     client_sockets.erase(it--);
                     continue;
                 }
 
                 //Handle recieved data
-                char buffer_copy[100];
-                std::memcpy(buffer_copy, buffer, bytes_received);
-                //it->handle_event(buffer);
-                for (int i = 0; i < bytes_received; i++) {
-                    buffer_copy[i] = char(toupper(buffer_copy[i]));
-                }
-
+                it->recieveData(buffer);
                 it->update_activity_time();
+            }
+        }
 
-                //tgo pozniej ma tu nie być!!! 
-                // Send the modified message back to the client
-                if (send(it->get_socket(), buffer_copy, bytes_received, 0) < 0) {
+        // Obsługa zdarzeń POLLOUT
+        for (auto it = client_sockets.begin(); it != client_sockets.end(); ++it) {
+            if (it->hasMessageToSend() && poll_fds[it - client_sockets.begin()].revents & POLLOUT) {
+                // Obsługa zdarzeń POLLOUT dla danego klienta
+                std::string message = it->getMessage();
+                ssize_t bytes_sent = send(it->getSocket(), message.c_str(), message.size(), 0);
+
+                if (bytes_sent == 0) {
+                    std::cout << "Połączenie zostało zamknięte przez klienta: " << it->getSocket() << std::endl;
+                    close(it->getSocket());
+                    client_sockets.erase(it--);
+                } else {
                     perror("send");
-                    close(it->get_socket());
+                    close(it->getSocket());
                     client_sockets.erase(it--);
                 }
-
             }
+        }
 
+        for (auto it = client_sockets.begin(); it != client_sockets.end(); ++it) {
             if (it->get_time_passed_from_last_activity().count() > CLIENT_TIMEOUT_MILISEC) {
-                close(it->get_socket());
+                close(it->getSocket());
                 client_sockets.erase(it--);
             }
         }
@@ -126,7 +132,7 @@ int main() {
 
     // Close client sockets
     for (const auto& client : client_sockets) {
-        close(client.get_socket());
+        close(client.getSocket());
     }
 
     // Close the server socket
