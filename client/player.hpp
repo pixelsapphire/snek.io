@@ -17,7 +17,7 @@ namespace snek {
 
         void update(const sf::Time& delta_time) override;
 
-        void draw(sf::RenderTarget& target) override;
+        void draw(sf::RenderTarget& target) const override;
 
         void set_position(float x, float y) override;
     };

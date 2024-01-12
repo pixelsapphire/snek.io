@@ -17,7 +17,7 @@ void snek::player::update(const sf::Time& delta_time) {
         head.move(sf::Vector2f(1, 0) * velocity);
 }
 
-void snek::player::draw(sf::RenderTarget& target) {
+void snek::player::draw(sf::RenderTarget& target) const {
     target.draw(head);
 }
 

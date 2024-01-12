@@ -12,7 +12,7 @@ namespace snek {
 
         virtual void update(const sf::Time& delta_time) = 0;
 
-        virtual void draw(sf::RenderTarget& target) = 0;
+        virtual void draw(sf::RenderTarget& target) const = 0;
 
         virtual void set_position(float x, float y) = 0;
     };
@@ -37,7 +37,7 @@ namespace snek {
 
         void update(const sf::Time& delta_time) override {}
 
-        void draw(sf::RenderTarget& target) override { target.draw(object); }
+        void draw(sf::RenderTarget& target) const override { target.draw(object); }
 
         void set_position(float x, float y) override { object.setPosition({x, y}); }
 
