@@ -13,10 +13,10 @@ snek::game::~game() {
 }
 
 void snek::game::launch() {
-    clock.restart();
+    frame_clock.restart();
     while (window.isOpen()) {
-        const sf::Time delta_time = clock.getElapsedTime();
-        clock.restart();
+        const sf::Time delta_time = frame_clock.getElapsedTime();
+        frame_clock.restart();
         sf::Event event{};
         while (window.pollEvent(event)) {
             const bool handled = current_scene->handle_event(event);
@@ -29,6 +29,7 @@ void snek::game::launch() {
 }
 
 void snek::game::start(const std::string& player_nickname) {
+    game_clock.restart();
     this->nickname = player_nickname;
     auto scene = std::make_unique<snek::scene_main>([&](auto& p) { player_movement(p); });
     scene->spawn_player(nickname, sf::Vector2f(100, 100), true);
