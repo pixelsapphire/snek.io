@@ -1,6 +1,7 @@
 #include "scene.hpp"
 
 void snek::scene::step_frame(sf::RenderTarget& target, const sf::Time& delta_time) {
+    update(delta_time);
     for (auto& drawable : drawables) drawable->update(delta_time);
     for (auto& drawable : drawables) drawable->draw(target);
 }

@@ -8,12 +8,15 @@ namespace snek {
 
     class player : public snek::entity {
 
-        float speed = 100;
-        sf::RectangleShape head;
+        std::string nickname;
+        sf::CircleShape head;
+        sf::Text nickname_view;
 
     public:
 
-        player();
+        constexpr inline static float speed = 100;
+
+        explicit player(std::string nickname);
 
         void update(const sf::Time& delta_time) override;
 

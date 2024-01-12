@@ -1,24 +1,22 @@
 #include <SFML/Window.hpp>
+#include <utility>
+#include "assets.hpp"
 #include "player.hpp"
 
-snek::player::player() : head(sf::Vector2f(50, 50)) {
+snek::player::player(std::string nickname)
+        : nickname(std::move(nickname)),
+          head(25),
+          nickname_view(this->nickname, snek::assets::get_font(), 16) {
     head.setFillColor(sf::Color::Red);
+    nickname_view.setOrigin(nickname_view.getLocalBounds().width / 2, 20);
 }
 
 void snek::player::update(const sf::Time& delta_time) {
-    const float velocity = delta_time.asSeconds() * speed;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-        head.move(sf::Vector2f(0, -1) * velocity);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-        head.move(sf::Vector2f(0, 1) * velocity);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-        head.move(sf::Vector2f(-1, 0) * velocity);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-        head.move(sf::Vector2f(1, 0) * velocity);
 }
 
 void snek::player::draw(sf::RenderTarget& target) const {
     target.draw(head);
+    target.draw(nickname_view);
 }
 
 const sf::Vector2f& snek::player::get_position() const {
@@ -26,5 +24,6 @@ const sf::Vector2f& snek::player::get_position() const {
 }
 
 void snek::player::set_position(float x, float y) {
-    head.setPosition({x, y});
+    head.setPosition(x, y);
+    nickname_view.setPosition(x + 25, y);
 }
