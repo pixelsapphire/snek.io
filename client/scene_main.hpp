@@ -19,6 +19,8 @@ namespace snek {
 
         void spawn_player(const std::string& nickname, const sf::Vector2f& position, bool client = true);
 
+        void remove_player(const std::string& nickname);
+
         void update(const sf::Time& delta_time) override;
     };
 }

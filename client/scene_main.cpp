@@ -8,9 +8,16 @@ void snek::scene_main::spawn_player(const std::string& nickname, const sf::Vecto
     player->set_position(position.x, position.y);
     add(player);
     if (client) client_player = player;
+    else other_players[nickname] = player;
+}
+
+void snek::scene_main::remove_player(const std::string& nickname) {
+    remove(other_players[nickname]);
+    other_players.erase(nickname);
 }
 
 void snek::scene_main::update(const sf::Time& delta_time) {
+    snek::scene::update(delta_time);
     const float velocity = delta_time.asSeconds() * snek::player::speed;
     sf::Vector2f offset;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) offset += sf::Vector2f(0, -1);
