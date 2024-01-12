@@ -11,6 +11,11 @@ if (APPLE)
     link_directories(lib/SFML-2.6.1/macos_arm64/lib)
 endif (APPLE)
 
+if (UNIX AND NOT APPLE)
+    include_directories(lib/SFML-2.6.1/linux_gcc/include)
+    link_directories(lib/SFML-2.6.1/linux_gcc/lib)
+endif (UNIX AND NOT APPLE)
+
 if (WIN32)
     file(COPY lib/SFML-2.6.1/windoez_vc/bin/ DESTINATION .)
     include_directories(lib/SFML-2.6.1/windoez_vc/include)
