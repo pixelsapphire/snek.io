@@ -1,3 +1,4 @@
+#include <iostream>
 #include "game.hpp"
 #include "scene_main.hpp"
 #include "scene_nickname.hpp"
@@ -27,7 +28,13 @@ void snek::game::launch() {
     }
 }
 
-void snek::game::start(const std::string& nickname) {
-    this->nickname = nickname;
-    current_scene = std::make_unique<snek::scene_main>();
+void snek::game::start(const std::string& player_nickname) {
+    this->nickname = player_nickname;
+    auto scene = std::make_unique<snek::scene_main>([&](auto& p) { player_movement(p); });
+    scene->spawn_player(nickname, sf::Vector2f(100, 100), true);
+    current_scene = std::move(scene);
+}
+
+void snek::game::player_movement(const sf::Vector2f& position) const {
+    std::cout << "Player moved to " << position.x << ", " << position.y << std::endl;
 }

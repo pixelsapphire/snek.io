@@ -22,7 +22,9 @@ namespace snek {
 
         void launch();
 
-        void start(const std::string& nickname);
+        void start(const std::string& player_nickname);
+
+        void player_movement(const sf::Vector2f& position) const;
     };
 }
 
