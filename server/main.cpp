@@ -1,12 +1,10 @@
 #include <cstdio>
 #include <iostream>
-#include <unistd.h>
 #include <netinet/in.h>
-#include <vector>
 #include <poll.h>
-#include <cstring>
-#include "cliencior_uni_linu_macc.hpp"
-
+#include <unistd.h>
+#include <vector>
+#include "client.hpp"
 
 #define SERVER_PORT 8080
 #define CLIENT_LIMIT 20
@@ -21,8 +19,7 @@ int main() {
     }
 
     // Set up the server address structure
-    sockaddr_in server_addr{.sin_family = AF_INET, .sin_port = htons(SERVER_PORT),
-                            .sin_addr={.s_addr = INADDR_ANY}};
+    sockaddr_in server_addr{.sin_family = AF_INET, .sin_port = htons(SERVER_PORT), .sin_addr={.s_addr = INADDR_ANY}};
 
     // Bind the server socket to the specified address
     if (bind(server_socket, (struct sockaddr*) &server_addr, sizeof(server_addr)) < 0) {
@@ -38,7 +35,7 @@ int main() {
         return -1;
     }
 
-    std::vector<client_uni> client_sockets;
+    std::vector<snek::client> client_sockets;
 
     // Main server loop with poll
     while (true) {
@@ -50,8 +47,8 @@ int main() {
 
         // Add client sockets to the pollfd list
         for (const auto& client : client_sockets) {
-            pollfd client_poll_fd{.fd = client.getSocket(), .events =
-            short(client.hasMessageToSend() ? POLLIN | POLLOUT : POLLIN)};
+            pollfd client_poll_fd{.fd = client.get_socket(), .events =
+            short(client.has_message_to_send() ? POLLIN | POLLOUT : POLLIN)};
 
             poll_fds.push_back(client_poll_fd);
         }
@@ -71,10 +68,9 @@ int main() {
             if (client_socket < 0) {
                 perror("accept");
                 //continue;
-            }
-            else{
+            } else {
                 // Add the new client socket to the vector
-                std::cout << "new client added"<<std::endl;
+                std::cout << "new client added" << std::endl;
                 client_sockets.emplace_back(client_socket);
             }
         }
@@ -83,46 +79,46 @@ int main() {
         for (auto it = client_sockets.begin(); it != client_sockets.end(); it++) {
 
             if (poll_fds[it - client_sockets.begin() + 1].revents & POLLIN) {
-                char buffer[100];
-                ssize_t bytes_received = recv(it->getSocket(), buffer, sizeof(buffer), 0);
+                char buffer[100]{0};
+                ssize_t bytes_received = recv(it->get_socket(), buffer, sizeof(buffer) - 1, 0);
                 if (bytes_received <= 0) {
                     if (bytes_received == 0) {
-                        std::cout << "Client disconnected: " << it->getSocket() << std::endl;
+                        std::cout << "Client disconnected: " << it->get_socket() << std::endl;
                     } else {
                         perror("recv");
                     }
 
-                    close(it->getSocket());
+                    close(it->get_socket());
                     client_sockets.erase(it--);
                     continue;
                 }
 
                 std::cout << "recieved data from client " << std::endl;
                 //Handle recieved data
-                it->recieveData(buffer);
+                it->receive_data(buffer);
                 it->update_activity_time();
             }
         }
 
         // Obsługa zdarzeń POLLOUT
         for (auto it = client_sockets.begin(); it != client_sockets.end(); it++) {
-            if (it->hasMessageToSend() && poll_fds[it - client_sockets.begin() + 1].revents & POLLOUT) {
+            if (it->has_message_to_send() && poll_fds[it - client_sockets.begin() + 1].revents & POLLOUT) {
                 // Obsługa zdarzeń POLLOUT dla danego klienta
-                std::string message = it->getMessage();
-                ssize_t bytes_sent = send(it->getSocket(), message.c_str(), message.size(), 0);
+                std::string message = it->get_message();
+                ssize_t bytes_sent = send(it->get_socket(), message.c_str(), message.size(), 0);
 
                 if (bytes_sent > 0) {
                     // Wiadomość została wysłana poprawnie
-                    std::cout << "Wysłano wiadomość do klienta: " << it->getSocket() << std::endl;
+                    std::cout << "Wysłano wiadomość do klienta: " << it->get_socket() << std::endl;
                 } else if (bytes_sent == 0) {
                     // Połączenie zostało zamknięte przez klienta
-                    std::cout << "Połączenie zostało zamknięte przez klienta: " << it->getSocket() << std::endl;
-                    close(it->getSocket());
+                    std::cout << "Połączenie zostało zamknięte przez klienta: " << it->get_socket() << std::endl;
+                    close(it->get_socket());
                     client_sockets.erase(it--);
                 } else {
                     // Błąd podczas wysyłania
                     perror("send");
-                    close(it->getSocket());
+                    close(it->get_socket());
                     client_sockets.erase(it--);
                 }
             }
@@ -130,7 +126,7 @@ int main() {
 
         for (auto it = client_sockets.begin(); it != client_sockets.end(); it++) {
             if (it->get_time_passed_from_last_activity().count() > CLIENT_TIMEOUT_MILISEC) {
-                close(it->getSocket());
+                close(it->get_socket());
                 client_sockets.erase(it--);
                 std::cout << " Client timeout yeet! " << std::endl;
             }
@@ -140,7 +136,7 @@ int main() {
 
     // Close client sockets
     for (const auto& client : client_sockets) {
-        close(client.getSocket());
+        close(client.get_socket());
     }
 
     // Close the server socket
