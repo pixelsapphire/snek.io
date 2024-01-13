@@ -53,7 +53,7 @@ int main() {
         }
 
         // Use poll to wait for events on any of the sockets
-        int ready_fds = poll(poll_fds.data(), poll_fds.size(), -1);
+        int ready_fds = poll(poll_fds.data(), poll_fds.size(), client_sockets.empty() ? -1 : CLIENT_TIMEOUT_MILISEC);
         if (ready_fds < 0) {
             perror("poll");
             break;
