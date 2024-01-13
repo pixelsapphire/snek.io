@@ -6,11 +6,13 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "scene.hpp"
+#include "server_handler.hpp"
 
 namespace snek {
 
     class game {
 
+        snek::server_handler server;
         sf::RenderWindow window;
         sf::Clock game_clock, frame_clock;
         std::unique_ptr<snek::scene> current_scene;
