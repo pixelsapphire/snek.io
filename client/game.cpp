@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 #include "game.hpp"
 #include "scene_main.hpp"
@@ -35,6 +36,7 @@ void snek::game::start(const std::string& player_nickname) {
             [&](auto& p) { player_movement(p); },
             [&] { return fetch_positions(); });
     scene->spawn_player(nickname, sf::Vector2f(100, 100), true);
+    scene->spawn_player("NPC", sf::Vector2f(200, 200), false);
     current_scene = std::move(scene);
 }
 
@@ -43,6 +45,8 @@ void snek::game::player_movement(const sf::Vector2f& position) const {
 }
 
 std::map<std::string, sf::Vector2f> snek::game::fetch_positions() const {
-    std::map<std::string, sf::Vector2f> positions;
+    std::map<std::string, sf::Vector2f> positions{{"NPC", sf::Vector2f(400, 300) + sf::Vector2f(
+            150 * std::sin(game_clock.getElapsedTime().asSeconds()),
+            100 * std::cos(game_clock.getElapsedTime().asSeconds()))}};
     return positions;
 }

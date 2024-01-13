@@ -30,13 +30,9 @@ namespace snek {
 
         void update_activity_time() { last_activity_time = std::chrono::high_resolution_clock::now(); }
 
-        bool operator==(const client& other) const {
-            return this->socket == other.socket;
-        }
+        bool operator==(const client& other) const { return this->socket == other.socket; }
 
-        [[nodiscard]] bool has_message_to_send() const {
-            return has_message;
-        }
+        [[nodiscard]] bool has_message_to_send() const { return has_message; }
 
         void receive_data(const char* buffer) {
             stored_message = std::string(buffer);
@@ -45,7 +41,7 @@ namespace snek {
             has_message = true;
         }
 
-        std::string get_message() {
+        const std::string& get_message() {
             has_message = false;
             return stored_message;
         }

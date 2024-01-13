@@ -22,18 +22,9 @@ if (WIN32)
     link_directories(lib/SFML-2.6.1/windoez_vc/lib)
 endif (WIN32)
 
-add_executable(snek_io_client
-    client/assets.cpp
-    client/main.cpp
-    client/game.cpp
-    client/player.cpp
-    client/scene.cpp
-    client/scene_main.cpp
-    client/scene_nickname.cpp
-    client/utility.cpp
-)
+file(GLOB client_sources "client/*.cpp")
+add_executable(snek_io_client ${client_sources})
 target_link_libraries(snek_io_client sfml-audio sfml-graphics sfml-system sfml-window)
 
-add_executable(snek_io_server
-    server/main.cpp
-)
+file(GLOB server_sources "server/*.cpp")
+add_executable(snek_io_server server_sources)

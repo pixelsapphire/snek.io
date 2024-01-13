@@ -19,7 +19,7 @@ namespace snek {
 
     public:
 
-        scene_nickname(std::function<void(const std::string&)> on_nickname_selected);
+        explicit scene_nickname(std::function<void(const std::string&)> on_nickname_selected);
 
         bool handle_event(const sf::Event& event) override;
     };
