@@ -8,7 +8,6 @@
 
 #define SERVER_PORT 8080
 #define CLIENT_LIMIT 20
-#define WAIT4EVENT_MILISEC 1500
 #define CLIENT_TIMEOUT_MILISEC 100000
 
 int main() {
@@ -54,7 +53,7 @@ int main() {
         }
 
         // Use poll to wait for events on any of the sockets
-        int ready_fds = poll(poll_fds.data(), poll_fds.size(), WAIT4EVENT_MILISEC);
+        int ready_fds = poll(poll_fds.data(), poll_fds.size(), -1);
         if (ready_fds < 0) {
             perror("poll");
             break;
