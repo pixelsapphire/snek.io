@@ -9,7 +9,7 @@
 
 namespace snek {
 
-    class client {
+    class client_handler {
 
         int socket;
         bool has_message;
@@ -18,8 +18,8 @@ namespace snek {
 
     public:
 
-        explicit client(int socket) : socket(socket), has_message(false),
-                                      last_activity_time(std::chrono::high_resolution_clock::now()) {}
+        explicit client_handler(int socket) : socket(socket), has_message(false),
+                                              last_activity_time(std::chrono::high_resolution_clock::now()) {}
 
         [[nodiscard]] int get_socket() const { return socket; }
 
@@ -30,14 +30,12 @@ namespace snek {
 
         void update_activity_time() { last_activity_time = std::chrono::high_resolution_clock::now(); }
 
-        bool operator==(const client& other) const { return this->socket == other.socket; }
+        bool operator==(const client_handler& other) const { return this->socket == other.socket; }
 
         [[nodiscard]] bool has_message_to_send() const { return has_message; }
 
-        void receive_data(const char* buffer) {
-            stored_message = std::string(buffer);
-            std::transform(stored_message.begin(), stored_message.end(), stored_message.begin(),
-                           [](char c) { return std::toupper(c); });
+        void send_data(std::string data) {
+            stored_message = std::move(data);
             has_message = true;
         }
 

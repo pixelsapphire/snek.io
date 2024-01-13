@@ -27,4 +27,4 @@ add_executable(snek_io_client ${client_sources})
 target_link_libraries(snek_io_client sfml-audio sfml-graphics sfml-system sfml-window)
 
 file(GLOB server_sources "server/*.cpp")
-add_executable(snek_io_server server_sources)
+add_executable(snek_io_server ${server_sources})
