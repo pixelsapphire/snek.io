@@ -46,8 +46,13 @@ void snek::game::start(const std::string& player_nickname) {
     }
 }
 
-void snek::game::player_movement(const sf::Vector2f& position) const {
-    std::cout << "Player moved to " << position.x << ", " << position.y << std::endl;
+void snek::game::player_movement(const sf::Vector2f& position) {
+    server.send_player_position(position);
+    const player_state state = server.fetch_player_state();
+    if (not state.is_alive()) {
+        std::cout << "You died!" << std::endl;
+        server.disconnect();
+    }
 }
 
 std::map<std::string, sf::Vector2f> snek::game::fetch_positions() const {

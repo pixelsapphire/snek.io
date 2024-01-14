@@ -2,6 +2,7 @@
 #define SNEK_IO_SERVER_HPP
 
 #include <SFML/Network.hpp>
+#include "player.hpp"
 
 namespace snek {
 
@@ -14,6 +15,10 @@ namespace snek {
         bool connect();
 
         void disconnect();
+
+        void send_player_position(const sf::Vector2f& position);
+
+        [[nodiscard]] snek::player_state fetch_player_state();
     };
 }
 
