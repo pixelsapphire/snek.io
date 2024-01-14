@@ -11,6 +11,7 @@ namespace snek {
 
     class game {
 
+    public:
         void store_player_position (std::string nickname, float x, float y);
 
 

@@ -26,7 +26,7 @@ namespace snek {
 
         [[nodiscard]] const std::string&  get_nickname() const { return nickname; }
 
-        void set_nickname (const std::string& nickname) { this.nickname = nickname; }
+        void set_nickname (const std::string& nickname) { this->nickname = nickname; }
 
         [[nodiscard]] std::chrono::milliseconds get_time_passed_from_last_activity() const {
             return std::chrono::duration_cast<std::chrono::milliseconds>(

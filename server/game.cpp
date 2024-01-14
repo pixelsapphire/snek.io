@@ -5,4 +5,9 @@
 #include "game.hpp"
 
 namespace snek {
+
+    void store_player_position (std::string nickname, float x, float y)
+    {
+
+    }
 } // snek

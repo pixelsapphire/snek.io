@@ -1,15 +1,30 @@
 #include "server.hpp"
 
 snek::server::server () {
-    reguests ["c"] = [&](std::string){game_instance.store_player_position ()};
+    requests ["c"] = [&](const snek::client_handler& client, const std::string& command_body){
+        std::string parameters_symbols [] = {"x", "y"};
+        int parameters_positions [] = {
+                    static_cast<int>(command_body.find(parameters_symbols[0])),
+                    static_cast<int>(command_body.find(parameters_symbols[1]))
+        };
+        //bedzie trzeba sprawdzenie zrobić
+        //if(...) {...}
+
+        //to poniżej mi nie działa dlaczego - nie wiem
+//        game_instance.store_player_position (client.get_nickname(), std::stof(command_body.substr(0, parameters_positions [0])),
+//                                             std::stof(command_body.substr(parameters_positions [0] + parameters_symbols [0].size(),
+//                                                                           parameters_positions [1])));
+        return "OK";
+    };
+
 }
 
 std::string snek::server::handle_request(const snek::client_handler& client ,const std::string& request) {
     std::cout << "received data from client" << std::endl;
-    if(requests.contains(request.substr(0,COMMENDS_LENGTH)))
-        return requests[request.substr(0,COMMENDS_LENGTH)]
-        (request.substr(COMMENDS_LENGTH, request.size() - COMMENDS_LENGTH));
-    else return "Unrecognized command. Try again.";
+    if (requests.contains(request.substr(0, COMMENDS_LENGTH))) {
+        return requests[request.substr(0, COMMENDS_LENGTH)]
+                (client, request.substr(COMMENDS_LENGTH, request.size() - COMMENDS_LENGTH));
+    } else return "Unrecognized command. Try again.";
 }
 
 void snek::server::start_server(int server_socket) {
