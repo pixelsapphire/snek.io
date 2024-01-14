@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <SFML/Graphics.hpp>
+#include "button.hpp"
 #include "entity.hpp"
 #include "scene.hpp"
 
@@ -14,8 +15,8 @@ namespace snek {
 
         std::function<void(const std::string&)> on_nickname_selected;
         std::string nickname;
-        std::shared_ptr<snek::basic_entity<sf::Text>> nickname_prompt, nickname_view, button_text;
-        std::shared_ptr<snek::basic_entity<sf::RectangleShape>> accept_button;
+        std::shared_ptr<snek::basic_entity<sf::Text>> nickname_prompt, nickname_view;
+        std::shared_ptr<snek::button> accept_button;
 
     public:
 
