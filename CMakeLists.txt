@@ -12,8 +12,8 @@ if (APPLE)
 endif (APPLE)
 
 if (UNIX AND NOT APPLE)
-    include_directories(lib/SFML-2.6.1/linux_gcc/include)
-    link_directories(lib/SFML-2.6.1/linux_gcc/lib)
+    include_directories(~/SFML-2.6.1/include)
+    link_directories(~/SFML-2.6.1/lib)
 endif (UNIX AND NOT APPLE)
 
 if (WIN32)

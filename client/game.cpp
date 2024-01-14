@@ -6,6 +6,7 @@
 
 snek::game::game() : window(sf::VideoMode(800, 600), "Projekt na sieciuhy"),
                      current_scene(std::make_unique<snek::scene_nickname>([&](const auto& n) { this->start(n); })) {
+    window.setVerticalSyncEnabled(false);
     window.setFramerateLimit(60);
 }
 
