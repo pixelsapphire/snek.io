@@ -1,10 +1,15 @@
 #include "server.hpp"
 
-std::string snek::server::handle_request(const std::string& request) {
+snek::server::server () {
+    reguests ["c"] = [&](std::string){game_instance.store_player_position ()};
+}
+
+std::string snek::server::handle_request(const snek::client_handler& client ,const std::string& request) {
     std::cout << "received data from client" << std::endl;
-    std::string response = request;
-    std::transform(response.begin(), response.end(), response.begin(), ::toupper);
-    return response;
+    if(requests.contains(request.substr(0,COMMENDS_LENGTH)))
+        return requests[request.substr(0,COMMENDS_LENGTH)]
+        (request.substr(COMMENDS_LENGTH, request.size() - COMMENDS_LENGTH));
+    else return "Unrecognized command. Try again.";
 }
 
 void snek::server::start_server(int server_socket) {
@@ -62,7 +67,7 @@ void snek::server::start_server(int server_socket) {
                 }
 
                 //Handle received data
-                client->send_data(handle_request(buffer));
+                client->send_data(handle_request(*client, buffer));
                 client->update_activity_time();
             }
 
