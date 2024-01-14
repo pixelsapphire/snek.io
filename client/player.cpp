@@ -12,9 +12,6 @@ snek::player::player(std::string nickname)
     nickname_view.setOrigin(nickname_view.getLocalBounds().width / 2, 20);
 }
 
-void snek::player::update(const sf::Time& delta_time) {
-}
-
 void snek::player::draw(sf::RenderTarget& target) const {
     target.draw(head);
     target.draw(nickname_view);

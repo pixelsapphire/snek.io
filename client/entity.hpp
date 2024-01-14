@@ -12,7 +12,7 @@ namespace snek {
 
         virtual ~entity() = default;
 
-        virtual void update(const sf::Time& delta_time) = 0;
+        virtual void update(const sf::Time& delta_time) {};
 
         virtual void draw(sf::RenderTarget& target) const = 0;
 

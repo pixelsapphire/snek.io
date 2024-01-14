@@ -28,7 +28,7 @@ namespace snek {
 
         void start(const std::string& player_nickname);
 
-        void player_movement(const sf::Vector2f& position) const;
+        void player_movement(const sf::Vector2f& position);
 
         std::map<std::string, sf::Vector2f> fetch_positions() const;
     };
