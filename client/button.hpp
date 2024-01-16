@@ -20,6 +20,8 @@ namespace snek {
 
         [[nodiscard]] bool clicked(const sf::Event& event) const;
 
+        void set_color(const sf::Color& color);
+
         void draw(sf::RenderTarget& target) const override;
 
         [[nodiscard]] const sf::Vector2f& get_position() const override;

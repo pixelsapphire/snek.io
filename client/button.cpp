@@ -26,6 +26,11 @@ bool snek::button::clicked(const sf::Event& event) const {
            contains(event.mouseButton);
 }
 
+void snek::button::set_color(const sf::Color& color) {
+    text.setFillColor(color);
+    border.setOutlineColor(color);
+}
+
 void snek::button::draw(sf::RenderTarget& target) const {
     target.draw(border);
     target.draw(text);

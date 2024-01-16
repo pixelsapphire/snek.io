@@ -29,15 +29,18 @@ snek::scene_nickname::scene_nickname(std::function<void(const std::string&)> on_
 
     auto& button = *accept_button;
     button.set_position(400, 400);
+    button.set_color(sf::Color(96, 96, 96));
     add(accept_button);
 }
 
 bool snek::scene_nickname::handle_event(const sf::Event& event) {
     if (event.type == sf::Event::TextEntered) {
         if (event.text.unicode == 8 and not nickname.empty()) nickname.pop_back();
-        else if (event.text.unicode > 32 and event.text.unicode <= 126) nickname += char(event.text.unicode);
+        else if (event.text.unicode > 32 and event.text.unicode <= 126 and nickname.size() < 24)
+            nickname += char(event.text.unicode);
         (*nickname_view)->setString(nickname);
         (*nickname_view)->setOrigin(nickname_view->center().x, 24);
+        accept_button->set_color(nickname.empty() ? sf::Color(96, 96, 96) : sf::Color::White);
     } else if ((accept_button->clicked(event) or snek::event::key_pressed(event, sf::Keyboard::Enter))
                and not nickname.empty())
         on_nickname_selected(nickname);
