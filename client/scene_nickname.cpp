@@ -35,12 +35,12 @@ snek::scene_nickname::scene_nickname(std::function<void(const std::string&)> on_
 bool snek::scene_nickname::handle_event(const sf::Event& event) {
     if (event.type == sf::Event::TextEntered) {
         if (event.text.unicode == 8 and not nickname.empty()) nickname.pop_back();
-        else if (event.text.unicode >= 32 and event.text.unicode <= 126) nickname += char(event.text.unicode);
+        else if (event.text.unicode > 32 and event.text.unicode <= 126) nickname += char(event.text.unicode);
         (*nickname_view)->setString(nickname);
         (*nickname_view)->setOrigin(nickname_view->center().x, 24);
-    } else if (event.type == sf::Event::MouseButtonPressed) {
-        if (event.mouseButton.button == sf::Mouse::Left and accept_button->contains(event.mouseButton))
-            on_nickname_selected(nickname);
-    }
+    } else if ((accept_button->clicked(event) or snek::event::key_pressed(event, sf::Keyboard::Enter))
+               and not nickname.empty())
+        on_nickname_selected(nickname);
+
     return false;
 }

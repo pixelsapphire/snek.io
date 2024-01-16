@@ -12,13 +12,13 @@ namespace snek {
         sf::Text text;
         sf::RectangleShape border;
 
+        [[nodiscard]] bool contains(const sf::Event::MouseButtonEvent& point) const;
+
     public:
 
         explicit button(const std::string& text);
 
-        [[nodiscard]] bool contains(const sf::Vector2f& point) const;
-
-        [[nodiscard]] bool contains(const sf::Event::MouseButtonEvent& point) const;
+        [[nodiscard]] bool clicked(const sf::Event& event) const;
 
         void draw(sf::RenderTarget& target) const override;
 

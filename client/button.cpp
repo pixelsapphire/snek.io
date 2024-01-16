@@ -17,10 +17,13 @@ snek::button::button(const std::string& text) {
     this->border.setOrigin(size.x / 2, size.y / 3);
 }
 
-bool snek::button::contains(const sf::Vector2f& point) const { return border.getGlobalBounds().contains(point); }
-
 bool snek::button::contains(const sf::Event::MouseButtonEvent& point) const {
     return border.getGlobalBounds().contains(snek::conv::to_vec2f(point));
+}
+
+bool snek::button::clicked(const sf::Event& event) const {
+    return event.type == sf::Event::MouseButtonPressed and event.mouseButton.button == sf::Mouse::Left and
+           contains(event.mouseButton);
 }
 
 void snek::button::draw(sf::RenderTarget& target) const {
