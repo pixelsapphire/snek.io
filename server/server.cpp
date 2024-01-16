@@ -1,30 +1,23 @@
 #include "server.hpp"
 
-snek::server::server () {
-    requests ["c"] = [&](const snek::client_handler& client, const std::string& command_body){
-        std::string parameters_symbols [] = {"x", "y"};
-        int parameters_positions [] = {
-                    static_cast<int>(command_body.find(parameters_symbols[0])),
-                    static_cast<int>(command_body.find(parameters_symbols[1]))
-        };
-        //bedzie trzeba sprawdzenie zrobić
-        //if(...) {...}
-
-        //to poniżej mi nie działa dlaczego - nie wiem
-//        game_instance.store_player_position (client.get_nickname(), std::stof(command_body.substr(0, parameters_positions [0])),
-//                                             std::stof(command_body.substr(parameters_positions [0] + parameters_symbols [0].size(),
-//                                                                           parameters_positions [1])));
-        return "OK";
+snek::server::server() {
+    requests["c"] = [&](const snek::client_handler& client, const std::string& command_body) {
+        const auto x_pos = command_body.find('x'), y_pos = command_body.find('y');
+        const auto x = std::stof(command_body.substr(0, x_pos)),
+                y = std::stof(command_body.substr(x_pos + 1, y_pos - x_pos - 1));
+        game_instance.store_player_position(client.get_nickname(), x, y);
+        return "a";
     };
 
 }
 
-std::string snek::server::handle_request(const snek::client_handler& client ,const std::string& request) {
-    std::cout << "received data from client" << std::endl;
-    if (requests.contains(request.substr(0, COMMENDS_LENGTH))) {
-        return requests[request.substr(0, COMMENDS_LENGTH)]
-                (client, request.substr(COMMENDS_LENGTH, request.size() - COMMENDS_LENGTH));
-    } else return "Unrecognized command. Try again.";
+std::string snek::server::handle_request(const snek::client_handler& client, const std::string& request) {
+    std::cout << "received data from client " << client.get_socket() << ": " << request
+              << " (" << request.size() << ") bytes" << std::endl;
+    const std::string command = request.substr(0, COMMAND_LENGTH),
+            arguments = request.substr(COMMAND_LENGTH, request.size() - COMMAND_LENGTH);
+    if (requests.contains(command)) return requests[command](client, arguments);
+    return "e";
 }
 
 void snek::server::start_server(int server_socket) {
@@ -82,7 +75,10 @@ void snek::server::start_server(int server_socket) {
                 }
 
                 //Handle received data
-                client->send_data(handle_request(*client, buffer));
+                const std::string response = handle_request(*client, buffer);
+                std::cout << "Sending response to client " << client->get_socket() << ": " << response
+                          << " (" << response.size() << ") bytes" << std::endl;
+                client->send_data(response);
                 client->update_activity_time();
             }
 

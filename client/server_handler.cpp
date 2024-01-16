@@ -16,9 +16,9 @@ void snek::server_handler::send_player_position(const sf::Vector2f& position) {
 }
 
 snek::player_state snek::server_handler::fetch_player_state() {
-    char buffer[2];
+    char buffer[3]{0};
     std::size_t received;
-    socket.receive(buffer, sizeof(buffer), received);
+    socket.receive(buffer, sizeof(buffer) - 1, received);
     std::cout << "received: " << buffer << " (" << received << " bytes)" << std::endl;
     return snek::player_state::deserialize(buffer);
 }
