@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 23)
 file(COPY assets/ DESTINATION assets)
 
 if (APPLE)
-    add_compile_options("-stdlib=libc++" "-lc++abi" "-v")
+    add_compile_options("-stdlib=libc++" "-lc++abi" "-v" "-Wall")
     include_directories(lib/SFML-2.6.1/macos_arm64/include)
     link_directories(lib/SFML-2.6.1/macos_arm64/lib)
 endif (APPLE)
