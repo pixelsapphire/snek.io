@@ -1,6 +1,7 @@
 #ifndef SNEK_IO_SERVER_HPP
 #define SNEK_IO_SERVER_HPP
 
+#include <vector>
 #include <SFML/Network.hpp>
 #include "player.hpp"
 
@@ -10,7 +11,14 @@ namespace snek {
 
         sf::TcpSocket socket;
 
+        static inline bool handlers_initialized = false;
+        static inline std::vector<sf::TcpSocket*> active_sockets;
+
+        static void handle_signal(int);
+
     public:
+
+        server_handler();
 
         bool connect();
 
