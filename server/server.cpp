@@ -37,7 +37,7 @@ snek::server::server() {
         const std::string& nickname = client.get_nickname();
         std::stringstream ss;
         ss << "p" << game_instance.player_count() -1;
-        for (auto & player : game_instance.get_players()) {
+        for (const auto & player : game_instance.get_players()) {
             if (player.first == nickname)
                 continue;
             ss << "l" << game_instance.get_player_position (player.first);
@@ -50,9 +50,9 @@ std::string snek::server::handle_request(const snek::client_handler& client, con
     std::cout << "received data from client " << client.get_socket() << ": " << request
               << " (" << request.size() << ") bytes" << std::endl;
     const std::string command = request.substr(0, COMMAND_LENGTH),
-            arguments = request.substr(COMMAND_LENGTH, request.size() - COMMAND_LENGTH);
-    if (requests.contains(command)) return requests[command](client, arguments);
-    return "e";
+            arguments = request.substr(COMMAND_LENGTH, request.size() - COMMAND_LENGTH -1);
+    if (requests.contains(command)) return requests[command](client, arguments) +"\n";
+    return "e\n";
 }
 
 void snek::server::start_server(int server_socket) {
@@ -97,7 +97,7 @@ void snek::server::start_server(int server_socket) {
                 ready_fds_decrement = false;
                 ready_fds--;
                 char buffer[100]{0};
-                ssize_t bytes_received = recv(client->get_socket(), buffer, sizeof(buffer) - 1, 0);
+                ssize_t bytes_received = recv(client->get_socket(), buffer, sizeof(buffer) - 1, 0); //MSG_DONTWAIT
                 if (bytes_received <= 0) {
                     if (bytes_received == 0) {
                         std::cout << "Client disconnected: " << client->get_socket() << std::endl;

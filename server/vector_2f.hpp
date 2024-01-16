@@ -19,9 +19,9 @@ namespace snek {
 
         void update (float x, float y);
 
-        float get_x();
+        float get_x() const;
 
-        float get_y();
+        float get_y() const;
 
     };
 }

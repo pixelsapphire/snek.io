@@ -6,11 +6,11 @@ snek::vector_2f::vector_2f(float x, float y) {
     this->y = y;
 }
 
-float snek::vector_2f::get_x() {
+float snek::vector_2f::get_x() const {
     return x;
 }
 
-float snek::vector_2f::get_y() {
+float snek::vector_2f::get_y() const {
     return y;
 }
 
