@@ -1,14 +1,49 @@
 #include "server.hpp"
+#include <sstream>
 
 snek::server::server() {
+    //c - check if dead
     requests["c"] = [&](const snek::client_handler& client, const std::string& command_body) {
+        const std::string& nickname = client.get_nickname();
         const auto x_pos = command_body.find('x'), y_pos = command_body.find('y');
         const auto x = std::stof(command_body.substr(0, x_pos)),
                 y = std::stof(command_body.substr(x_pos + 1, y_pos - x_pos - 1));
-        game_instance.store_player_position(client.get_nickname(), x, y);
-        return "a";
+        game_instance.store_player_position(nickname, x, y);
+
+        return game_instance.is_alive(nickname) ? "a" : "d";
     };
 
+    //n - new player
+    requests["n"] = [&](const snek::client_handler& client, const std::string& command_body) {
+        if(game_instance.player_count() > MAX_PLAYERS)
+            return "nf"; //not connected - full
+
+        const std::string& nickname = command_body;//client.get_nickname();
+        if(game_instance.nickname_taken(nickname))
+            return "nt"; // nickname taken
+
+        game_instance.add_player(nickname);
+        return "y"; //game_instance.get_player_position (nickname);
+    };
+
+    //s - spawn
+    requests["s"] = [&](const snek::client_handler& client, const std::string& command_body) {
+        const std::string& nickname = client.get_nickname();
+        return "l" + game_instance.get_player_position (nickname);
+    };
+
+    //o - other players
+    requests["o"] = [&](const snek::client_handler& client, const std::string& command_body) {
+        const std::string& nickname = client.get_nickname();
+        std::stringstream ss;
+        ss << "p" << game_instance.player_count() -1;
+        for (auto & player : game_instance.get_players()) {
+            if (player.first == nickname)
+                continue;
+            ss << "l" << game_instance.get_player_position (player.first);
+        }
+        return ss.str();
+    };
 }
 
 std::string snek::server::handle_request(const snek::client_handler& client, const std::string& request) {

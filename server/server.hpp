@@ -13,7 +13,8 @@
 #include "game.hpp"
 
 #define SERVER_PORT 8080
-#define CLIENT_LIMIT 20
+#define CLIENT_LIMIT 30
+#define MAX_PLAYERS 20
 #define CLIENT_TIMEOUT_MILLIS 100000
 #define COMMAND_LENGTH 1
 
