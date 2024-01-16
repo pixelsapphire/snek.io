@@ -24,7 +24,7 @@ endif (WIN32)
 
 file(GLOB client_sources "client/*.cpp")
 add_executable(snek_io_client ${client_sources})
-target_link_libraries(snek_io_client sfml-audio sfml-graphics sfml-network sfml-system sfml-window)
+target_link_libraries(snek_io_client sfml-graphics sfml-network sfml-system sfml-window)
 
 file(GLOB server_sources "server/*.cpp")
 add_executable(snek_io_server ${server_sources})
