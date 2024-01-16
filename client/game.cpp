@@ -4,7 +4,7 @@
 #include "scene_main.hpp"
 #include "scene_nickname.hpp"
 
-snek::game::game() : window(sf::VideoMode(800, 600), "Projekt na sieciuhy"),
+snek::game::game() : window(sf::VideoMode(800, 600), "Projekt na sieciuhy", sf::Style::Titlebar | sf::Style::Close),
                      current_scene(std::make_unique<snek::scene_nickname>([&](const auto& n) { this->start(n); })) {
     window.setVerticalSyncEnabled(false);
     window.setFramerateLimit(60);
