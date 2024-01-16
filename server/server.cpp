@@ -36,11 +36,11 @@ snek::server::server() {
     requests["o"] = [&](const snek::client_handler& client, const std::string& command_body) {
         const std::string& nickname = client.get_nickname();
         std::stringstream ss;
-        ss << "p" << game_instance.player_count() -1;
+        ss << "p" << game_instance.player_count() -1 << "n";
         for (const auto & player : game_instance.get_players()) {
             if (player.first == nickname)
                 continue;
-            ss << "l" << game_instance.get_player_position (player.first);
+            ss << player.first << " " << game_instance.get_player_position (player.first);
         }
         return ss.str();
     };
