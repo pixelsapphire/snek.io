@@ -1,29 +1,28 @@
-//
-// Created by stas on 23.01.2024.
-//
-
 #ifndef SNEK_IO_PLAYER_HPP
 #define SNEK_IO_PLAYER_HPP
 
-#include "vector_2f.hpp"
+#include <cstdint>
 #include <vector>
+#include "vector_2f.hpp"
 
 namespace snek {
 
     class player {
 
         std::vector<vector_2f> segments;
-
+        uint8_t segments_queue = 0;
 
     public:
 
-        player(float x, float y);
+        explicit player(const snek::vector_2f& position);
 
-        void update (float x_head, float y_head);
+        void update(const snek::vector_2f& head);
 
-        const vector_2f& get_head ();
+        [[nodiscard]] const vector_2f& get_head();
 
         [[nodiscard]] const std::vector<vector_2f>& get_segments() const;
+
+        void add_segments(uint8_t count = 1);
     };
 
 } // snek
