@@ -47,7 +47,7 @@ std::string snek::server_handler::receive(size_t buffer_size) {
     } while (buffer[received - 1] != '\n');
     delete[] buffer;
     data.seekp(-1, std::ios_base::end);
-    const std::string data_string = data.str();
+    const std::string data_string = data.str().substr(0, data.tellp());
     std::cout << "received: " << data_string << " (" << data_string.size() << " bytes)" << std::endl;
     return data_string;
 }
