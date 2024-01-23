@@ -9,8 +9,8 @@ const std::vector<snek::vector_2f>& snek::player::get_segments() const { return 
 void snek::player::update(const snek::vector_2f& head) {
     const snek::vector_2f tail = segments.back();
     for (auto segment = segments.rbegin(); segment != segments.rend();)
-        segment->update((++segment)->get_x(), segment->get_y());
-    segments[0].update(head.get_x(), head.get_y());
+        *segment = (*(++segment));
+    segments[0] = head;
     if (segments_queue > 0) {
         segments.emplace_back(tail);
         segments_queue--;

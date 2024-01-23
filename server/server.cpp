@@ -10,7 +10,7 @@ snek::server::server() : config("config/s_config.txt") {
         const auto x_pos = command_body.find('x'), y_pos = command_body.find('y');
         const auto x = std::stof(command_body.substr(0, x_pos)),
                 y = std::stof(command_body.substr(x_pos + 1, y_pos - x_pos - 1));
-        game_instance.store_player_position(nickname, x, y);
+        game_instance.store_player_position(nickname, {x, y});
 
         return game_instance.is_alive(nickname) ? "a" : "d";
     };
@@ -184,7 +184,7 @@ void snek::server::init() {
     }
 
     // Set up the server address structure
-    sockaddr_in server_addr{ .sin_family = AF_INET,
+    sockaddr_in server_addr{.sin_family = AF_INET,
             .sin_port = htons(config.get_int("port")), .sin_addr = {.s_addr = INADDR_ANY}, .sin_zero = {0}};
 
 
