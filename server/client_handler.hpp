@@ -12,7 +12,7 @@ namespace snek {
     class client_handler {
 
         int socket;
-        std::string nickname;
+        std::string player_nickname;
         bool has_message;
         std::chrono::time_point<std::chrono::high_resolution_clock> last_activity_time;
         std::string stored_message;
@@ -24,9 +24,9 @@ namespace snek {
 
         [[nodiscard]] int get_socket() const { return socket; }
 
-        [[nodiscard]] const std::string&  get_nickname() const { return nickname; }
+        [[nodiscard]] const std::string& get_nickname() const { return player_nickname; }
 
-        void set_nickname (const std::string& nickname) { this->nickname = nickname; }
+        void set_nickname(const std::string& nickname) { this->player_nickname = nickname; }
 
         [[nodiscard]] std::chrono::milliseconds get_time_passed_from_last_activity() const {
             return std::chrono::duration_cast<std::chrono::milliseconds>(
