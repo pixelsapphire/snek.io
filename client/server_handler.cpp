@@ -1,6 +1,8 @@
 #include <csignal>
+#include <cstring>
 #include <iostream>
 #include <set>
+#include <sstream>
 #include "server_handler.hpp"
 #include "utility.hpp"
 
@@ -30,16 +32,52 @@ void snek::server_handler::disconnect() {
     socket.disconnect();
 }
 
-void snek::server_handler::send_player_position(const sf::Vector2f& position) {
-    const std::string request = "c" + std::to_string(position.x) + "x" + std::to_string(position.y) + "y";
-    socket.send(request.c_str(), request.size() + 1);
-    std::cout << "sent: " << request << " (" << request.size() + 1 << " bytes)" << std::endl;
+void snek::server_handler::send(const std::string& data) {
+    socket.send((data + '\n').c_str(), data.size() + 1);
+    std::cout << "sent: " << data << " (" << data.size() << " bytes)" << std::endl;
 }
 
-snek::player_state snek::server_handler::fetch_player_state() {
-    char buffer[3]{0};
+std::string snek::server_handler::receive(size_t buffer_size) {
+    std::stringstream data;
+    char* buffer = new char[buffer_size + 2];
     std::size_t received;
-    socket.receive(buffer, sizeof(buffer) - 1, received);
-    std::cout << "received: " << buffer << " (" << received << " bytes)" << std::endl;
-    return snek::player_state::deserialize(buffer);
+    do {
+        std::memset(buffer, 0, buffer_size + 1);
+        socket.receive(buffer, buffer_size + 1, received);
+        data << buffer;
+    } while (buffer[received - 1] != '\n');
+    delete[] buffer;
+    data.seekp(-1, std::ios_base::end);
+    const std::string data_string = data.str();
+    std::cout << "received: " << data_string << " (" << data_string.size() << " bytes)" << std::endl;
+    return data_string;
+}
+
+snek::connection_status snek::server_handler::join(const std::string& nickname) {
+    send("n" + nickname);
+    const std::string response = receive(2);
+    if (response == "y") return snek::connection_status::connected;
+    else if (response == "nf") return snek::connection_status::game_full;
+    else if (response == "nt") return snek::connection_status::nickname_taken;
+    else return snek::connection_status::error;
+}
+
+sf::Vector2f snek::server_handler::get_spawn_point() {
+    send("s");
+    const std::string response = receive();
+    return snek::serial::decode_vector(response.substr(1));
+}
+
+snek::player::state snek::server_handler::send_player_position(const sf::Vector2f& position) {
+    send("c" + snek::serial::encode_vector(position));
+    const std::string response = receive(2);
+    if (response == "a") return snek::player::state::alive;
+    else if (response == "d") return snek::player::state::dead;
+    else return snek::player::state::unknown;
+}
+
+std::map<std::string, sf::Vector2f> snek::server_handler::get_players() {
+    send("o");
+    const std::string response = receive();
+    return snek::serial::decode_players(response.substr(1));
 }
