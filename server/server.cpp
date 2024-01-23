@@ -187,6 +187,14 @@ void snek::server::init() {
     sockaddr_in server_addr{ .sin_family = AF_INET,
             .sin_port = htons(config.get_int("port")), .sin_addr = {.s_addr = INADDR_ANY}, .sin_zero = {0}};
 
+
+    int reuse = 1;
+    if (setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) < 0) {
+        perror("setsockopt");
+        close(server_socket);
+        std::exit(-1);
+    }
+
     // Bind the server socket to the specified address
     if (bind(server_socket, (struct sockaddr*) &server_addr, sizeof(server_addr)) < 0) {
         perror("bind");

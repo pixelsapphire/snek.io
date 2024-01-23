@@ -18,7 +18,7 @@ void snek::game::add_player(const std::string &nickname) {
     do {
         x = float(snek::random_value(25,775));
         y = float(snek::random_value(25,575));
-    } while (this->no_player_nearby(x, y, nickname));
+    } while (!this->no_player_nearby(x, y, nickname));
     players.emplace(nickname, player(x, y));
 }
 
@@ -32,7 +32,7 @@ size_t snek::game::player_count() {
 }
 
 bool snek::game::nickname_taken(const std::string &nickname) {
-    return !players.contains(nickname);
+    return players.contains(nickname);
 }
 
 const std::map<std::string,snek::player> &snek::game::get_players() {
