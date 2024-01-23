@@ -1,25 +1,20 @@
-//
-// Created by stas on 23.01.2024.
-//
-
 #include "player.hpp"
 
-    const snek::vector_2f& snek::player::get_head() {
-    return segments[0];
-}
+snek::player::player(const snek::vector_2f& position) { segments.emplace_back(position); }
 
-const std::vector<snek::vector_2f>& snek::player::get_segments() const {
-    return segments;
-}
+const snek::vector_2f& snek::player::get_head() { return segments[0]; }
 
-void snek::player::update(float x_head, float y_head) {
+const std::vector<snek::vector_2f>& snek::player::get_segments() const { return segments; }
 
-    for (auto segment = segments.rbegin(); segment != segments.rend();) {
+void snek::player::update(const snek::vector_2f& head) {
+    const snek::vector_2f tail = segments.back();
+    for (auto segment = segments.rbegin(); segment != segments.rend();)
         segment->update((++segment)->get_x(), segment->get_y());
+    segments[0].update(head.get_x(), head.get_y());
+    if (segments_queue > 0) {
+        segments.emplace_back(tail);
+        segments_queue--;
     }
-    segments[0].update(x_head,y_head);
 }
 
-snek::player::player(float x, float y) {
-    segments.push_back(snek::vector_2f(x,y));
-}
+void snek::player::add_segments(uint8_t count) { segments_queue += count; }
