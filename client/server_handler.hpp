@@ -32,7 +32,7 @@ namespace snek {
 
         void send(const std::string& data);
 
-        [[nodiscard]] std::string receive(size_t buffer_size = 32);
+        [[nodiscard]] std::string receive();
 
         [[nodiscard]] snek::connection_status join(const std::string& nickname);
 

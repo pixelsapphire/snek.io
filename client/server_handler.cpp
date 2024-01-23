@@ -36,25 +36,23 @@ void snek::server_handler::send(const std::string& data) {
     std::cout << "sent: " << data << " (" << data.size() << " bytes)" << std::endl;
 }
 
-std::string snek::server_handler::receive(size_t buffer_size) {
+std::string snek::server_handler::receive() {
     std::stringstream data;
-    char* buffer = new char[buffer_size + 2];
     std::size_t received;
-    do {
-        std::memset(buffer, 0, buffer_size + 1);
-        socket.receive(buffer, buffer_size + 1, received);
-        data << buffer;
-    } while (buffer[received - 1] != '\n');
-    delete[] buffer;
-    data.seekp(-1, std::ios_base::end);
-    const std::string data_string = data.str().substr(0, data.tellp());
+    char read_character = 0;
+    while (read_character != '\n' and read_character != '\r') {
+        socket.receive(&read_character, 1, received);
+        if (received) data << read_character;
+    }
+    std::string data_string(data.str());
+    data_string.resize(data.str().size() - 1);
     std::cout << "received: " << data_string << " (" << data_string.size() << " bytes)" << std::endl;
     return data_string;
 }
 
 snek::connection_status snek::server_handler::join(const std::string& nickname) {
     send("n" + nickname);
-    const std::string response = receive(2);
+    const std::string response = receive();
     if (response == "y") return snek::connection_status::connected;
     else if (response == "nf") return snek::connection_status::game_full;
     else if (response == "nt") return snek::connection_status::nickname_taken;
@@ -69,7 +67,7 @@ sf::Vector2f snek::server_handler::get_spawn_point() {
 
 snek::player::state snek::server_handler::send_player_position(const sf::Vector2f& position) {
     send("c" + snek::serial::encode_vector(position));
-    const std::string response = receive(2);
+    const std::string response = receive();
     if (response == "a") return snek::player::state::alive;
     else if (response == "d") return snek::player::state::dead;
     else return snek::player::state::unknown;
