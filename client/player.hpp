@@ -5,7 +5,6 @@
 #include "entity.hpp"
 
 namespace snek {
-
     class player : public snek::entity {
 
         std::string nickname;
@@ -23,19 +22,13 @@ namespace snek {
         [[nodiscard]] const sf::Vector2f& get_position() const override;
 
         void set_position(float x, float y) override;
-    };
 
-    class player_state {
+        enum state {
+            alive,
+            dead,
+            unknown
+        };
 
-        bool alive;
-
-        explicit player_state(bool alive) : alive(alive) {}
-
-    public:
-
-        [[nodiscard]] bool is_alive() const;
-
-        [[nodiscard]] static player_state deserialize(const std::string& data);
     };
 }
 

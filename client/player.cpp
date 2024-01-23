@@ -1,4 +1,3 @@
-#include <SFML/Window.hpp>
 #include <utility>
 #include "assets.hpp"
 #include "player.hpp"
@@ -24,10 +23,4 @@ const sf::Vector2f& snek::player::get_position() const {
 void snek::player::set_position(float x, float y) {
     head.setPosition(x, y);
     nickname_view.setPosition(x, y - 25);
-}
-
-bool snek::player_state::is_alive() const { return alive; }
-
-snek::player_state snek::player_state::deserialize(const std::string& data) {
-    return player_state(data == "a");
 }
