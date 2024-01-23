@@ -17,7 +17,7 @@ namespace snek {
         std::map<std::string, snek::player> players;
 
     public:
-        bool no_player_nearby(float x, float y) const;
+        bool no_player_nearby(float x, float y, const std::string& nickname) const;
 
         bool is_alive (const std::string& nickname);
 
