@@ -13,11 +13,6 @@
 #include "config.hpp"
 #include "game.hpp"
 
-#define CLIENT_LIMIT 30
-#define MAX_PLAYERS 20
-#define CLIENT_TIMEOUT_MILLIS 100000
-#define COMMAND_LENGTH 1
-
 namespace snek {
 
     class server {

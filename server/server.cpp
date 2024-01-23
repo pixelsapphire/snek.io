@@ -1,5 +1,7 @@
-#include "server.hpp"
 #include <sstream>
+#include "server.hpp"
+
+#define COMMAND_LENGTH 1
 
 snek::server::server() : config("config/s_config.txt") {
     //c - check if dead
@@ -15,7 +17,7 @@ snek::server::server() : config("config/s_config.txt") {
 
     //n - new player
     requests["n"] = [&](const snek::client_handler&, const std::string& command_body) {
-        if (game_instance.player_count() > MAX_PLAYERS)
+        if (game_instance.player_count() > config.get_int("max_players"))
             return "nf"; //not connected - full
 
         const std::string& nickname = command_body;//client.get_nickname();
@@ -74,7 +76,8 @@ void snek::server::start_server(int server_socket) {
         }
 
         // Use poll to wait for events on any of the sockets
-        int ready_fds = poll(poll_fds.data(), poll_fds.size(), client_sockets.empty() ? -1 : CLIENT_TIMEOUT_MILLIS);
+        int ready_fds = poll(poll_fds.data(), poll_fds.size(),
+                             client_sockets.empty() ? -1 : config.get_int("client_timeout"));
         if (ready_fds < 0) {
             perror("poll");
             break;
@@ -141,7 +144,7 @@ void snek::server::start_server(int server_socket) {
         }
 
         // Check for incoming connections on the server socket
-        if (client_sockets.size() < CLIENT_LIMIT and poll_fds[0].revents & POLLIN) {
+        if (client_sockets.size() < config.get_int("max_connections") and poll_fds[0].revents & POLLIN) {
             sockaddr_in client_addr{};
             socklen_t client_addr_len = sizeof(client_addr);
             int client_socket = accept(server_socket, (struct sockaddr*) &client_addr, &client_addr_len);
@@ -156,7 +159,7 @@ void snek::server::start_server(int server_socket) {
         }
 
         for (auto it = client_sockets.begin(); it != client_sockets.end(); ++it) {
-            if (it->get_time_passed_from_last_activity().count() > CLIENT_TIMEOUT_MILLIS) {
+            if (it->get_time_passed_from_last_activity().count() > config.get_int("client_timeout")) {
                 close(it->get_socket());
                 client_sockets.erase(it--);
                 std::cout << " Client timeout yeet! " << std::endl;
@@ -191,7 +194,7 @@ void snek::server::init() {
     }
 
     // Listen for incoming connections
-    if (listen(server_socket, CLIENT_LIMIT) < 0) {
+    if (listen(server_socket, config.get_int("max_connections")) < 0) {
         perror("listen");
         close(server_socket);
         std::exit(-1);

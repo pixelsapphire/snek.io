@@ -1,1 +1,13 @@
+# server port
 port=48876
+
+# A client that connects to the server may receive an error message and be disconnected
+# right away, therefore this number should be higher than the maximum number of players.
+# maximum number of connections
+max_connections=30
+
+# maximum number of players in the game
+max_players=20
+
+# client timeout in milliseconds
+client_timeout=100000
