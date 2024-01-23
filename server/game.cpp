@@ -2,8 +2,8 @@
 #include <string>
 #include <cmath>
 
-void snek::game::store_player_position(const std::string& nickname, float x, float y) {
-    if (no_player_nearby({x, y}, nickname)) players.at(nickname).update({x, y});
+void snek::game::store_player_position(const std::string& nickname, const snek::vector_2f& position) {
+    if (no_player_nearby(position, nickname)) players.at(nickname).update(position);
     else players.erase(nickname);
 }
 

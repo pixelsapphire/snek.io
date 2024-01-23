@@ -22,7 +22,7 @@ namespace snek {
 
         void add_player(const std::string& nickname);
 
-        void store_player_position(const std::string& nickname, float x, float y);
+        void store_player_position(const std::string& nickname, const snek::vector_2f& position);
 
         std::string get_player_position(const std::string& nickname);
 
