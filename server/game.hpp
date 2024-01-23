@@ -6,12 +6,15 @@
 #include <utility>
 #include "vector_2f.hpp"
 #include "utility.hpp"
+#include "player.hpp"
+
+#define PLAYER_HEAD_RADIUS 26.0
 
 namespace snek {
 
     class game {
 
-        std::map<std::string, vector_2f> players;
+        std::map<std::string, snek::player> players;
 
     public:
         bool no_player_nearby(float x, float y) const;
@@ -28,7 +31,7 @@ namespace snek {
 
         bool nickname_taken(const std::string& nickname);
 
-        const std::map<std::string, vector_2f>& get_players ();
+        const std::map<std::string, player>& get_players ();
     };
 
 } // snek

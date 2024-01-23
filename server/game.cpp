@@ -6,7 +6,9 @@ void snek::game::store_player_position(const std::string& nickname, float x, flo
 //    if(players.contains(nickname))
 //        players.at(nickname).update(x,y);
 //    else players.emplace(nickname, vector_2f(x,y));
-    players.at(nickname).update(x,y);
+    if(no_player_nearby(x,y))
+        players.at(nickname).update(x,y);
+    else players.erase(nickname);
 }
 
 bool snek::game::is_alive(const std::string& nickname) {
@@ -19,11 +21,12 @@ void snek::game::add_player(const std::string &nickname) {
         x = float(snek::random_value(25,775));
         y = float(snek::random_value(25,575));
     } while (this->no_player_nearby(x, y));
-    players.emplace(nickname, vector_2f(x, y));
+    players.emplace(nickname, player(x, y));
 }
 
 std::string snek::game::get_player_position(const std::string &nickname) {
-    return std::to_string(players.at(nickname).get_x()) + "x" + std::to_string(players.at(nickname).get_y()) + "y";
+    return std::to_string(players.at(nickname).get_head().get_x()) + "x" +
+    std::to_string(players.at(nickname).get_head().get_y()) + "y";
 }
 
 size_t snek::game::player_count() {
@@ -34,7 +37,7 @@ bool snek::game::nickname_taken(const std::string &nickname) {
     return !players.contains(nickname);
 }
 
-const std::map<std::string,snek::vector_2f> &snek::game::get_players() {
+const std::map<std::string,snek::player> &snek::game::get_players() {
     return players;
 }
 
@@ -46,8 +49,11 @@ bool snek::game::no_player_nearby(float x, float y) const {
     };
 
     for(const auto& player : players) {
-        if(is_nearby(x, y, player.second.get_x(), player.second.get_y(), 26.0))
-            return false;
+        for(const auto& segment : player.second.get_segments())
+        {
+            if(is_nearby(x, y, segment.get_x(), segment.get_y(), PLAYER_HEAD_RADIUS))
+                return false;
+        }
     }
     return true;
 }
