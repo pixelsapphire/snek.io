@@ -8,8 +8,8 @@
 
 snek::server_handler::server_handler() {
     if (not handlers_initialized)
-        for (const auto s : snek::factory::range_set<uint8_t>(1, 32) -
-                            std::set<uint8_t>{SIGURG, SIGCONT, SIGCHLD, SIGIO, SIGWINCH, SIGINFO})
+        for (const auto s : std::set<uint8_t>{SIGHUP, SIGINT, SIGTERM, SIGKILL, SIGQUIT, SIGABRT, SIGSEGV, SIGILL,
+                                              SIGFPE, SIGBUS, SIGPIPE, SIGSYS, SIGTRAP, SIGXCPU, SIGXFSZ})
             std::signal(s, handle_signal);
 }
 
