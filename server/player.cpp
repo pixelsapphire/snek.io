@@ -8,7 +8,7 @@
     return segments[0];
 }
 
-const std::vector<snek::vector_2f> snek::player::get_segments() const {
+const std::vector<snek::vector_2f>& snek::player::get_segments() const {
     return segments;
 }
 

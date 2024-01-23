@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -g -Wall -std=gnu++23
+CXXFLAGS = -g -Wall -std=gnu++23 -Icommon
 SRC = client
 LIBS = -lsfml-system -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-network
 BUILD = build
