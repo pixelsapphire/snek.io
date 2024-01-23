@@ -6,6 +6,8 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "scene.hpp"
+#include "scene_error.hpp"
+#include "scene_nickname.hpp"
 #include "server_handler.hpp"
 
 namespace snek {
@@ -17,6 +19,10 @@ namespace snek {
         sf::Clock game_clock, frame_clock;
         std::unique_ptr<snek::scene> current_scene;
         std::string nickname;
+
+        [[nodiscard]] std::unique_ptr<snek::scene_nickname> welcome_scene();
+
+        [[nodiscard]] std::unique_ptr<snek::scene_error> error_scene(const std::string& message);
 
     public:
 
@@ -30,7 +36,7 @@ namespace snek {
 
         void player_movement(const sf::Vector2f& position);
 
-        std::map<std::string, sf::Vector2f> fetch_positions() const;
+        [[nodiscard]] std::map<std::string, sf::Vector2f> fetch_positions() const;
     };
 }
 
