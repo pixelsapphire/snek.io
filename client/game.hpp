@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <SFML/Graphics.hpp>
+#include "config.hpp"
 #include "scene.hpp"
 #include "scene_error.hpp"
 #include "scene_nickname.hpp"
@@ -14,6 +15,7 @@ namespace snek {
 
     class game {
 
+        snek::config config;
         snek::server_handler server;
         sf::RenderWindow window;
         sf::Clock game_clock, frame_clock;

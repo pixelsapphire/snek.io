@@ -26,7 +26,7 @@ namespace snek {
 
         server_handler();
 
-        bool connect();
+        bool connect(const sf::IpAddress& ip, uint16_t port);
 
         void disconnect();
 

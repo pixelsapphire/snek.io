@@ -18,9 +18,8 @@ void snek::server_handler::handle_signal(int signal) {
     std::exit(signal);
 }
 
-bool snek::server_handler::connect() {
-    const sf::IpAddress ip = sf::IpAddress::getLocalAddress();
-    auto status = socket.connect(ip, 8080);
+bool snek::server_handler::connect(const sf::IpAddress& ip, uint16_t port) {
+    auto status = socket.connect(ip, port);
     const bool connected = status == sf::Socket::Done;
     if (connected) active_sockets.push_back(&socket);
     return connected;

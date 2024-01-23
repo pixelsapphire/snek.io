@@ -1,7 +1,7 @@
 #include "server.hpp"
 #include <sstream>
 
-snek::server::server() {
+snek::server::server() : config("config/s_config.txt") {
     //c - check if dead
     requests["c"] = [&](const snek::client_handler& client, const std::string& command_body) {
         const std::string& nickname = client.get_nickname();
@@ -14,12 +14,12 @@ snek::server::server() {
     };
 
     //n - new player
-    requests["n"] = [&](const snek::client_handler& client, const std::string& command_body) {
-        if(game_instance.player_count() > MAX_PLAYERS)
+    requests["n"] = [&](const snek::client_handler&, const std::string& command_body) {
+        if (game_instance.player_count() > MAX_PLAYERS)
             return "nf"; //not connected - full
 
         const std::string& nickname = command_body;//client.get_nickname();
-        if(game_instance.nickname_taken(nickname))
+        if (game_instance.nickname_taken(nickname))
             return "nt"; // nickname taken
 
         game_instance.add_player(nickname);
@@ -27,20 +27,20 @@ snek::server::server() {
     };
 
     //s - spawn
-    requests["s"] = [&](const snek::client_handler& client, const std::string& command_body) {
+    requests["s"] = [&](const snek::client_handler& client, const std::string&) {
         const std::string& nickname = client.get_nickname();
-        return "l" + game_instance.get_player_position (nickname);
+        return "l" + game_instance.get_player_position(nickname);
     };
 
     //o - other players
-    requests["o"] = [&](const snek::client_handler& client, const std::string& command_body) {
+    requests["o"] = [&](const snek::client_handler& client, const std::string&) {
         const std::string& nickname = client.get_nickname();
         std::stringstream ss;
-        ss << "p" << game_instance.player_count() -1 << "n";
-        for (const auto & player : game_instance.get_players()) {
+        ss << "p" << game_instance.player_count() - 1 << "n";
+        for (const auto& player : game_instance.get_players()) {
             if (player.first == nickname)
                 continue;
-            ss << player.first << " " << game_instance.get_player_position (player.first);
+            ss << player.first << " " << game_instance.get_player_position(player.first);
         }
         return ss.str();
     };
@@ -50,8 +50,8 @@ std::string snek::server::handle_request(const snek::client_handler& client, con
     std::cout << "received data from client " << client.get_socket() << ": " << request
               << " (" << request.size() << ") bytes" << std::endl;
     const std::string command = request.substr(0, COMMAND_LENGTH),
-            arguments = request.substr(COMMAND_LENGTH, request.size() - COMMAND_LENGTH -1);
-    if (requests.contains(command)) return requests[command](client, arguments) +"\n";
+            arguments = request.substr(COMMAND_LENGTH, request.size() - COMMAND_LENGTH - 1);
+    if (requests.contains(command)) return requests[command](client, arguments) + "\n";
     return "e\n";
 }
 
@@ -62,13 +62,13 @@ void snek::server::start_server(int server_socket) {
         std::vector<pollfd> poll_fds;
 
         // Add server socket to the pollfd list
-        pollfd server_poll_fd{.fd = server_socket, .events = POLLIN};
+        pollfd server_poll_fd{.fd = server_socket, .events = POLLIN, .revents = 0};
         poll_fds.push_back(server_poll_fd);
 
         // Add client_handler sockets to the pollfd list
         for (const auto& client : client_sockets) {
             pollfd client_poll_fd{.fd = client.get_socket(), .events =
-            short(client.has_message_to_send() ? POLLIN | POLLOUT : POLLIN)};
+            short(client.has_message_to_send() ? POLLIN | POLLOUT : POLLIN), .revents = 0};
 
             poll_fds.push_back(client_poll_fd);
         }
@@ -180,7 +180,8 @@ void snek::server::init() {
     }
 
     // Set up the server address structure
-    sockaddr_in server_addr{.sin_family = AF_INET, .sin_port = htons(SERVER_PORT), .sin_addr={.s_addr = INADDR_ANY}};
+    sockaddr_in server_addr{.sin_len = sizeof(server_addr), .sin_family = AF_INET,
+            .sin_port = htons(config.get_int("port")), .sin_addr = {.s_addr = INADDR_ANY}, .sin_zero = {0}};
 
     // Bind the server socket to the specified address
     if (bind(server_socket, (struct sockaddr*) &server_addr, sizeof(server_addr)) < 0) {

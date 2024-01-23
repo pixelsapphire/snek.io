@@ -10,9 +10,9 @@
 #include <unistd.h>
 #include <vector>
 #include "client_handler.hpp"
+#include "config.hpp"
 #include "game.hpp"
 
-#define SERVER_PORT 8080
 #define CLIENT_LIMIT 30
 #define MAX_PLAYERS 20
 #define CLIENT_TIMEOUT_MILLIS 100000
@@ -23,6 +23,7 @@ namespace snek {
     class server {
 
         snek::game game_instance;
+        snek::config config;
         std::vector<snek::client_handler> client_sockets;
         std::map<std::string, std::function<std::string(snek::client_handler, std::string)>> requests;
 

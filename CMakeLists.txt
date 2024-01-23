@@ -3,6 +3,8 @@ project(snek_io)
 
 set(CMAKE_CXX_STANDARD 23)
 
+file(COPY client/c_config.txt DESTINATION config)
+file(COPY server/s_config.txt DESTINATION config)
 file(COPY assets/ DESTINATION assets)
 
 if (APPLE)
@@ -22,9 +24,12 @@ if (WIN32)
     link_directories(lib/SFML-2.6.1/windoez_vc/lib)
 endif (WIN32)
 
+file(GLOB common_sources "common/*.cpp")
+include_directories(common)
+
 file(GLOB client_sources "client/*.cpp")
-add_executable(snek_io_client ${client_sources})
+add_executable(snek_io_client ${client_sources} ${common_sources})
 target_link_libraries(snek_io_client sfml-graphics sfml-network sfml-system sfml-window)
 
 file(GLOB server_sources "server/*.cpp")
-add_executable(snek_io_server ${server_sources})
+add_executable(snek_io_server ${server_sources} ${common_sources})

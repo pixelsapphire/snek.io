@@ -5,7 +5,8 @@
 #include "scene_main.hpp"
 #include "scene_nickname.hpp"
 
-snek::game::game() : window(sf::VideoMode(800, 600), "Projekt na sieciuhy", sf::Style::Titlebar | sf::Style::Close),
+snek::game::game() : config("config/c_config.txt"),
+                     window(sf::VideoMode(800, 600), "Projekt na sieciuhy", sf::Style::Titlebar | sf::Style::Close),
                      current_scene(welcome_scene()) {
     window.setVerticalSyncEnabled(false);
     window.setFramerateLimit(60);
@@ -44,7 +45,7 @@ void snek::game::launch() {
 
 void snek::game::start(const std::string& player_nickname) {
     std::string error_message;
-    if (server.connect()) {
+    if (server.connect(sf::IpAddress(config.get_string("host")), config.get_int("port"))) {
         this->nickname = player_nickname;
         const auto status = server.join(player_nickname);
         if (status == snek::connection_status::connected) {
