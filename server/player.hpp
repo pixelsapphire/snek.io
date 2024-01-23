@@ -1,6 +1,7 @@
 #ifndef SNEK_IO_PLAYER_HPP
 #define SNEK_IO_PLAYER_HPP
 
+#include <cstdint>
 #include <vector>
 #include "vector_2f.hpp"
 
