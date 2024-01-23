@@ -184,7 +184,7 @@ void snek::server::init() {
     }
 
     // Set up the server address structure
-    sockaddr_in server_addr{.sin_len = sizeof(server_addr), .sin_family = AF_INET,
+    sockaddr_in server_addr{ .sin_family = AF_INET,
             .sin_port = htons(config.get_int("port")), .sin_addr = {.s_addr = INADDR_ANY}, .sin_zero = {0}};
 
     // Bind the server socket to the specified address

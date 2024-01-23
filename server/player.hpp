@@ -23,7 +23,7 @@ namespace snek {
 
         const vector_2f& get_head ();
 
-        [[nodiscard]] const std::vector<vector_2f> get_segments() const;
+        [[nodiscard]] const std::vector<vector_2f>& get_segments() const;
     };
 
 } // snek

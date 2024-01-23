@@ -20,7 +20,7 @@ namespace snek {
         snek::game game_instance;
         snek::config config;
         std::vector<snek::client_handler> client_sockets;
-        std::map<std::string, std::function<std::string(snek::client_handler, std::string)>> requests;
+        std::map<std::string, std::function<std::string(snek::client_handler&, std::string)>> requests;
 
         std::string handle_request(snek::client_handler& client, const std::string& request);
 
