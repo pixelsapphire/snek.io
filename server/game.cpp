@@ -30,11 +30,9 @@ bool snek::game::nickname_taken(const std::string& nickname) { return players.co
 const std::map<std::string, snek::player>& snek::game::get_players() { return players; }
 
 bool snek::game::collides(const snek::vector_2f& position, const std::string& nickname) const {
-
     for (const auto& player : players)
         for (const auto& segment : player.second.get_segments())
             if (nickname != player.first && is_nearby(position, segment, PLAYER_HEAD_RADIUS * 2)) return true;
-
     return false;
 }
 

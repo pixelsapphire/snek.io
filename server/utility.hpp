@@ -17,7 +17,7 @@ namespace snek {
         return dist(rng);
     }
 
-    bool is_nearby (const snek::vector_2f& position, const snek::vector_2f& segment, float r);
+    bool is_nearby (const snek::vector_2f& position, const snek::vector_2f& segment, float distance);
 }
 
 #endif //SNEK_IO_UTILITY_HPP
