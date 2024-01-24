@@ -32,3 +32,5 @@ snek::vector_2f snek::vector_2f::operator/(float scalar) const { return {x / sca
 snek::vector_2f& snek::vector_2f::operator/=(float scalar) { return *this = *this / scalar; }
 
 snek::vector_2f operator*(float scalar, const snek::vector_2f& vector) { return vector * scalar; }
+
+bool snek::vector_2f::operator==(const snek::vector_2f& other) const { return x == other.x and y == other.y; }

@@ -15,7 +15,16 @@ snek::server::server() : config("config/s_config.txt") {
         snek::vector_2f v(x, y);
         game_instance.move_player(nickname, v * time);
 
-        return game_instance.is_alive(nickname) ? "a" + game_instance.get_player_segments(nickname) : "d";
+        if(game_instance.is_alive(nickname))
+        {
+            return  "a" + game_instance.get_player_segments(nickname);
+        }
+        else
+        {
+            client.set_nickname("");
+            return std::string("d");
+        }
+
     };
 
     //n - new player
@@ -135,6 +144,7 @@ void snek::server::start_server(int server_socket) {
                 if (bytes_sent > 0) {
                     // Wiadomość została wysłana poprawnie
                     std::cout << "Wysłano wiadomość do klienta: " << client->get_socket() << std::endl;
+                    if(client->get_nickname().empty()) {close_client(client);}
                 } else if (bytes_sent == 0) {
                     // Połączenie zostało zamknięte przez klienta
                     std::cout << "Połączenie zostało zamknięte przez klienta: " << client->get_socket() << std::endl;
