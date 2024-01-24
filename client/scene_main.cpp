@@ -27,6 +27,7 @@ void snek::scene_main::update(const sf::Time& delta_time) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) offset += sf::Vector2f(1, 0);
     if (offset.x != 0 and offset.y != 0) offset /= std::sqrt(2.f);
     const auto state = player_moved(offset * snek::player::speed);
+    client_player->set_state(state);
     const auto& positions = fetch_positions();
     for (const auto& [nickname, player] : other_players)
         player->set_position(positions.at(nickname).x, positions.at(nickname).y);
