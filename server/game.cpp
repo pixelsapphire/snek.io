@@ -1,6 +1,5 @@
 #include "game.hpp"
 #include <string>
-#include <cmath>
 #include <sstream>
 
 void snek::game::store_player_position(const std::string& nickname, const snek::vector_2f& position) {
@@ -31,12 +30,6 @@ bool snek::game::nickname_taken(const std::string& nickname) { return players.co
 const std::map<std::string, snek::player>& snek::game::get_players() { return players; }
 
 bool snek::game::no_player_nearby(const snek::vector_2f& position, const std::string& nickname) const {
-
-    auto is_nearby = [&](const snek::vector_2f& position, const snek::vector_2f& segment, float r) {
-        float length = powf(position.get_x() - segment.get_x(), 2) +
-                       powf(position.get_y() - segment.get_y(), 2);
-        return length <= powf(r, 2);
-    };
 
     for (const auto& player : players)
         for (const auto& segment : player.second.get_segments())

@@ -3,6 +3,8 @@
 #define SNEK_IO_UTILITY_HPP
 
 #include <random>
+#include <cmath>
+#include "vector_2f.hpp"
 
 namespace snek {
 
@@ -14,6 +16,8 @@ namespace snek {
         static std::uniform_int_distribution<T> dist{min, max};
         return dist(rng);
     }
+
+    bool is_nearby (const snek::vector_2f& position, const snek::vector_2f& segment, float r);
 }
 
 #endif //SNEK_IO_UTILITY_HPP
