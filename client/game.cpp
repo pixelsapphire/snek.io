@@ -49,11 +49,10 @@ void snek::game::start(const std::string& player_nickname) {
         this->nickname = player_nickname;
         const auto status = server.join(player_nickname);
         if (status == snek::connection_status::connected) {
-//        const sf::Vector2f spawn_point = server.join(player_nickname);
             const sf::Vector2f spawn_point{100, 100};
             game_clock.restart();
             std::unique_ptr<snek::scene_main> scene = std::make_unique<snek::scene_main>(
-                    [&](auto& p) { player_movement(p); },
+                    [&](auto& p) { return player_movement(p); },
                     [&] { return fetch_positions(); });
             scene->spawn_player(nickname, spawn_point, true);
             scene->spawn_player("NPC", sf::Vector2f(200, 200), false);
@@ -67,10 +66,10 @@ void snek::game::start(const std::string& player_nickname) {
     current_scene = error_scene(error_message);
 }
 
-void snek::game::player_movement(const sf::Vector2f& position) {
-    const auto state = server.send_player_position(position);
-    if (state == snek::player::state::dead) current_scene = error_scene("Game over");
-    else if (state == snek::player::state::unknown) current_scene = error_scene("Something went wrong");
+snek::player::state snek::game::player_movement(const sf::Vector2f& velocity) {
+    const auto state = server.send_player_velocity(velocity);
+    if (not state.alive) current_scene = error_scene("Game over");
+    return state;
 }
 
 std::map<std::string, sf::Vector2f> snek::game::fetch_positions() const {

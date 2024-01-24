@@ -65,12 +65,9 @@ sf::Vector2f snek::server_handler::get_spawn_point() {
     return snek::serial::decode_vector(response.substr(1));
 }
 
-snek::player::state snek::server_handler::send_player_position(const sf::Vector2f& position) {
-    send("c" + snek::serial::encode_vector(position));
-    const std::string response = receive();
-    if (response == "a") return snek::player::state::alive;
-    else if (response == "d") return snek::player::state::dead;
-    else return snek::player::state::unknown;
+snek::player::state snek::server_handler::send_player_velocity(const sf::Vector2f& velocity) {
+    send("c" + snek::serial::encode_vector(velocity));
+    return snek::player::state::parse(receive());
 }
 
 std::map<std::string, sf::Vector2f> snek::server_handler::get_players() {

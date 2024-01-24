@@ -38,7 +38,7 @@ namespace snek {
 
         [[nodiscard]] sf::Vector2f get_spawn_point();
 
-        [[nodiscard]] snek::player::state send_player_position(const sf::Vector2f& position);
+        [[nodiscard]] snek::player::state send_player_velocity(const sf::Vector2f& velocity);
 
         [[nodiscard]] std::map<std::string, sf::Vector2f> get_players();
     };

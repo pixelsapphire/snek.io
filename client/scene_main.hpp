@@ -13,12 +13,12 @@ namespace snek {
 
         std::shared_ptr<snek::player> client_player;
         std::map<std::string, std::shared_ptr<snek::player>> other_players;
-        std::function<void(const sf::Vector2f& position)> player_moved;
+        std::function<snek::player::state(const sf::Vector2f& position)> player_moved;
         std::function<std::map<std::string, sf::Vector2f>()> fetch_positions;
 
     public:
 
-        scene_main(const std::function<void(const sf::Vector2f& position)>& on_player_movement,
+        scene_main(const std::function<snek::player::state(const sf::Vector2f& position)>& on_player_movement,
                    const std::function<std::map<std::string, sf::Vector2f>()>& positions_provider);
 
         void spawn_player(const std::string& nickname, const sf::Vector2f& position, bool client = true);

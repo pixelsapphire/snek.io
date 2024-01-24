@@ -1,6 +1,7 @@
 #ifndef SNEK_IO_PLAYER_HPP
 #define SNEK_IO_PLAYER_HPP
 
+#include <vector>
 #include <SFML/Graphics.hpp>
 #include "entity.hpp"
 
@@ -23,10 +24,12 @@ namespace snek {
 
         void set_position(float x, float y) override;
 
-        enum state {
-            alive,
-            dead,
-            unknown
+        struct state {
+
+            bool alive = false;
+            std::vector<sf::Vector2f> segments;
+
+            static state parse(const std::string& data);
         };
 
     };
