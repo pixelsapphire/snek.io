@@ -47,3 +47,7 @@ std::string snek::game::get_player_segments(const std::string& nickname) {
     }
     return ss.str();
 }
+
+void snek::game::remove_player(const std::string& nickname) {
+    players.erase(nickname);
+}
