@@ -19,12 +19,14 @@ namespace snek {
         snek::server_handler server;
         sf::RenderWindow window;
         sf::Clock game_clock, frame_clock;
-        std::unique_ptr<snek::scene> current_scene;
+        std::shared_ptr<snek::scene> current_scene, next_scene;
         std::string nickname;
 
-        [[nodiscard]] std::unique_ptr<snek::scene_nickname> welcome_scene();
+        void set_scene(const std::shared_ptr<snek::scene>& scene);
 
-        [[nodiscard]] std::unique_ptr<snek::scene_error> error_scene(const std::string& message);
+        [[nodiscard]] std::shared_ptr<snek::scene_nickname> welcome_scene();
+
+        [[nodiscard]] std::shared_ptr<snek::scene_error> error_scene(const std::string& message);
 
     public:
 

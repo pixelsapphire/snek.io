@@ -12,16 +12,16 @@ snek::game::game() : config("config/c_config.txt"),
     window.setFramerateLimit(60);
 }
 
-snek::game::~game() {
-    window.close();
+snek::game::~game() { window.close(); }
+
+void snek::game::set_scene(const std::shared_ptr<snek::scene>& scene) { next_scene = scene; }
+
+std::shared_ptr<snek::scene_nickname> snek::game::welcome_scene() {
+    return std::make_shared<snek::scene_nickname>([&](const auto& n) { start(n); });
 }
 
-std::unique_ptr<snek::scene_nickname> snek::game::welcome_scene() {
-    return std::make_unique<snek::scene_nickname>([&](const auto& n) { this->start(n); });
-}
-
-std::unique_ptr<snek::scene_error> snek::game::error_scene(const std::string& message) {
-    return std::make_unique<snek::scene_error>(message, [&] { current_scene = welcome_scene(); });
+std::shared_ptr<snek::scene_error> snek::game::error_scene(const std::string& message) {
+    return std::make_shared<snek::scene_error>(message, [&] { set_scene(welcome_scene()); });
 }
 
 void snek::game::launch() {
@@ -40,6 +40,10 @@ void snek::game::launch() {
         current_scene->step_frame(window, delta_time);
         window.display();
         window.clear(sf::Color::Black);
+        if (next_scene) {
+            current_scene = std::move(next_scene);
+            next_scene.reset();
+        }
     }
 }
 
@@ -56,19 +60,19 @@ void snek::game::start(const std::string& player_nickname) {
                     [&] { return fetch_positions(); });
             scene->spawn_player(nickname, spawn_point, true);
             scene->spawn_player("NPC", sf::Vector2f(200, 200), false);
-            current_scene = std::move(scene);
+            set_scene(std::move(scene));
             return;
         }
         if (status == snek::connection_status::game_full) error_message = "The game is full";
         else if (status == snek::connection_status::nickname_taken) error_message = "Nickname is already taken";
         else error_message = "Unknown connection error";
     } else error_message = "Could not connect to the server";
-    current_scene = error_scene(error_message);
+    set_scene(error_scene(error_message));
 }
 
 snek::player::state snek::game::player_movement(const sf::Vector2f& velocity) {
     const auto state = server.send_player_velocity(velocity);
-    if (not state.alive) current_scene = error_scene("Game over");
+    if (not state.alive) set_scene(error_scene("Game over"));
     return state;
 }
 
