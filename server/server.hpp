@@ -26,6 +26,8 @@ namespace snek {
 
         void start_server(int server_socket);
 
+        void remove_player(std::vector<snek::client_handler>::iterator& it);
+
     public:
 
         server();

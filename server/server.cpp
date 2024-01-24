@@ -98,10 +98,11 @@ void snek::server::start_server(int server_socket) {
 
         if (poll_fds[0].revents & POLLIN) ready_fds--;
 
-        const auto close_client = [&](auto& it) {
+        const auto close_client = [&](std::vector<snek::client_handler>::iterator& it) {
             close(it->get_socket());
             poll_fds.erase(poll_fds.begin() + (it - client_sockets.begin() + 1));
-            client_sockets.erase(it--);
+            remove_player(it);
+            --it;
         };
 
         // Obsługa zdarzeń (bez serwera - dodawania klientow)
@@ -227,4 +228,9 @@ void snek::server::init() {
 
     // Close the server socket
     close(server_socket);
+}
+
+void snek::server::remove_player(std::vector<snek::client_handler>::iterator& it) {
+    game_instance.remove_player(it->get_nickname());
+    client_sockets.erase(it);
 }
