@@ -36,7 +36,7 @@ namespace snek {
 
         const std::map<std::string, player>& get_players();
 
-        bool no_player_nearby(const snek::vector_2f& position, const std::string& nickname) const;
+        bool collides(const snek::vector_2f& position, const std::string& nickname) const;
     };
 
 }

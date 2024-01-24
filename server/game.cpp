@@ -4,7 +4,7 @@
 #include <sstream>
 
 void snek::game::store_player_position(const std::string& nickname, const snek::vector_2f& position) {
-    if (no_player_nearby(position, nickname)) players.at(nickname).update(position);
+    if (not collides(position, nickname)) players.at(nickname).update(position);
     else players.erase(nickname);
 }
 
@@ -15,7 +15,7 @@ void snek::game::add_player(const std::string& nickname) {
     do {
         x = float(snek::random_value(25, 775));
         y = float(snek::random_value(25, 575));
-    } while (!this->no_player_nearby({x, y}, nickname));
+    } while (collides({x, y}, nickname));
     players.emplace(nickname, player({x, y}));
 }
 
@@ -30,28 +30,28 @@ bool snek::game::nickname_taken(const std::string& nickname) { return players.co
 
 const std::map<std::string, snek::player>& snek::game::get_players() { return players; }
 
-bool snek::game::no_player_nearby(const snek::vector_2f& position, const std::string& nickname) const {
+bool snek::game::collides(const snek::vector_2f& position, const std::string& nickname) const {
 
     auto is_nearby = [&](const snek::vector_2f& position, const snek::vector_2f& segment, float r) {
         float length = powf(position.get_x() - segment.get_x(), 2) +
                        powf(position.get_y() - segment.get_y(), 2);
-        return length <= powf(r, 2);
+        return length > powf(r, 2);
     };
 
     for (const auto& player : players)
         for (const auto& segment : player.second.get_segments())
-            if (nickname != player.first && is_nearby(position, segment, PLAYER_HEAD_RADIUS * 2)) return false;
+            if (nickname != player.first && is_nearby(position, segment, PLAYER_HEAD_RADIUS * 2)) return true;
 
-    return true;
+    return false;
 }
 
-void snek::game::move_player(const std::string &nickname, const snek::vector_2f &translation) {
+void snek::game::move_player(const std::string& nickname, const snek::vector_2f& translation) {
     store_player_position(nickname, players.at(nickname).get_head() + translation);
 }
 
-std::string snek::game::get_player_segments(const std::string &nickname) {
+std::string snek::game::get_player_segments(const std::string& nickname) {
     std::stringstream ss;
-    for(auto& segment : players.at(nickname).get_segments()) {
+    for (auto& segment : players.at(nickname).get_segments()) {
         ss << std::to_string(segment.get_x()) << "x" << std::to_string(segment.get_y()) << "y";
     }
     return ss.str();
