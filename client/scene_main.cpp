@@ -5,9 +5,8 @@ snek::scene_main::scene_main(const std::function<snek::player::state(const sf::V
                              const std::function<std::map<std::string, sf::Vector2f>()>& positions_provider)
         : player_moved(on_player_movement), fetch_positions(positions_provider) {}
 
-void snek::scene_main::spawn_player(const std::string& nickname, const sf::Vector2f& position, bool client) {
+void snek::scene_main::spawn_player(const std::string& nickname, bool client) {
     auto player = std::make_shared<snek::player>(nickname);
-    player->set_position(position.x, position.y);
     add(player);
     if (client) client_player = player;
     else other_players[nickname] = player;
@@ -28,7 +27,4 @@ void snek::scene_main::update(const sf::Time& delta_time) {
     if (offset.x != 0 and offset.y != 0) offset /= std::sqrt(2.f);
     const auto state = player_moved(offset * snek::player::speed);
     client_player->set_state(state);
-    const auto& positions = fetch_positions();
-    for (const auto& [nickname, player] : other_players)
-        player->set_position(positions.at(nickname).x, positions.at(nickname).y);
 }

@@ -12,7 +12,10 @@ snek::player::player(std::string nickname)
 }
 
 void snek::player::draw(sf::RenderTarget& target) const {
-    for (const auto& segment : segments) target.draw(segment);
+    for (const auto& segment : segments) {
+        auto* s = &segment;
+        target.draw(*s);
+    }
     target.draw(nickname_view);
 }
 
@@ -27,8 +30,10 @@ void snek::player::set_position(float x, float y) {
 
 void snek::player::set_state(const snek::player::state& state) {
     if (state.alive) {
-        nickname_view.setString(nickname);
         set_position(state.segments[0].x, state.segments[0].y);
+        segments.resize(state.segments.size());
+        for (size_t i = 1; i < state.segments.size(); ++i)
+            segments[i].setPosition(state.segments[i].x, state.segments[i].y);
     } else {
         nickname_view.setString(nickname + " (dead)");
         nickname_view.setOrigin(nickname_view.getLocalBounds().width / 2, 20);

@@ -53,13 +53,11 @@ void snek::game::start(const std::string& player_nickname) {
         this->nickname = player_nickname;
         const auto status = server.join(player_nickname);
         if (status == snek::connection_status::connected) {
-            const sf::Vector2f spawn_point{100, 100};
             game_clock.restart();
             std::unique_ptr<snek::scene_main> scene = std::make_unique<snek::scene_main>(
                     [&](auto& p) { return player_movement(p); },
                     [&] { return fetch_positions(); });
-            scene->spawn_player(nickname, spawn_point, true);
-            scene->spawn_player("NPC", sf::Vector2f(200, 200), false);
+            scene->spawn_player(nickname, true);
             set_scene(std::move(scene));
             return;
         }

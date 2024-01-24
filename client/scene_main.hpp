@@ -21,7 +21,7 @@ namespace snek {
         scene_main(const std::function<snek::player::state(const sf::Vector2f& position)>& on_player_movement,
                    const std::function<std::map<std::string, sf::Vector2f>()>& positions_provider);
 
-        void spawn_player(const std::string& nickname, const sf::Vector2f& position, bool client = true);
+        void spawn_player(const std::string& nickname, bool client = true);
 
         void remove_player(const std::string& nickname);
 
