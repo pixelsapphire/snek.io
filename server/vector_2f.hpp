@@ -42,6 +42,8 @@ namespace snek {
         vector_2f& operator/=(float scalar);
 
         friend vector_2f operator*(float scalar, const vector_2f& vector);
+
+        bool operator==(const vector_2f& other) const;
     };
 }
 
