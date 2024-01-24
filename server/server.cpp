@@ -10,9 +10,12 @@ snek::server::server() : config("config/s_config.txt") {
         const auto x_pos = command_body.find('x'), y_pos = command_body.find('y');
         const auto x = std::stof(command_body.substr(0, x_pos)),
                 y = std::stof(command_body.substr(x_pos + 1, y_pos - x_pos - 1));
-        game_instance.store_player_position(nickname, {x, y});
 
-        return game_instance.is_alive(nickname) ? "a" : "d";
+        auto time = float(client.get_time_passed_from_last_activity().count()) / 1000.0f;
+        snek::vector_2f v(x, y);
+        game_instance.move_player(nickname, v * time);
+
+        return game_instance.is_alive(nickname) ? "a" + game_instance.get_player_segments(nickname) : "d";
     };
 
     //n - new player

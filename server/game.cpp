@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include <string>
 #include <cmath>
+#include <sstream>
 
 void snek::game::store_player_position(const std::string& nickname, const snek::vector_2f& position) {
     if (no_player_nearby(position, nickname)) players.at(nickname).update(position);
@@ -32,9 +33,9 @@ const std::map<std::string, snek::player>& snek::game::get_players() { return pl
 bool snek::game::no_player_nearby(const snek::vector_2f& position, const std::string& nickname) const {
 
     auto is_nearby = [&](const snek::vector_2f& position, const snek::vector_2f& segment, float r) {
-        float length = std::powf(position.get_x() - segment.get_x(), 2) +
-                       std::powf(position.get_y() - segment.get_y(), 2);
-        return length <= std::powf(r, 2);
+        float length = powf(position.get_x() - segment.get_x(), 2) +
+                       powf(position.get_y() - segment.get_y(), 2);
+        return length <= powf(r, 2);
     };
 
     for (const auto& player : players)
@@ -42,4 +43,16 @@ bool snek::game::no_player_nearby(const snek::vector_2f& position, const std::st
             if (nickname != player.first && is_nearby(position, segment, PLAYER_HEAD_RADIUS * 2)) return false;
 
     return true;
+}
+
+void snek::game::move_player(const std::string &nickname, const snek::vector_2f &translation) {
+    store_player_position(nickname, players.at(nickname).get_head() + translation);
+}
+
+std::string snek::game::get_player_segments(const std::string &nickname) {
+    std::stringstream ss;
+    for(auto& segment : players.at(nickname).get_segments()) {
+        ss << std::to_string(segment.get_x()) << "x" << std::to_string(segment.get_y()) << "y";
+    }
+    return ss.str();
 }
