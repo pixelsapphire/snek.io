@@ -6,10 +6,11 @@
 #include "entity.hpp"
 
 namespace snek {
+
     class player : public snek::entity {
 
         std::string nickname;
-        sf::CircleShape head;
+        std::vector<sf::CircleShape> segments;
         sf::Text nickname_view;
 
     public:
@@ -31,6 +32,8 @@ namespace snek {
 
             static state parse(const std::string& data);
         };
+
+        void set_state(const state& state);
 
     };
 }
