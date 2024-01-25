@@ -31,7 +31,7 @@ void snek::player::set_position(float x, float y) {
 void snek::player::set_state(const snek::player::state& state) {
     if (state.alive) {
         set_position(state.segments[0].x, state.segments[0].y);
-        segments.resize(state.segments.size());
+        segments.resize(state.segments.size(), segments[0]);
         for (size_t i = 1; i < state.segments.size(); ++i)
             segments[i].setPosition(state.segments[i].x, state.segments[i].y);
     } else {
@@ -54,5 +54,4 @@ snek::player::state snek::player::state::parse(const std::string& data) {
         }
     }
     return state;
-
 }
