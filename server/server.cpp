@@ -1,5 +1,6 @@
 #include <sstream>
 #include "server.hpp"
+#include "utility.hpp"
 
 #define COMMAND_LENGTH 1
 
@@ -15,12 +16,8 @@ snek::server::server() : config("config/s_config.txt") {
         snek::vector_2f v(x, y);
         game_instance.move_player(nickname, v * time);
 
-        if(game_instance.is_alive(nickname))
-        {
-            return  "a" + game_instance.get_player_segments(nickname);
-        }
-        else
-        {
+        if (game_instance.is_alive(nickname)) return "a" + game_instance.get_player_segments(nickname);
+        else {
             client.set_nickname("");
             return std::string("d");
         }
@@ -145,7 +142,7 @@ void snek::server::start_server(int server_socket) {
                 if (bytes_sent > 0) {
                     // Wiadomość została wysłana poprawnie
                     std::cout << "Wysłano wiadomość do klienta: " << client->get_socket() << std::endl;
-                    if(client->get_nickname().empty()) {close_client(client);}
+                    if (client->get_nickname().empty()) { close_client(client); }
                 } else if (bytes_sent == 0) {
                     // Połączenie zostało zamknięte przez klienta
                     std::cout << "Połączenie zostało zamknięte przez klienta: " << client->get_socket() << std::endl;
@@ -222,6 +219,10 @@ void snek::server::init() {
         close(server_socket);
         std::exit(-1);
     }
+
+    const std::string ip = snek::get_local_ip();
+    if (not ip.empty()) std::cout << "Server is running on: " << ip << ':' << config.get_string("port") << std::endl;
+    else std::cerr << "Could not get local IP address" << std::endl;
 
     // Start the server
     start_server(server_socket);
