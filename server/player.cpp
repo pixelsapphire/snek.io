@@ -31,3 +31,7 @@ void snek::player::add_segments(const vector_2f& position, uint8_t count) {
     segments_queue += count;
 }
 
+int snek::player::get_segment_count() const {
+    return int(segments.size());
+}
+

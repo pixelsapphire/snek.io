@@ -28,6 +28,8 @@ namespace snek {
 
         void add_segments(const vector_2f& position, uint8_t count = 1);
 
+        int get_segment_count () const;
+
     };
 
 } // snek
