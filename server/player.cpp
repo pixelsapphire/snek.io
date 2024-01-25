@@ -2,7 +2,7 @@
 #include "utility.hpp"
 #include <iostream>
 
-snek::player::player(const snek::vector_2f& position) { segments.emplace_back(position); }
+snek::player::player(const snek::vector_2f& position) { segments.emplace_back(position); place_4_new_segment = position; }
 
 const snek::vector_2f& snek::player::get_head() { return segments[0]; }
 
@@ -15,13 +15,19 @@ void snek::player::update(const snek::vector_2f& head) {
         std::cout<<"segment: x: "<<segment->get_x()<<" y: "<<segment->get_y()<<" changed to: x: "
         <<(segment + 1)->get_x()<<" y: "<<(segment + 1)->get_y()<<std::endl;
     }
-
     segments[0] = head;
-    if (segments_queue > 0 && !is_nearby(tail, segments.back(), LEAST_SEGMENT_DISTANCE)) {//
+
+    if (segments_queue > 0 and not is_nearby(*place_4_new_segment, segments.back(), LEAST_SEGMENT_DISTANCE)) {
         segments.emplace_back(tail);
-        segments_queue--;
+        if (--segments_queue == 0) place_4_new_segment.reset();
         std::cout<<"segment added: x: "<< tail.get_x()<<" y: "<< tail.get_y()<<std::endl;
     }
 }
 
-void snek::player::add_segments(uint8_t count) { segments_queue += count; }
+void snek::player::add_segments(const vector_2f& position, uint8_t count) {
+    if(this->segments_queue == 0) {
+        place_4_new_segment = position;
+    }
+    segments_queue += count;
+}
+
