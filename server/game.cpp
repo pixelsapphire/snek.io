@@ -3,7 +3,12 @@
 #include <sstream>
 
 void snek::game::store_player_position(const std::string& nickname, const snek::vector_2f& position) {
-    if (not collides(position, nickname)) players.at(nickname).update(position);
+    if (not collides(position, nickname)){
+        players.at(nickname).update(position);
+        if(hoverse_food(position, nickname)) {
+            players.at(nickname).add_segments(position);
+        }
+    }
     else players.erase(nickname);
 }
 
@@ -50,4 +55,8 @@ std::string snek::game::get_player_segments(const std::string& nickname) {
 
 void snek::game::remove_player(const std::string& nickname) {
     players.erase(nickname);
+}
+
+bool snek::game::hoverse_food(const snek::vector_2f &position, const std::string &nickname) {
+    return false;
 }

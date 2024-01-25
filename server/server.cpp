@@ -52,7 +52,8 @@ snek::server::server() : config("config/s_config.txt") {
         for (const auto& player : game_instance.get_players()) {
             if (player.first == nickname)
                 continue;
-            ss << player.first << " " << game_instance.get_player_position(player.first);
+            ss << player.first << " " << player.second.get_segment_count() << "s";
+            ss <<game_instance.get_player_segments(nickname);
         }
         return ss.str();
     };
