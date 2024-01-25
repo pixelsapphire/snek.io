@@ -1,9 +1,8 @@
-#include <cmath>
 #include "scene_main.hpp"
 #include "utility.hpp"
 
 snek::scene_main::scene_main(const std::function<snek::player::state(const sf::Vector2f& position)>& on_player_movement,
-                             const std::function<std::map<std::string, sf::Vector2f>()>& positions_provider)
+                             const std::function<std::map<std::string, snek::player::state>()>& positions_provider)
         : player_moved(on_player_movement), fetch_positions(positions_provider) {}
 
 void snek::scene_main::spawn_player(const std::string& nickname, bool client) {

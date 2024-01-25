@@ -1,5 +1,4 @@
 #include <csignal>
-#include <cstring>
 #include <iostream>
 #include <set>
 #include <sstream>
@@ -67,11 +66,11 @@ sf::Vector2f snek::server_handler::get_spawn_point() {
 
 snek::player::state snek::server_handler::send_player_velocity(const sf::Vector2f& velocity) {
     send("c" + snek::serial::encode_vector(velocity));
-    return snek::player::state::parse(receive());
+    return snek::player::state::parse_client(receive());
 }
 
-std::map<std::string, sf::Vector2f> snek::server_handler::get_players() {
+std::map<std::string, snek::player::state> snek::server_handler::get_players()  {
     send("o");
     const std::string response = receive();
-    return snek::serial::decode_players(response.substr(1));
+    return player::state:: parse_others(response.substr(1));
 }

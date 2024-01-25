@@ -40,7 +40,7 @@ namespace snek {
 
         [[nodiscard]] snek::player::state send_player_velocity(const sf::Vector2f& velocity);
 
-        [[nodiscard]] std::map<std::string, sf::Vector2f> get_players();
+        [[nodiscard]] std::map<std::string, snek::player::state> get_players();
     };
 }
 

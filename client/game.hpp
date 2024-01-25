@@ -40,7 +40,7 @@ namespace snek {
 
         snek::player::state player_movement(const sf::Vector2f& velocity);
 
-        [[nodiscard]] std::map<std::string, sf::Vector2f> fetch_positions() const;
+        [[nodiscard]] std::map<std::string, snek::player::state> fetch_positions();
     };
 }
 

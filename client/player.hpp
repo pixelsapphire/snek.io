@@ -1,6 +1,7 @@
 #ifndef SNEK_IO_PLAYER_HPP
 #define SNEK_IO_PLAYER_HPP
 
+#include <map>
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "entity.hpp"
@@ -30,7 +31,9 @@ namespace snek {
             bool alive = false;
             std::vector<sf::Vector2f> segments;
 
-            static state parse(const std::string& data);
+            [[nodiscard]] static state parse_client(const std::string& data);
+
+            [[nodiscard]] static std::map<std::string, state> parse_others(const std::string& data);
         };
 
         void set_state(const state& state);

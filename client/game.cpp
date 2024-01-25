@@ -74,9 +74,7 @@ snek::player::state snek::game::player_movement(const sf::Vector2f& velocity) {
     return state;
 }
 
-std::map<std::string, sf::Vector2f> snek::game::fetch_positions() const {
-    std::map<std::string, sf::Vector2f> positions{{"NPC", sf::Vector2f(400, 300) + sf::Vector2f(
-            150 * std::sin(game_clock.getElapsedTime().asSeconds()),
-            100 * std::cos(game_clock.getElapsedTime().asSeconds()))}};
-    return positions;
+std::map<std::string, snek::player::state> snek::game::fetch_positions() {
+
+    return server.get_players();
 }

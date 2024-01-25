@@ -24,7 +24,6 @@ namespace snek {
 
         [[nodiscard]] std::string encode_vector(const sf::Vector2f& vector);
 
-        [[nodiscard]] std::map<std::string, sf::Vector2f> decode_players(const std::string& players_data);
     }
 }
 

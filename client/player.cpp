@@ -1,6 +1,7 @@
 #include <utility>
 #include "assets.hpp"
 #include "player.hpp"
+#include <sstream>
 
 snek::player::player(std::string nickname)
         : nickname(std::move(nickname)),
@@ -40,7 +41,7 @@ void snek::player::set_state(const snek::player::state& state) {
     }
 }
 
-snek::player::state snek::player::state::parse(const std::string& data) {
+snek::player::state snek::player::state::parse_client(const std::string& data) {
     state state{.alive = data[0] == 'a'};
     if (state.alive) {
         std::string_view view(data);
@@ -54,4 +55,28 @@ snek::player::state snek::player::state::parse(const std::string& data) {
         }
     }
     return state;
+}
+
+std::map<std::string, snek::player::state> snek::player::state::parse_others(const std::string& data) {
+
+    std::map<std::string, snek::player::state> players;
+    std::stringstream ss(data);
+    std::string n;
+    std::getline(ss, n, 'n');
+    size_t number_of_players = std::stoul(n);
+
+    for (size_t i = 0; i < number_of_players; ++i) {
+
+        std::string nickname, x, y, s;
+        std::getline(ss, nickname, ' ');
+        std::getline(ss, s, 's');
+        size_t number_of_segments = std::stoul(s);
+        player::state player;
+        
+        for (size_t j = 0; j < number_of_segments; ++j) {
+            std::getline(ss, x, 'x'), std::getline(ss, y, 'y');
+            players[nickname].segments.emplace_back(std::stof(x), std::stof(y));
+        }
+    }
+    return players;
 }
