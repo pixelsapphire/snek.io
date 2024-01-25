@@ -1,5 +1,6 @@
 #include <cmath>
 #include "scene_main.hpp"
+#include "utility.hpp"
 
 snek::scene_main::scene_main(const std::function<snek::player::state(const sf::Vector2f& position)>& on_player_movement,
                              const std::function<std::map<std::string, sf::Vector2f>()>& positions_provider)
@@ -19,12 +20,15 @@ void snek::scene_main::remove_player(const std::string& nickname) {
 
 void snek::scene_main::update(const sf::Time& delta_time) {
     snek::scene::update(delta_time);
-    sf::Vector2f offset;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) offset += sf::Vector2f(0, -1);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) offset += sf::Vector2f(0, 1);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) offset += sf::Vector2f(-1, 0);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) offset += sf::Vector2f(1, 0);
-    if (offset.x != 0 and offset.y != 0) offset /= std::sqrt(2.f);
-    const auto state = player_moved(offset * snek::player::speed);
+    sf::Vector2f target_angle;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) target_angle.y -= 1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) target_angle.y += 1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) target_angle.x -= 1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) target_angle.x += 1;
+    if (target_angle != sf::Vector2f(0, 0)) {
+        if (player_angle == sf::Vector2f(0, 0)) player_angle = target_angle;
+        else player_angle = snek::math::direction_change(player_angle, target_angle, 0.05f);
+    }
+    const auto state = player_moved(player_angle * snek::player::speed);
     client_player->set_state(state);
 }

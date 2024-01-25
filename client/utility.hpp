@@ -14,6 +14,10 @@ namespace snek {
     namespace event {
         [[nodiscard]] bool key_pressed(const sf::Event& ev, sf::Keyboard::Key key);
     }
+    namespace math {
+        [[nodiscard]] sf::Vector2f direction_change(const sf::Vector2f& origin, const sf::Vector2f& target,
+                                                    float delta_max);
+    }
     namespace serial {
 
         [[nodiscard]] sf::Vector2f decode_vector(const std::string& vector_data);
