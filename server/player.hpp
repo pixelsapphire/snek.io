@@ -5,12 +5,14 @@
 #include <vector>
 #include "vector_2f.hpp"
 
+#define LEAST_SEGMENT_DISTANCE 12.5f
+
 namespace snek {
 
     class player {
 
         std::vector<vector_2f> segments;
-        uint8_t segments_queue = 0;
+        uint8_t segments_queue = 3;
 
     public:
 
