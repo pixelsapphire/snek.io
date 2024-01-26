@@ -62,12 +62,6 @@ snek::connection_status snek::server_handler::join(const std::string& nickname) 
     else return snek::connection_status::error;
 }
 
-sf::Vector2f snek::server_handler::get_spawn_point() {
-    send("s");
-    const std::string response = receive();
-    return snek::serial::decode_vector(response.substr(1));
-}
-
 snek::player::state snek::server_handler::send_player_velocity(const sf::Vector2f& velocity) {
     send("c" + snek::serial::encode_vector(velocity));
     return snek::player::state::parse_client(receive());
