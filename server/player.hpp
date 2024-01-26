@@ -18,6 +18,10 @@ namespace snek {
 
     public:
 
+        constexpr inline static float speed = 100.0f;
+
+        snek::vector_2f velocity;
+
         explicit player(const snek::vector_2f& position);
 
         void update(const snek::vector_2f& head);

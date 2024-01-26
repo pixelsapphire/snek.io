@@ -1,5 +1,7 @@
+#include <cmath>
 #include <sstream>
 #include <string>
+#include "common_utility.hpp"
 #include "game.hpp"
 
 void snek::game::store_player_position(const std::string& nickname, const snek::vector_2f& position) {
@@ -18,6 +20,7 @@ void snek::game::add_player(const std::string& nickname) {
         y = float(snek::random_value(25, 575));
     } while (collides({x, y}, nickname));
     players.emplace(nickname, player({x, y}));
+
 }
 
 std::string snek::game::get_player_position(const std::string& nickname) {
@@ -38,8 +41,24 @@ bool snek::game::collides(const snek::vector_2f& position, const std::string& ni
     return false;
 }
 
-void snek::game::move_player(const std::string& nickname, const snek::vector_2f& translation) {
-    store_player_position(nickname, players.at(nickname).get_head() + translation);
+void snek::game::move_player(const std::string& nickname, const snek::vector_2f& target_velocity, float time) {
+
+    player& player = players.at(nickname);
+    if (target_velocity != snek::vector_2f::zero) {
+
+        if (player.velocity == snek::vector_2f::zero) player.velocity = target_velocity;
+        else player.velocity = snek::vector_2f::direction_change(player.velocity, target_velocity, 0.05f);
+
+        const snek::vector_2f new_position = player.get_head() + player.velocity * time;
+        const bool x_bad = new_position.get_x() < 25 or new_position.get_x() > 775,
+                y_bad = new_position.get_y() < 25 or new_position.get_y() > 575;
+
+        if (x_bad and y_bad) player.velocity = {0, 0};
+        else if (x_bad) player.velocity = {0, player.velocity.get_y() < 0 ? -1 : 1};
+        else if (y_bad) player.velocity = {player.velocity.get_x() < 0 ? -1 : 1, 0};
+
+    }
+    store_player_position(nickname, player.get_head() + snek::player::speed * player.velocity * time);
 }
 
 std::string snek::game::get_player_segments(const std::string& nickname) {

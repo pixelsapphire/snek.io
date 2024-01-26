@@ -24,7 +24,7 @@ namespace snek {
 
         void store_player_position(const std::string& nickname, const snek::vector_2f& position);
 
-        void move_player (const std::string& nickname, const snek::vector_2f& translation);
+        void move_player(const std::string& nickname, const snek::vector_2f& target_velocity, float time);
 
         std::string get_player_position(const std::string& nickname);
 

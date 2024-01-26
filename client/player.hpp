@@ -16,8 +16,6 @@ namespace snek {
 
     public:
 
-        constexpr inline static float speed = 100;
-
         explicit player(std::string nickname);
 
         void draw(sf::RenderTarget& target) const override;

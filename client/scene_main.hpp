@@ -12,7 +12,6 @@ namespace snek {
     class scene_main : public snek::scene {
 
         std::shared_ptr<snek::player> client_player;
-        sf::Vector2f player_angle;
         std::map<std::string, std::shared_ptr<snek::player>> other_players;
         std::function<snek::player::state(const sf::Vector2f& position)> player_moved;
         std::function<std::map<std::string, snek::player::state>()> fetch_positions;

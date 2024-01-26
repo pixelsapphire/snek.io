@@ -24,10 +24,6 @@ void snek::scene_main::update(const sf::Time& delta_time) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) target_angle.y += 1;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) target_angle.x -= 1;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) target_angle.x += 1;
-    if (target_angle != sf::Vector2f(0, 0)) {
-        if (player_angle == sf::Vector2f(0, 0)) player_angle = target_angle;
-        else player_angle = snek::math::direction_change(player_angle, target_angle, 0.05f);
-    }
-    const auto state = player_moved(player_angle * snek::player::speed);
+    const auto state = player_moved(target_angle);
     client_player->set_state(state);
 }
