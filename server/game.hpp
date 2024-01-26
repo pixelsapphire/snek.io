@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 #include <utility>
-#include "vector_2f.hpp"
+#include "vector2f.hpp"
 #include "utility.hpp"
 #include "player.hpp"
 
@@ -22,9 +22,9 @@ namespace snek {
 
         void add_player(const std::string& nickname);
 
-        void store_player_position(const std::string& nickname, const snek::vector_2f& position);
+        void store_player_position(const std::string& nickname, const snek::vector2f& position);
 
-        void move_player(const std::string& nickname, const snek::vector_2f& target_velocity, float time);
+        void move_player(const std::string& nickname, const snek::vector2f& target_velocity, float time);
 
         std::string get_player_position(const std::string& nickname);
 
@@ -36,11 +36,11 @@ namespace snek {
 
         const std::map<std::string, player>& get_players();
 
-        [[nodiscard]] bool collides(const snek::vector_2f& position, const std::string& nickname) const;
+        [[nodiscard]] bool collides(const snek::vector2f& position, const std::string& nickname) const;
 
         void remove_player(const std::string& nickname);
 
-        [[nodiscard]] bool hovers_food(const snek::vector_2f& position,  const std::string& nickname);
+        [[nodiscard]] bool hovers_food(const snek::vector2f& position, const std::string& nickname);
     };
 
 }
