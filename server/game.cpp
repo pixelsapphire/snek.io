@@ -45,6 +45,7 @@ void snek::game::move_player(const std::string& nickname, const snek::vector2f& 
 
     player& player = players.at(nickname);
     const float offset = snek::player::speed * time;
+    const float delta = 1.0f;
     const auto future_position = [&] { return player.get_head() + player.direction * offset; };
 
     if (target_direction != snek::vector2f::zero) {
@@ -54,8 +55,25 @@ void snek::game::move_player(const std::string& nickname, const snek::vector2f& 
 
     const snek::vector2f expected = future_position();
     const bool bad_x = expected.x < 25 or expected.x > 775, bad_y = expected.y < 25 or expected.y > 575;
-    if (bad_x) player.direction = {0, snek::sgn(player.direction.y)};
-    if (bad_y) player.direction = {snek::sgn(player.direction.x), 0};
+
+    if(bad_x || bad_y)
+    {
+        if(!bad_x) {
+            if (expected.x - delta < 25) { player.direction = {1, 0}; }
+            else if (expected.x + delta > 775) { player.direction = {-1, 0}; }
+            else player.direction = {snek::sgn(player.direction.y), 0};
+        }
+        else if(!bad_y) {
+            if (expected.y - delta < 25) { player.direction = {0, 1}; }
+            else if (expected.y + delta > 575) { player.direction = {0, -1}; }
+            else player.direction = {0, snek::sgn(player.direction.x)};
+        }
+        else {
+            //Coś ze sprawdzaniem kąta by można zrobić, trzeba się postarać by tu dotrzeć
+            player.direction = {0, 0};
+        }
+    }
+
 
     player.direction = player.direction.normalized();
     store_player_position(nickname, future_position());
