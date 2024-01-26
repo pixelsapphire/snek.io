@@ -1,7 +1,6 @@
 #ifndef SNEK_IO_UTILITY_HPP
 #define SNEK_IO_UTILITY_HPP
 
-#include <cmath>
 #include <string>
 #include <random>
 #include "vector_2f.hpp"

@@ -12,9 +12,8 @@ snek::server::server() : config("config/s_config.txt") {
         const auto x = std::stof(command_body.substr(0, x_pos)),
                 y = std::stof(command_body.substr(x_pos + 1, y_pos - x_pos - 1));
 
-        auto time = float(client.get_time_passed_from_last_activity().count()) / 1000.0f;
-        snek::vector_2f v(x, y);
-        game_instance.move_player(nickname, v * time);
+        const auto time = float(client.get_time_passed_from_last_activity().count()) / 1000.0f;
+        game_instance.move_player(nickname, {x, y}, time);
 
         if (game_instance.is_alive(nickname)) return "a" + game_instance.get_player_segments(nickname);
         else {
@@ -26,7 +25,7 @@ snek::server::server() : config("config/s_config.txt") {
 
     //n - new player
     requests["n"] = [&](snek::client_handler& client, const std::string& command_body) {
-        if (game_instance.player_count() > config.get_int("max_players"))
+        if (game_instance.player_count() > config.get_uint64("max_players"))
             return "nf"; //not connected - full
 
         const std::string& nickname = command_body;//client.get_nickname();
@@ -52,16 +51,18 @@ snek::server::server() : config("config/s_config.txt") {
         for (const auto& player : game_instance.get_players()) {
             if (player.first == nickname)
                 continue;
-            ss << player.first << " " << player.second.get_segment_count() << "s";
-            ss <<game_instance.get_player_segments(nickname);
+            ss << player.first << " " << player.second.get_segments().size() << "s";
+            ss << game_instance.get_player_segments(nickname);
         }
         return ss.str();
     };
 }
 
 std::string snek::server::handle_request(snek::client_handler& client, const std::string& request) {
+#ifdef SNEK_DEBUG
     std::cout << "received data from client " << client.get_socket() << ": " << request
               << " (" << request.size() << ") bytes" << std::endl;
+#endif
     const std::string command = request.substr(0, COMMAND_LENGTH),
             arguments = request.substr(COMMAND_LENGTH, request.size() - COMMAND_LENGTH - 1);
     if (requests.contains(command)) return requests[command](client, arguments) + "\n";
@@ -88,7 +89,7 @@ void snek::server::start_server(int server_socket) {
 
         // Use poll to wait for events on any of the sockets
         int ready_fds = poll(poll_fds.data(), poll_fds.size(),
-                             client_sockets.empty() ? -1 : config.get_int("client_timeout"));
+                             client_sockets.empty() ? -1 : config.get_int32("client_timeout"));
         if (ready_fds < 0) {
             perror("poll");
             break;
@@ -114,11 +115,8 @@ void snek::server::start_server(int server_socket) {
                 char buffer[100]{0};
                 ssize_t bytes_received = recv(client->get_socket(), buffer, sizeof(buffer) - 1, 0); //MSG_DONTWAIT
                 if (bytes_received <= 0) {
-                    if (bytes_received == 0) {
-                        std::cout << "Client disconnected: " << client->get_socket() << std::endl;
-                    } else {
-                        perror("recv");
-                    }
+                    if (bytes_received == 0) std::cout << "Client disconnected: " << client->get_socket() << std::endl;
+                    else perror("recv");
 
                     close_client(client);
                     continue;
@@ -126,8 +124,10 @@ void snek::server::start_server(int server_socket) {
 
                 //Handle received data
                 const std::string response = handle_request(*client, buffer);
+#ifdef SNEK_DEBUG
                 std::cout << "Sending response to client " << client->get_socket() << ": " << response
                           << " (" << response.size() << ") bytes" << std::endl;
+#endif
                 client->send_data(response);
                 client->update_activity_time();
             }
@@ -142,11 +142,15 @@ void snek::server::start_server(int server_socket) {
 
                 if (bytes_sent > 0) {
                     // Wiadomość została wysłana poprawnie
+#ifdef SNEK_DEBUG
                     std::cout << "Wysłano wiadomość do klienta: " << client->get_socket() << std::endl;
+#endif
                     if (client->get_nickname().empty()) { close_client(client); }
                 } else if (bytes_sent == 0) {
                     // Połączenie zostało zamknięte przez klienta
+#ifdef SNEK_DEBUG
                     std::cout << "Połączenie zostało zamknięte przez klienta: " << client->get_socket() << std::endl;
+#endif
                     close_client(client);
                 } else {
                     // Błąd podczas wysyłania
@@ -157,7 +161,7 @@ void snek::server::start_server(int server_socket) {
         }
 
         // Check for incoming connections on the server socket
-        if (client_sockets.size() < config.get_int("max_connections") and poll_fds[0].revents & POLLIN) {
+        if (client_sockets.size() < config.get_uint64("max_connections") and poll_fds[0].revents & POLLIN) {
             sockaddr_in client_addr{};
             socklen_t client_addr_len = sizeof(client_addr);
             int client_socket = accept(server_socket, (struct sockaddr*) &client_addr, &client_addr_len);
@@ -166,16 +170,20 @@ void snek::server::start_server(int server_socket) {
                 //continue;
             } else {
                 // Add the new client_handler socket to the vector
+#ifdef SNEK_DEBUG
                 std::cout << "new client_handler added" << std::endl;
+#endif
                 client_sockets.emplace_back(client_socket);
             }
         }
 
         for (auto it = client_sockets.begin(); it != client_sockets.end(); ++it) {
-            if (it->get_time_passed_from_last_activity().count() > config.get_int("client_timeout")) {
+            if (it->get_time_passed_from_last_activity().count() > config.get_int32("client_timeout")) {
                 close(it->get_socket());
                 client_sockets.erase(it--);
+#ifdef SNEK_DEBUG
                 std::cout << " Client timeout yeet! " << std::endl;
+#endif
             }
         }
 
@@ -196,8 +204,10 @@ void snek::server::init() {
     }
 
     // Set up the server address structure
-    sockaddr_in server_addr{.sin_family = AF_INET,
-            .sin_port = htons(config.get_int("port")), .sin_addr = {.s_addr = INADDR_ANY}, .sin_zero = {0}};
+    sockaddr_in server_addr{};
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(config.get_int32("port"));
+    server_addr.sin_addr = {.s_addr = INADDR_ANY};
 
 
     int reuse = 1;
@@ -215,7 +225,7 @@ void snek::server::init() {
     }
 
     // Listen for incoming connections
-    if (listen(server_socket, config.get_int("max_connections")) < 0) {
+    if (listen(server_socket, config.get_int32("max_connections")) < 0) {
         perror("listen");
         close(server_socket);
         std::exit(-1);

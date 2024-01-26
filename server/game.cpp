@@ -1,15 +1,12 @@
-#include "game.hpp"
-#include <string>
 #include <sstream>
+#include <string>
+#include "game.hpp"
 
 void snek::game::store_player_position(const std::string& nickname, const snek::vector_2f& position) {
-    if (not collides(position, nickname)){
+    if (not collides(position, nickname)) {
         players.at(nickname).update(position);
-        if(hoverse_food(position, nickname)) {
-            players.at(nickname).add_segments(position);
-        }
-    }
-    else players.erase(nickname);
+        if (hovers_food(position, nickname)) players.at(nickname).add_segments(position);
+    } else players.erase(nickname);
 }
 
 bool snek::game::is_alive(const std::string& nickname) { return players.contains(nickname); }
@@ -47,16 +44,10 @@ void snek::game::move_player(const std::string& nickname, const snek::vector_2f&
 
 std::string snek::game::get_player_segments(const std::string& nickname) {
     std::stringstream ss;
-    for (auto& segment : players.at(nickname).get_segments()) {
-        ss << std::to_string(segment.get_x()) << "x" << std::to_string(segment.get_y()) << "y";
-    }
+    for (auto& segment : players.at(nickname).get_segments()) ss << segment.str();
     return ss.str();
 }
 
-void snek::game::remove_player(const std::string& nickname) {
-    players.erase(nickname);
-}
+void snek::game::remove_player(const std::string& nickname) { players.erase(nickname); }
 
-bool snek::game::hoverse_food(const snek::vector_2f &position, const std::string &nickname) {
-    return false;
-}
+bool snek::game::hovers_food(const snek::vector2f&, const std::string&) { return false; }

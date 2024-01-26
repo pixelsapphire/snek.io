@@ -72,7 +72,7 @@ std::map<std::string, snek::player::state> snek::player::state::parse_others(con
         std::getline(ss, s, 's');
         size_t number_of_segments = std::stoul(s);
         player::state player;
-        
+
         for (size_t j = 0; j < number_of_segments; ++j) {
             std::getline(ss, x, 'x'), std::getline(ss, y, 'y');
             players[nickname].segments.emplace_back(std::stof(x), std::stof(y));

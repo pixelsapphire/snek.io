@@ -12,7 +12,7 @@ namespace snek {
 
         virtual ~entity() = default;
 
-        virtual void update(const sf::Time& delta_time) {};
+        virtual void update(const sf::Time&) {};
 
         virtual void draw(sf::RenderTarget& target) const = 0;
 
@@ -43,7 +43,7 @@ namespace snek {
         template<typename... Args>
         explicit basic_entity(Args&& ... args) : object(std::forward<Args>(args)...) {}
 
-        void update(const sf::Time& delta_time) override {}
+        void update(const sf::Time&) override {}
 
         void draw(sf::RenderTarget& target) const override { target.draw(object); }
 

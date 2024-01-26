@@ -32,7 +32,9 @@ void snek::server_handler::disconnect() {
 
 void snek::server_handler::send(const std::string& data) {
     socket.send((data + '\n').c_str(), data.size() + 1);
+#ifdef SNEK_DEBUG
     std::cout << "sent: " << data << " (" << data.size() << " bytes)" << std::endl;
+#endif
 }
 
 std::string snek::server_handler::receive() {
@@ -45,7 +47,9 @@ std::string snek::server_handler::receive() {
     }
     std::string data_string(data.str());
     data_string.resize(data.str().size() - 1);
+#ifdef SNEK_DEBUG
     std::cout << "received: " << data_string << " (" << data_string.size() << " bytes)" << std::endl;
+#endif
     return data_string;
 }
 
@@ -69,8 +73,8 @@ snek::player::state snek::server_handler::send_player_velocity(const sf::Vector2
     return snek::player::state::parse_client(receive());
 }
 
-std::map<std::string, snek::player::state> snek::server_handler::get_players()  {
+std::map<std::string, snek::player::state> snek::server_handler::get_players() {
     send("o");
     const std::string response = receive();
-    return player::state:: parse_others(response.substr(1));
+    return player::state::parse_others(response.substr(1));
 }

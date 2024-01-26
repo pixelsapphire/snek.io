@@ -18,7 +18,9 @@ namespace snek {
 
         [[nodiscard]] const std::string& get_string(const std::string& key) const;
 
-        [[nodiscard]] int get_int(const std::string& key) const;
+        [[nodiscard]] int32_t get_int32(const std::string& key) const;
+
+        [[nodiscard]] uint64_t get_uint64(const std::string& key) const;
     };
 }
 

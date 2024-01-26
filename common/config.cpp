@@ -18,4 +18,6 @@ bool snek::config::has_key(const std::string& key) const { return data.contains(
 
 const std::string& snek::config::get_string(const std::string& key) const { return data.at(key); }
 
-int snek::config::get_int(const std::string& key) const { return std::stoi(data.at(key)); }
+int32_t snek::config::get_int32(const std::string& key) const { return std::stoi(data.at(key)); }
+
+uint64_t snek::config::get_uint64(const std::string& key) const { return std::stoul(data.at(key)); }

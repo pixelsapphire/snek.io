@@ -36,11 +36,11 @@ namespace snek {
 
         const std::map<std::string, player>& get_players();
 
-        bool collides(const snek::vector_2f& position, const std::string& nickname) const;
-
-        bool hoverse_food(const snek::vector_2f& position,  const std::string& nickname);
+        [[nodiscard]] bool collides(const snek::vector_2f& position, const std::string& nickname) const;
 
         void remove_player(const std::string& nickname);
+
+        [[nodiscard]] bool hovers_food(const snek::vector_2f& position,  const std::string& nickname);
     };
 
 }

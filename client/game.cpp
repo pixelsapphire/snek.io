@@ -1,4 +1,3 @@
-#include <cmath>
 #include <iostream>
 #include "game.hpp"
 #include "scene_error.hpp"
@@ -49,7 +48,7 @@ void snek::game::launch() {
 
 void snek::game::start(const std::string& player_nickname) {
     std::string error_message;
-    if (server.connect(sf::IpAddress(config.get_string("host")), config.get_int("port"))) {
+    if (server.connect(sf::IpAddress(config.get_string("host")), config.get_int32("port"))) {
         this->nickname = player_nickname;
         const auto status = server.join(player_nickname);
         if (status == snek::connection_status::connected) {
@@ -74,7 +73,4 @@ snek::player::state snek::game::player_movement(const sf::Vector2f& velocity) {
     return state;
 }
 
-std::map<std::string, snek::player::state> snek::game::fetch_positions() {
-
-    return server.get_players();
-}
+std::map<std::string, snek::player::state> snek::game::fetch_positions() { return server.get_players(); }
