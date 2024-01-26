@@ -20,7 +20,7 @@ snek::vector2f& snek::vector2f::operator-=(const snek::vector2f& other) { return
 
 snek::vector2f snek::vector2f::operator*(float scalar) const { return {x * scalar, y * scalar}; }
 
-snek::vector2f snek::operator*(float scalar, const snek::vector2f& vector) { return vector * scalar; }
+snek::vector2f operator*(float scalar, const snek::vector2f& vector) { return vector * scalar; }
 
 snek::vector2f& snek::vector2f::operator*=(float scalar) { return *this = *this * scalar; }
 

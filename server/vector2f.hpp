@@ -33,8 +33,6 @@ namespace snek {
 
         vector2f operator*(float scalar) const;
 
-        friend vector2f operator*(float scalar, const vector2f& vector);
-
         vector2f& operator*=(float scalar);
 
         vector2f operator/(float scalar) const;
@@ -54,5 +52,6 @@ namespace snek {
     };
 }
 
+snek::vector2f operator*(float scalar, const snek::vector2f& vector);
 
 #endif //SNEK_IO_VECTOR2F_HPP
