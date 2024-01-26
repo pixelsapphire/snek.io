@@ -45,13 +45,12 @@ snek::server::server() : config("config/s_config.txt") {
 
     //o - other players
     requests["o"] = [&](snek::client_handler& client, const std::string&) {
-        const std::string& nickname = client.get_nickname();
+        const std::string& client_nickname = client.get_nickname();
         std::stringstream ss;
         ss << "p" << game_instance.player_count() - 1 << "n";
-        for (const auto& player : game_instance.get_players()) {
-            if (player.first == nickname)
-                continue;
-            ss << player.first << " " << player.second.get_segments().size() << "s";
+        for (const auto& [nickname, player] : game_instance.get_players()) {
+            if (nickname == client_nickname) continue;
+            ss << nickname << " " << player.get_segments().size() << "s";
             ss << game_instance.get_player_segments(nickname);
         }
         return ss.str();
@@ -146,13 +145,15 @@ void snek::server::start_server(int server_socket) {
                     std::cout << "Wysłano wiadomość do klienta: " << client->get_socket() << std::endl;
 #endif
                     if (client->get_nickname().empty()) { close_client(client); }
-                } else if (bytes_sent == 0) {
+                }
+                else if (bytes_sent == 0) {
                     // Połączenie zostało zamknięte przez klienta
 #ifdef SNEK_DEBUG
                     std::cout << "Połączenie zostało zamknięte przez klienta: " << client->get_socket() << std::endl;
 #endif
                     close_client(client);
-                } else {
+                }
+                else {
                     // Błąd podczas wysyłania
                     perror("send");
                     close_client(client);
@@ -168,7 +169,8 @@ void snek::server::start_server(int server_socket) {
             if (client_socket < 0) {
                 perror("accept");
                 //continue;
-            } else {
+            }
+            else {
                 // Add the new client_handler socket to the vector
 #ifdef SNEK_DEBUG
                 std::cout << "new client_handler added" << std::endl;
