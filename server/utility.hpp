@@ -18,6 +18,8 @@ namespace snek {
     [[nodiscard]] bool is_nearby(const snek::vector2f& position, const snek::vector2f& segment, float distance);
 
     [[nodiscard]] std::string get_local_ip();
+
+    [[nodiscard]] float sgn(float value, uint8_t if_zero = 0);
 }
 
 #endif //SNEK_IO_UTILITY_HPP

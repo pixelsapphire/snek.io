@@ -28,3 +28,9 @@ std::string snek::get_local_ip() {
     ip.resize(ip.size() - 1);
     return ip;
 }
+
+float snek::sgn(float value, uint8_t if_zero) {
+    if (value > 0) return 1;
+    else if (value < 0) return -1;
+    else return if_zero;
+}

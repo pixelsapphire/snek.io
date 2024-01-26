@@ -41,24 +41,24 @@ bool snek::game::collides(const snek::vector2f& position, const std::string& nic
     return false;
 }
 
-void snek::game::move_player(const std::string& nickname, const snek::vector2f& target_velocity, float time) {
+void snek::game::move_player(const std::string& nickname, const snek::vector2f& target_direction, float time) {
 
     player& player = players.at(nickname);
-    if (target_velocity != snek::vector2f::zero) {
+    const float offset = snek::player::speed * time;
+    const auto future_position = [&] { return player.get_head() + player.direction * offset; };
 
-        if (player.velocity == snek::vector2f::zero) player.velocity = target_velocity;
-        else player.velocity = snek::vector2f::direction_change(player.velocity, target_velocity, 0.05f);
-
-        const snek::vector2f new_position = player.get_head() + player.velocity * time;
-        const bool x_bad = new_position.x < 25 or new_position.x > 775,
-                y_bad = new_position.y < 25 or new_position.y > 575;
-
-        if (x_bad and y_bad) player.velocity = {0, 0};
-        else if (x_bad) player.velocity = {0, player.velocity.y < 0 ? -1 : 1};
-        else if (y_bad) player.velocity = {player.velocity.x < 0 ? -1 : 1, 0};
-
+    if (target_direction != snek::vector2f::zero) {
+        if (player.direction == snek::vector2f::zero) player.direction = target_direction;
+        else player.direction = snek::vector2f::direction_change(player.direction, target_direction, 0.05f);
     }
-    store_player_position(nickname, player.get_head() + snek::player::speed * player.velocity * time);
+
+    const snek::vector2f expected = future_position();
+    const bool bad_x = expected.x < 25 or expected.x > 775, bad_y = expected.y < 25 or expected.y > 575;
+    if (bad_x) player.direction = {0, snek::sgn(player.direction.y)};
+    if (bad_y) player.direction = {snek::sgn(player.direction.x), 0};
+
+    player.direction = player.direction.normalized();
+    store_player_position(nickname, future_position());
 }
 
 std::string snek::game::get_player_segments(const std::string& nickname) {
