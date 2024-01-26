@@ -7,28 +7,15 @@ file(COPY client/c_config.txt DESTINATION config)
 file(COPY server/s_config.txt DESTINATION config)
 file(COPY assets/ DESTINATION assets)
 
-if (APPLE)
-    add_compile_options("-stdlib=libc++" "-lc++abi" "-v" "-Wall")
-    include_directories(lib/SFML-2.6.1/macos_arm64/include)
-    link_directories(lib/SFML-2.6.1/macos_arm64/lib)
-endif (APPLE)
-
-if (UNIX AND NOT APPLE)
-    include_directories(~/SFML-2.6.1/include)
-    link_directories(~/SFML-2.6.1/lib)
-endif (UNIX AND NOT APPLE)
-
-if (WIN32)
-    file(COPY lib/SFML-2.6.1/windoez_vc/bin/ DESTINATION .)
-    include_directories(lib/SFML-2.6.1/windoez_vc/include)
-    link_directories(lib/SFML-2.6.1/windoez_vc/lib)
-endif (WIN32)
-
 file(GLOB common_sources "common/*.cpp")
 include_directories(common)
+add_compile_options("-Wall" "-Werror" "-Wextra" "-Wno-unused-command-line-argument")
 
 file(GLOB client_sources "client/*.cpp")
 add_executable(snek_io_client ${client_sources} ${common_sources})
+target_compile_options(snek_io_client PUBLIC "-stdlib=libc++" "-lc++abi" "-v")
+target_include_directories(snek_io_client PRIVATE lib/SFML-2.6.1/macos_arm64/include)
+target_link_directories(snek_io_client PRIVATE lib/SFML-2.6.1/macos_arm64/lib)
 target_link_libraries(snek_io_client sfml-graphics sfml-network sfml-system sfml-window)
 
 file(GLOB server_sources "server/*.cpp")
