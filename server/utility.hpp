@@ -19,7 +19,7 @@ namespace snek {
 
     [[nodiscard]] std::string get_local_ip();
 
-    [[nodiscard]] float sgn(float value, uint8_t if_zero = 0);
+    [[nodiscard]] float sgn(float value, float if_zero = 0);
 }
 
 #endif //SNEK_IO_UTILITY_HPP

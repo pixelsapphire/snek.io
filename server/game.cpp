@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cmath>
 #include <sstream>
 #include <string>
@@ -8,7 +9,8 @@ void snek::game::store_player_position(const std::string& nickname, const snek::
     if (not collides(position, nickname)) {
         players.at(nickname).update(position);
         if (hovers_food(position, nickname)) players.at(nickname).add_segments(position);
-    } else players.erase(nickname);
+    }
+    else players.erase(nickname);
 }
 
 bool snek::game::is_alive(const std::string& nickname) { return players.contains(nickname); }
@@ -18,7 +20,8 @@ void snek::game::add_player(const std::string& nickname) {
     do {
         x = float(snek::random_value(25, 775));
         y = float(snek::random_value(25, 575));
-    } while (collides({x, y}, nickname));
+    }
+    while (collides({x, y}, nickname));
     players.emplace(nickname, player({x, y}));
 
 }
@@ -45,7 +48,7 @@ void snek::game::move_player(const std::string& nickname, const snek::vector2f& 
 
     player& player = players.at(nickname);
     const float offset = snek::player::speed * time;
-    const float delta = 1.0f;
+    const float epsillon = 1.0f;
     const auto future_position = [&] { return player.get_head() + player.direction * offset; };
 
     if (target_direction != snek::vector2f::zero) {
@@ -53,30 +56,24 @@ void snek::game::move_player(const std::string& nickname, const snek::vector2f& 
         else player.direction = snek::vector2f::direction_change(player.direction, target_direction, 0.05f);
     }
 
-    const snek::vector2f expected = future_position();
+    snek::vector2f expected = future_position();
     const bool bad_x = expected.x < 25 or expected.x > 775, bad_y = expected.y < 25 or expected.y > 575;
 
-    if(bad_x || bad_y)
-    {
-        if(!bad_x) {
-            if (expected.x - delta < 25) { player.direction = {1, 0}; }
-            else if (expected.x + delta > 775) { player.direction = {-1, 0}; }
-            else player.direction = {snek::sgn(player.direction.y), 0};
-        }
-        else if(!bad_y) {
-            if (expected.y - delta < 25) { player.direction = {0, 1}; }
-            else if (expected.y + delta > 575) { player.direction = {0, -1}; }
-            else player.direction = {0, snek::sgn(player.direction.x)};
-        }
-        else {
-            //Coś ze sprawdzaniem kąta by można zrobić, trzeba się postarać by tu dotrzeć
-            player.direction = {0, 0};
-        }
+    if (bad_x and bad_y) player.direction = {0, 0};
+    else if (bad_y) {
+        if (expected.x - epsillon < 25) { player.direction = {1, 0}; }
+        else if (expected.x + epsillon > 775) { player.direction = {-1, 0}; }
+        else player.direction = {snek::sgn(player.direction.x, player.direction.x > 400 ? -1 : 1), 0};
+    }
+    else if (bad_x) {
+        if (expected.y - epsillon < 25) { player.direction = {0, 1}; }
+        else if (expected.y + epsillon > 575) { player.direction = {0, -1}; }
+        else player.direction = {0, snek::sgn(player.direction.y, player.direction.y > 300 ? -1 : 1)};
     }
 
-
     player.direction = player.direction.normalized();
-    store_player_position(nickname, future_position());
+    expected = future_position();
+    store_player_position(nickname, {std::clamp(expected.x, 25.0f, 775.0f), std::clamp(expected.y, 25.0f, 575.0f)});
 }
 
 std::string snek::game::get_player_segments(const std::string& nickname) {

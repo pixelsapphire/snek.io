@@ -29,7 +29,7 @@ std::string snek::get_local_ip() {
     return ip;
 }
 
-float snek::sgn(float value, uint8_t if_zero) {
+float snek::sgn(float value, float if_zero) {
     if (value > 0) return 1;
     else if (value < 0) return -1;
     else return if_zero;
