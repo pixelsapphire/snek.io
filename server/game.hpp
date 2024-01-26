@@ -4,9 +4,9 @@
 #include <map>
 #include <string>
 #include <utility>
-#include "vector2f.hpp"
-#include "utility.hpp"
 #include "player.hpp"
+#include "utility.hpp"
+#include "vector2f.hpp"
 
 #define PLAYER_HEAD_RADIUS 26.0
 

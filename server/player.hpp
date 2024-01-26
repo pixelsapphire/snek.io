@@ -2,9 +2,9 @@
 #define SNEK_IO_PLAYER_HPP
 
 #include <cstdint>
+#include <optional>
 #include <vector>
 #include "vector2f.hpp"
-#include <optional>
 
 #define LEAST_SEGMENT_DISTANCE 12.5f
 
