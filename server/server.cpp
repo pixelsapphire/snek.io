@@ -181,8 +181,7 @@ void snek::server::start_server(int server_socket) {
 
         for (auto it = client_sockets.begin(); it != client_sockets.end(); ++it) {
             if (it->get_time_passed_from_last_activity().count() > config.get_int32("client_timeout")) {
-                close(it->get_socket());
-                client_sockets.erase(it--);
+                close_client(it);
 #ifdef SNEK_DEBUG
                 std::cout << " Client timeout yeet! " << std::endl;
 #endif
