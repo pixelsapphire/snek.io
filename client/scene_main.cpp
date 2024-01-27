@@ -24,6 +24,14 @@ void snek::scene_main::update(const sf::Time& delta_time) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) target_angle.y += 1;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) target_angle.x -= 1;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) target_angle.x += 1;
-    const auto state = player_moved(target_angle);
-    client_player->set_state(state);
+    const auto player_state = player_moved(target_angle);
+    client_player->set_state(player_state);
+    if (player_state.alive) {
+        const auto players = fetch_positions();
+        for (const auto& [nickname, state] : players) {
+            if (other_players.contains(nickname) and not players.contains(nickname)) remove_player(nickname);
+            else if (not other_players.contains(nickname) and players.contains(nickname)) spawn_player(nickname, false);
+            other_players.at(nickname)->set_state(state);
+        }
+    }
 }

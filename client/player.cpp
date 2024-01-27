@@ -35,14 +35,16 @@ void snek::player::set_state(const snek::player::state& state) {
         segments.resize(state.segments.size(), segments[0]);
         for (size_t i = 1; i < state.segments.size(); ++i)
             segments[i].setPosition(state.segments[i].x, state.segments[i].y);
-    } else {
+    }
+    else {
         nickname_view.setString(nickname + " (dead)");
         nickname_view.setOrigin(nickname_view.getLocalBounds().width / 2, 20);
     }
 }
 
 snek::player::state snek::player::state::parse_client(const std::string& data) {
-    state state{.alive = data[0] == 'a'};
+    state state;
+    state.alive = data[0] == 'a';
     if (state.alive) {
         std::string_view view(data);
         view.remove_prefix(1);
@@ -61,6 +63,7 @@ std::map<std::string, snek::player::state> snek::player::state::parse_others(con
 
     std::map<std::string, snek::player::state> players;
     std::stringstream ss(data);
+    ss.ignore(1);
     std::string n;
     std::getline(ss, n, 'n');
     size_t number_of_players = std::stoul(n);
@@ -71,10 +74,10 @@ std::map<std::string, snek::player::state> snek::player::state::parse_others(con
         std::getline(ss, nickname, ' ');
         std::getline(ss, s, 's');
         size_t number_of_segments = std::stoul(s);
-        player::state player;
 
         for (size_t j = 0; j < number_of_segments; ++j) {
             std::getline(ss, x, 'x'), std::getline(ss, y, 'y');
+            players[nickname].alive = true;
             players[nickname].segments.emplace_back(std::stof(x), std::stof(y));
         }
     }
