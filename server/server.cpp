@@ -4,7 +4,7 @@
 
 #define COMMAND_LENGTH 1
 
-snek::server::server() : config("config/s_config.txt") {
+snek::server::server() : config(snek::config::path() + "/s_config.txt") {
     //c - check if dead
     requests["c"] = [&](snek::client_handler& client, const std::string& command_body) {
         const std::string& nickname = client.get_nickname();

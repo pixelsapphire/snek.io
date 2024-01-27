@@ -4,7 +4,7 @@
 #include "scene_main.hpp"
 #include "scene_nickname.hpp"
 
-snek::game::game() : config("config/c_config.txt"),
+snek::game::game() : config(snek::config::path() + "/c_config.txt"),
                      window(sf::VideoMode(800, 600), "Projekt na sieciuhy", sf::Style::Titlebar | sf::Style::Close),
                      current_scene(welcome_scene()) {
     window.setVerticalSyncEnabled(false);

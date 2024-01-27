@@ -1,4 +1,5 @@
 #include <fstream>
+#include "common_utility.hpp"
 #include "config.hpp"
 
 snek::config::config(const std::string& filename) {
@@ -21,3 +22,8 @@ const std::string& snek::config::get_string(const std::string& key) const { retu
 int32_t snek::config::get_int32(const std::string& key) const { return std::stoi(data.at(key)); }
 
 uint64_t snek::config::get_uint64(const std::string& key) const { return std::stoul(data.at(key)); }
+
+const std::string& snek::config::path() {
+    static const std::string path = snek::get_executable_path() + "/config";
+    return path;
+}

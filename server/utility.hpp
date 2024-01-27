@@ -15,11 +15,11 @@ namespace snek {
         return std::uniform_int_distribution<T>{min, max}(rng);
     }
 
+    [[nodiscard]] float sgn(float value, float if_zero = 0);
+
     [[nodiscard]] bool is_nearby(const snek::vector2f& position, const snek::vector2f& segment, float distance);
 
     [[nodiscard]] std::string get_local_ip();
-
-    [[nodiscard]] float sgn(float value, float if_zero = 0);
 }
 
-#endif //SNEK_IO_UTILITY_HPP
+#endif // SNEK_IO_UTILITY_HPP
