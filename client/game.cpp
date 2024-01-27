@@ -43,6 +43,7 @@ void snek::game::launch() {
             current_scene = std::move(next_scene);
             next_scene.reset();
         }
+        if (window.getSize() != sf::Vector2u(800, 600)) window.setSize({800, 600});
     }
 }
 
@@ -63,7 +64,8 @@ void snek::game::start(const std::string& player_nickname) {
         if (status == snek::connection_status::game_full) error_message = "The game is full";
         else if (status == snek::connection_status::nickname_taken) error_message = "Nickname is already taken";
         else error_message = "Unknown connection error";
-    } else error_message = "Could not connect to the server";
+    }
+    else error_message = "Could not connect to the server";
     set_scene(error_scene(error_message));
 }
 
