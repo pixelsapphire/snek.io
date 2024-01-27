@@ -15,7 +15,7 @@ std::string snek::get_local_ip() {
 #ifdef __APPLE__
     fp = popen("/usr/sbin/ipconfig getifaddr en0", "r");
 #elif __linux__
-    fp = popen("/usr/bin/hostname --ip-address", "r");
+    fp = popen("/usr/bin/hostname -I", "r");
 #else
     return "";
 #endif
@@ -25,7 +25,7 @@ std::string snek::get_local_ip() {
     while (fgets(path, sizeof(path), fp) != nullptr) ss << path;
     pclose(fp);
     std::string ip = ss.str();
-    ip.resize(ip.size() - 1);
+    ip.erase(ip.find_last_not_of(" \n\r\t") + 1);
     return ip;
 }
 
