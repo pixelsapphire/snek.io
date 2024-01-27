@@ -1,38 +1,16 @@
-CXX = g++
-CXXFLAGS = -g -Wall -std=gnu++23
-SRC = client
-COMMON_SRC = common
-LIBS = -lsfml-system -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-network
-INCLUDE = -Icommon
-BUILD = build
-OBJ = $(BUILD)/obj
-TARGET = $(BUILD)/client
-ASSETS = $(BUILD)/assets
-CONFIG = $(BUILD)/config
+.PHONY: all build client server clean
 
-SRC_FILES = $(wildcard $(SRC)/*.cpp) $(wildcard $(COMMON_SRC)/*.cpp)
-OBJ_FILES = $(SRC_FILES:$(SRC)/%.cpp=$(OBJ)/%.o)
+all:
+	$(error No target selected. Please select a target by running one of the following: 'make client' or 'make server')
 
-all: $(BUILD) $(ASSETS) $(CONFIG) $(OBJ) $(TARGET)
+build:
+	mkdir -p build
 
-$(BUILD):
-	mkdir -p $@
+client: build
+	$(MAKE) -f make-client
 
-$(OBJ):
-	mkdir -p $@
-
-$(ASSETS):
-	cp -r assets $(BUILD)
-
-$(CONFIG):
-	mkdir -p $@
-	cp $(SRC)/c_config.txt $(CONFIG)
-
-$(OBJ)/%.o: $(SRC)/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(INCLUDE)
-
-$(TARGET): $(OBJ_FILES)
-	$(CXX) $(CXXFLAGS) $^ -o $@ $(LIBS)
+server: build
+	$(MAKE) -f make-server
 
 clean:
-	rm -rf $(BUILD)
+	rm -rf build
