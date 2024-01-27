@@ -1,7 +1,7 @@
 .PHONY: all clean
 
 CXX = g++
-CXXFLAGS = -g -Wall -Wextra -Werror -std=gnu++23
+CXXFLAGS = -g -Wall -Wextra -Werror -std=gnu++2b
 SRC = client
 COMMON_SRC = common
 LIBS = -lsfml-system -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-network
