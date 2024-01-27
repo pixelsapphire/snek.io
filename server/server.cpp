@@ -13,6 +13,10 @@ snek::server::server() : config("config/s_config.txt") {
                 y = std::stof(command_body.substr(x_pos + 1, y_pos - x_pos - 1));
 
         const auto time = float(client.get_time_passed_from_last_activity().count()) / 1000.0f;
+        if (!game_instance.is_alive(nickname)) {
+            client.set_nickname("");
+            return std::string("d");
+        }
         game_instance.move_player(nickname, {x, y}, time);
 
         if (game_instance.is_alive(nickname)) return "a" + game_instance.get_player_segments(nickname);
@@ -34,13 +38,13 @@ snek::server::server() : config("config/s_config.txt") {
 
         client.set_nickname(command_body);
         game_instance.add_player(nickname);
-        return "y"; //game_instance.get_player_position (nickname);
+        return "y"; //game_instance.get_player_position_str (nickname);
     };
 
     //s - spawn
     requests["s"] = [&](snek::client_handler& client, const std::string&) {
         const std::string& nickname = client.get_nickname();
-        return "l" + game_instance.get_player_position(nickname);
+        return "l" + game_instance.get_player_position_str(nickname);
     };
 
     //o - other players

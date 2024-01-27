@@ -2,6 +2,7 @@
 #define SNEK_IO_GAME_HPP
 
 #include <map>
+#include <optional>
 #include <string>
 #include <utility>
 #include "player.hpp"
@@ -16,6 +17,8 @@ namespace snek {
 
         std::map<std::string, snek::player> players;
 
+        [[nodiscard]] snek::vector2f player_position(const std::string& nickname);
+
     public:
 
         bool is_alive(const std::string& nickname);
@@ -26,17 +29,18 @@ namespace snek {
 
         void move_player(const std::string& nickname, const snek::vector2f& target_direction, float time);
 
-        std::string get_player_position(const std::string& nickname);
+        [[nodiscard]] std::string get_player_position_str(const std::string& nickname);
 
-        std::string get_player_segments(const std::string& nickname);
+        [[nodiscard]] std::string get_player_segments(const std::string& nickname);
 
-        size_t player_count();
+        [[nodiscard]] size_t player_count();
 
         bool nickname_taken(const std::string& nickname);
 
-        const std::map<std::string, player>& get_players();
+        [[nodiscard]] const std::map<std::string, player>& get_players();
 
-        [[nodiscard]] bool collides(const snek::vector2f& position, const std::string& nickname) const;
+        [[nodiscard]] std::optional<std::string> collides(const snek::vector2f& position,
+                                                          const std::string& nickname) const;
 
         void remove_player(const std::string& nickname);
 

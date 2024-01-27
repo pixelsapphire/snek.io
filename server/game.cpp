@@ -1,16 +1,19 @@
 #include <algorithm>
-#include <cmath>
 #include <sstream>
 #include <string>
-#include "common_utility.hpp"
 #include "game.hpp"
 
 void snek::game::store_player_position(const std::string& nickname, const snek::vector2f& position) {
-    if (not collides(position, nickname)) {
+    const auto collided_player = collides(position, nickname);
+    if (collided_player.has_value()) {
+        if (snek::is_nearby(position, player_position(*collided_player), PLAYER_HEAD_RADIUS * 2))
+            players.erase(*collided_player);
+        players.erase(nickname);
+    }
+    else {
         players.at(nickname).update(position);
         if (hovers_food(position, nickname)) players.at(nickname).add_segments(position);
     }
-    else players.erase(nickname);
 }
 
 bool snek::game::is_alive(const std::string& nickname) { return players.contains(nickname); }
@@ -26,9 +29,11 @@ void snek::game::add_player(const std::string& nickname) {
 
 }
 
-std::string snek::game::get_player_position(const std::string& nickname) {
-    return std::to_string(players.at(nickname).get_head().x) + "x" +
-           std::to_string(players.at(nickname).get_head().y) + "y";
+snek::vector2f snek::game::player_position(const std::string& nickname) { return players.at(nickname).get_head(); }
+
+std::string snek::game::get_player_position_str(const std::string& nickname) {
+    const auto position = player_position(nickname);
+    return std::to_string(position.x) + "x" + std::to_string(position.y) + "y";
 }
 
 size_t snek::game::player_count() { return players.size(); }
@@ -37,11 +42,11 @@ bool snek::game::nickname_taken(const std::string& nickname) { return players.co
 
 const std::map<std::string, snek::player>& snek::game::get_players() { return players; }
 
-bool snek::game::collides(const snek::vector2f& position, const std::string& nickname) const {
-    for (const auto& player : players)
-        for (const auto& segment : player.second.get_segments())
-            if (nickname != player.first && is_nearby(position, segment, PLAYER_HEAD_RADIUS * 2)) return true;
-    return false;
+std::optional<std::string> snek::game::collides(const snek::vector2f& position, const std::string& player) const {
+    for (const auto& [nickname, snake] : players)
+        for (const auto& segment : snake.get_segments())
+            if (player != nickname and is_nearby(position, segment, PLAYER_HEAD_RADIUS * 2)) return nickname;
+    return std::nullopt;
 }
 
 void snek::game::move_player(const std::string& nickname, const snek::vector2f& target_direction, float time) {
