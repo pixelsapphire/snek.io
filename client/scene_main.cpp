@@ -14,7 +14,6 @@ void snek::scene_main::spawn_player(const std::string& nickname, bool client) {
 
 void snek::scene_main::remove_player(const std::string& nickname) {
     remove(other_players[nickname]);
-    other_players.erase(nickname);
 }
 
 void snek::scene_main::update(const sf::Time& delta_time) {
@@ -28,9 +27,15 @@ void snek::scene_main::update(const sf::Time& delta_time) {
     client_player->set_state(player_state);
     if (player_state.alive) {
         const auto players = fetch_positions();
+        for (auto it = other_players.begin(); it != other_players.end();) {
+            if (not players.contains(it->first)) {
+                remove_player(it->first);
+                it = other_players.erase(it);
+            }
+            else ++it;
+        }
         for (const auto& [nickname, state] : players) {
-            if (other_players.contains(nickname) and not players.contains(nickname)) remove_player(nickname);
-            else if (not other_players.contains(nickname) and players.contains(nickname)) spawn_player(nickname, false);
+            if (not other_players.contains(nickname)) spawn_player(nickname, false);
             other_players.at(nickname)->set_state(state);
         }
     }
