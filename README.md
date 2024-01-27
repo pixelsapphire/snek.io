@@ -5,7 +5,8 @@ Snek.io to wieloosobowa gra czasu rzeczywistego inspirowana grami Snake i Slithe
 
 ## Konfiguracja
 Parametry konfigurowalne:
-- przyciski sterowania
+- adres serwera (dla klienta) oraz port serwera (dla klienta i serwera)
+- przyciski sterowania (dla klienta)
 - domyślny nick i kolor
 - otrzymywanie powiadomień o dołączaniu i wychodzeniu graczy z gry
 
@@ -39,3 +40,13 @@ Parametry konfigurowalne:
 - Po przywróceniu połączenia w ciągu czasu B, jeśli jego wąż nie zginął, gracz odzyskuje nad nim kontrolę i kontynuuje rozgrywkę od miejsca, które wynika z jego ruchu obliczanego przez serwer.
 - Jeśli gracz nie przywróci połączenia w ciągu czasu B, serwer uznaje, że gracz zakończył grę i usuwa jego węża z planszy.
 4. Jeśli gracz zamknie okno podczas gry, klient uznaje, że gracz zakończył grę. Serwer usuwa jego węża z planszy.
+
+## Budowanie i uruchamianie
+1. Wymagania
+- System operacyjny Linux lub macOS
+- Biblioteka SFML (w systemie Linux można ją zainstalować za pomocą polecenia: `sudo apt-get install libsfml-dev`, a w systemie macOS: `brew install sfml`)
+- Kompilator GCC lub Clang obsługujący standard C++23
+2. Instalacja - niniejsze repozytorium należy pobrać lub sklonować poleceniem `git clone`.
+3. Budowanie - w katalogu głównym repozytorium należy wykonać polecenie `make client` lub `make server`.
+4. Po wykonaniu kompilacji, w katalogu `build` znajdują się wyniki kompilacji oraz pliki konfiguracyjne.
+5. Uruchamianie - w katalogu głównym repozytorium należy wykonać polecenie `make run-client` lub `make run-server`. Polecenia te wykonują także kompilację jeśli nie została jeszcze wykonana.
