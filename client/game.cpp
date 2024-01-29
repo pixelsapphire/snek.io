@@ -57,7 +57,7 @@ void snek::game::start(const std::string& player_nickname) {
             std::unique_ptr<snek::scene_main> scene = std::make_unique<snek::scene_main>(
                     [&](auto& p) { return player_movement(p); },
                     [&] { return fetch_positions(); });
-            scene->spawn_player(nickname, true);
+            scene->spawn_player(nickname, true, status.get_initial_position());
             set_scene(std::move(scene));
             return;
         }

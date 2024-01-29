@@ -9,9 +9,24 @@
 
 namespace snek {
 
-    enum connection_status {
-        connected, game_full, nickname_taken, error
+    class connection_status {
+
+        uint8_t status_id;
+        sf::Vector2f initial_position;
+
+    public:
+
+        static connection_status connected, game_full, nickname_taken, error;
+
+        explicit connection_status(uint8_t status_id);
+
+        [[nodiscard]] bool operator==(const connection_status& other) const;
+
+        [[nodiscard]] sf::Vector2f get_initial_position() const;
+
+        static connection_status spawned_at(const sf::Vector2f& position);
     };
+
 
     class server_handler {
 

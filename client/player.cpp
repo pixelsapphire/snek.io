@@ -29,6 +29,8 @@ void snek::player::set_position(float x, float y) {
     nickname_view.setPosition(x, y - 25);
 }
 
+void snek::player::set_position(const sf::Vector2f& position) { set_position(position.x, position.y); }
+
 void snek::player::set_state(const snek::player::state& state) {
     if (state.alive) {
         set_position(state.segments[0].x, state.segments[0].y);

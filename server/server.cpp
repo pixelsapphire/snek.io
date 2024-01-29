@@ -28,23 +28,15 @@ snek::server::server() : config(snek::config::path() + "/s_config.txt") {
     };
 
     //n - new player
-    requests["n"] = [&](snek::client_handler& client, const std::string& command_body) {
-        if (game_instance.player_count() > config.get_uint64("max_players"))
-            return "nf"; //not connected - full
+    requests["n"] = [&](snek::client_handler& client, const std::string& command_body) -> std::string {
+        if (game_instance.player_count() > config.get_uint64("max_players")) return "nf"; // not connected - full
 
-        const std::string& nickname = command_body;//client.get_nickname();
-        if (game_instance.nickname_taken(nickname))
-            return "nt"; // nickname taken
+        const std::string& nickname = command_body;
+        if (game_instance.nickname_taken(nickname)) return "nt"; // not connected - nickname taken
 
         client.set_nickname(command_body);
         game_instance.add_player(nickname);
-        return "y"; //game_instance.get_player_position_str (nickname);
-    };
-
-    //s - spawn
-    requests["s"] = [&](snek::client_handler& client, const std::string&) {
-        const std::string& nickname = client.get_nickname();
-        return "l" + game_instance.get_player_position_str(nickname);
+        return "y" + game_instance.get_player_position_str(nickname);
     };
 
     //o - other players

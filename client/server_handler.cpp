@@ -5,6 +5,21 @@
 #include "server_handler.hpp"
 #include "utility.hpp"
 
+snek::connection_status snek::connection_status::connected(0), snek::connection_status::game_full(1),
+        snek::connection_status::nickname_taken(2), snek::connection_status::error(3);
+
+snek::connection_status::connection_status(uint8_t status_id) : status_id(status_id) {}
+
+bool snek::connection_status::operator==(const snek::connection_status& other) const { return status_id == other.status_id; }
+
+sf::Vector2f snek::connection_status::get_initial_position() const { return initial_position; }
+
+snek::connection_status snek::connection_status::spawned_at(const sf::Vector2f& position) {
+    connection_status status(0);
+    status.initial_position = position;
+    return status;
+}
+
 snek::server_handler::server_handler() {
     if (not handlers_initialized)
         for (const auto s : std::set<uint8_t>{SIGHUP, SIGINT, SIGTERM, SIGKILL, SIGQUIT, SIGABRT, SIGSEGV, SIGILL,
@@ -56,7 +71,7 @@ std::string snek::server_handler::receive() {
 snek::connection_status snek::server_handler::join(const std::string& nickname) {
     send("n" + nickname);
     const std::string response = receive();
-    if (response == "y") return snek::connection_status::connected;
+    if (response.starts_with("y")) return snek::connection_status::spawned_at(snek::serial::decode_vector(response.substr(1)));
     else if (response == "nf") return snek::connection_status::game_full;
     else if (response == "nt") return snek::connection_status::nickname_taken;
     else return snek::connection_status::error;

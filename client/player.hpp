@@ -24,6 +24,8 @@ namespace snek {
 
         void set_position(float x, float y) override;
 
+        void set_position(const sf::Vector2f& position);
+
         struct state {
 
             bool alive = false;

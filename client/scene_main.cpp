@@ -5,10 +5,13 @@ snek::scene_main::scene_main(const std::function<snek::player::state(const sf::V
                              const std::function<std::map<std::string, snek::player::state>()>& positions_provider)
         : player_moved(on_player_movement), fetch_positions(positions_provider) {}
 
-void snek::scene_main::spawn_player(const std::string& nickname, bool client) {
+void snek::scene_main::spawn_player(const std::string& nickname, bool client, const sf::Vector2f& client_position) {
     auto player = std::make_shared<snek::player>(nickname);
     add(player);
-    if (client) client_player = player;
+    if (client) {
+        client_player = player;
+        player->set_position(client_position);
+    }
     else other_players[nickname] = player;
 }
 
