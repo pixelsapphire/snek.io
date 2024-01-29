@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <optional>
 #include <vector>
-#include "vector2f.hpp"
+#include "vector2.hpp"
 
 #define LEAST_SEGMENT_DISTANCE 12.5f
 

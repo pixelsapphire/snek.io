@@ -7,7 +7,7 @@
 #include <utility>
 #include "player.hpp"
 #include "utility.hpp"
-#include "vector2f.hpp"
+#include "vector2.hpp"
 
 #define PLAYER_HEAD_RADIUS 25
 #define FOOD_RADIUS 5
@@ -40,7 +40,7 @@ namespace snek {
 
         void store_player_position(const std::string& nickname, const snek::vector2f& position);
 
-        void move_player(const std::string& nickname, const snek::vector2f& target_direction, float time);
+        void move_player(const std::string& nickname, const snek::vector2i& target_direction, float time);
 
         [[nodiscard]] std::string player_position_str(const std::string& nickname) const;
 

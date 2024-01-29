@@ -16,7 +16,7 @@ void snek::player::update(const snek::vector2f& head) {
     for (auto segment = segments.rbegin(); segment != segments.rend() - 1; ++segment) *segment = *(segment + 1);
     segments[0] = head;
 
-    if (segments_queue > 0 and not is_nearby(*new_segment, segments.back(), LEAST_SEGMENT_DISTANCE)) {
+    if (segments_queue > 0 and snek::vector2f::distance(*new_segment, segments.back()) > LEAST_SEGMENT_DISTANCE) {
         segments.emplace_back(tail);
         if (--segments_queue == 0) new_segment.reset();
     }

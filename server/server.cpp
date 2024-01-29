@@ -14,8 +14,8 @@ snek::server::server() : server_socket(-1), config(snek::config::path() + "/s_co
 std::string snek::server::control_request(snek::client_handler& client, const std::string& request) {
     const std::string& nickname = client.get_nickname();
     const auto x_pos = request.find('x'), y_pos = request.find('y');
-    const auto x = std::stof(request.substr(0, x_pos)),
-            y = std::stof(request.substr(x_pos + 1, y_pos - x_pos - 1));
+    const auto x = std::stoi(request.substr(0, x_pos)),
+            y = std::stoi(request.substr(x_pos + 1, y_pos - x_pos - 1));
 
     const auto time = float(client.get_time_passed_from_last_activity().count()) / 1000.0f;
     if (!game_instance.is_alive(nickname)) {

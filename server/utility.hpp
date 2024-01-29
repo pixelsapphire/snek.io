@@ -1,9 +1,10 @@
 #ifndef SNEK_IO_UTILITY_HPP
 #define SNEK_IO_UTILITY_HPP
 
-#include <string>
+#include <concepts>
 #include <random>
-#include "vector2f.hpp"
+#include <string>
+#include <type_traits>
 
 namespace snek {
 
@@ -17,9 +18,18 @@ namespace snek {
 
     [[nodiscard]] float sgn(float value, float if_zero = 0);
 
-    [[nodiscard]] std::string to_string(float value);
+    template<typename T>
+    requires std::floating_point<T>
+    [[nodiscard]] std::string to_string(T value) {
+        const std::string str = std::to_string(value);
+        return str.substr(0, str.find('.') + 2);
+    }
 
-    [[nodiscard]] bool is_nearby(const snek::vector2f& position1, const snek::vector2f& position2, float distance);
+    template<typename T>
+    requires std::integral<T>
+    [[nodiscard]] std::string to_string(T value) { return std::to_string(value); }
+
+    template<typename T> concept VectorCoordinate = std::is_arithmetic_v<T> and requires(T t) { snek::to_string(t); };
 
     [[nodiscard]] std::string get_local_ip();
 }
