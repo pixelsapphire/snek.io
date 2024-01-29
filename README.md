@@ -44,7 +44,7 @@ Parametry konfigurowalne:
 ## Budowanie i uruchamianie
 1. Wymagania
 - System operacyjny Linux lub macOS (działa również na WSL)
-- Biblioteka SFML (w systemie Linux/WSL można ją zainstalować za pomocą polecenia: `sudo apt-get install libsfml-dev`, a w systemie macOS: `brew install sfml`)
+- Biblioteka SFML (w systemie Linux/WSL można ją zainstalować za pomocą polecenia: `sudo apt-get install libsfml-dev`, a w systemie macOS zgnodnie z instrukcjami na [stronie SFML](https://www.sfml-dev.org/tutorials/2.6/start-osx.php))
 - Kompilator GCC lub Clang obsługujący standard C++23
 2. Instalacja - niniejsze repozytorium należy pobrać lub sklonować poleceniem `git clone`.
 3. Budowanie - w katalogu głównym repozytorium należy wykonać polecenie `make client` lub `make server`.
