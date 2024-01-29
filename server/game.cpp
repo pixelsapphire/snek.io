@@ -90,7 +90,7 @@ void snek::game::move_player(const std::string& nickname, const snek::vector2f& 
 }
 
 std::string snek::game::get_player_segments(const std::string& nickname) const {
-    std::stringstream ss;
+    std::ostringstream ss;
     for (auto& segment : players.at(nickname).get_segments()) ss << segment.str();
     return ss.str();
 }
@@ -120,7 +120,7 @@ uint8_t snek::game::remove_eaten_food(const std::string& nickname) {
 }
 
 [[nodiscard]] std::string snek::game::get_food_str() const {
-    std::stringstream ss;
+    std::ostringstream ss;
     ss << "f" << food.size() << "n";
     for (const auto& food_unit : food) ss << food_unit.str();
     return ss.str();

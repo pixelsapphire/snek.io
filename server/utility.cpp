@@ -31,7 +31,7 @@ std::string snek::get_local_ip() {
     return "";
 #endif
     if (fp == nullptr) return "";
-    std::stringstream ss;
+    std::ostringstream ss;
     char path[1035];
     while (fgets(path, sizeof(path), fp) != nullptr) ss << path;
     pclose(fp);

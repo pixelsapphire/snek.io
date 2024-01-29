@@ -44,7 +44,7 @@ std::string snek::server::new_player_request(snek::client_handler& client, const
 
 std::string snek::server::other_players_request(snek::client_handler& client, const std::string&) {
     const std::string& client_nickname = client.get_nickname();
-    std::stringstream ss;
+    std::ostringstream ss;
     ss << "p" << game_instance.player_count() - 1 << "n";
     for (const auto& [nickname, player] : game_instance.get_players()) {
         if (nickname == client_nickname) continue;
@@ -54,9 +54,7 @@ std::string snek::server::other_players_request(snek::client_handler& client, co
     return ss.str();
 }
 
-std::string snek::server::food_request(snek::client_handler&, const std::string&) {
-    return game_instance.get_food_str();
-}
+std::string snek::server::food_request(snek::client_handler&, const std::string&) { return game_instance.get_food_str(); }
 
 std::string snek::server::handle_request(snek::client_handler& client, const std::string& request) {
 #ifdef SNEK_DEBUG
@@ -73,8 +71,7 @@ void snek::server::close_client(std::vector<snek::client_handler>::iterator& cli
     close(client->get_socket());
     poll_events.erase(poll_events.begin() + (client - client_sockets.begin() + 1));
     game_instance.remove_player(client->get_nickname());
-    client_sockets.erase(client);
-    --client;
+    client_sockets.erase(client--);
 }
 
 bool snek::server::handle_client(std::vector<snek::client_handler>::iterator& client,
@@ -83,8 +80,8 @@ bool snek::server::handle_client(std::vector<snek::client_handler>::iterator& cl
     bool ready_events_decrement = true;
 
     if (poll_events[client - client_sockets.begin() + 1].revents & POLLIN) {
+        --ready_events;
         ready_events_decrement = false;
-        ready_events--;
         char buffer[100]{0};
         ssize_t bytes_received = recv(client->get_socket(), buffer, sizeof(buffer) - 1, 0);
         if (bytes_received <= 0) {
@@ -104,7 +101,7 @@ bool snek::server::handle_client(std::vector<snek::client_handler>::iterator& cl
     }
 
     if (client->has_message_to_send() and poll_events[client - client_sockets.begin() + 1].revents & POLLOUT) {
-        if (ready_events_decrement) ready_events--;
+        if (ready_events_decrement) --ready_events;
         const std::string& message = client->get_message();
         ssize_t bytes_sent = send(client->get_socket(), message.c_str(), message.size(), 0);
 

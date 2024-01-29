@@ -28,21 +28,20 @@ snek::server_handler::server_handler() {
 }
 
 void snek::server_handler::handle_signal(int signal) {
-    for (auto s : active_sockets) s->disconnect();
+    if (active_socket != nullptr) active_socket->disconnect();
     std::exit(signal);
 }
 
 bool snek::server_handler::connect(const sf::IpAddress& ip, uint16_t port) {
-    auto status = socket.connect(ip, port, sf::seconds(2));
-    const bool connected = status == sf::Socket::Done;
-    if (connected) active_sockets.push_back(&socket);
+    if (active_socket != nullptr) active_socket->disconnect();
+    const bool connected = socket.connect(ip, port, sf::seconds(2)) == sf::Socket::Done;
+    if (connected) active_socket = &socket;
     return connected;
 }
 
 void snek::server_handler::disconnect() {
-    const auto socket_position = std::find(active_sockets.begin(), active_sockets.end(), &socket);
-    if (socket_position != active_sockets.end()) active_sockets.erase(socket_position);
     socket.disconnect();
+    active_socket = nullptr;
 }
 
 void snek::server_handler::send(const std::string& data) {

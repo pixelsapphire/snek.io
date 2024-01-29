@@ -32,6 +32,7 @@ void snek::game::launch() {
             if (not handled and event.type == sf::Event::Closed) {
                 server.disconnect();
                 window.close();
+                std::exit(0);
             }
         }
         current_scene->step_frame(window, delta_time);
@@ -51,7 +52,6 @@ void snek::game::start(const std::string& player_nickname) {
         this->nickname = player_nickname;
         const auto status = server.join(player_nickname);
         if (status == snek::connection_status::connected) {
-            game_clock.restart();
             std::unique_ptr<snek::scene_main> scene = std::make_unique<snek::scene_main>(
                     [&](auto& p) { return player_movement(p); },
                     [&] { return server.get_players(); },

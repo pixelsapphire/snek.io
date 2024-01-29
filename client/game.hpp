@@ -18,7 +18,7 @@ namespace snek {
         snek::config config;
         snek::server_handler server;
         sf::RenderWindow window;
-        sf::Clock game_clock, frame_clock;
+        sf::Clock frame_clock;
         std::shared_ptr<snek::scene> current_scene, next_scene;
         std::string nickname;
 

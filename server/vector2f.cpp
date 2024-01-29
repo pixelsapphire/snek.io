@@ -6,10 +6,7 @@
 
 snek::vector2f::vector2f() : x(0), y(0) {}
 
-snek::vector2f::vector2f(float x, float y) {
-    this->x = x;
-    this->y = y;
-}
+snek::vector2f::vector2f(float x, float y) : x(x), y(y) {}
 
 snek::vector2f snek::vector2f::operator+(const snek::vector2f& other) const { return {x + other.x, y + other.y}; }
 

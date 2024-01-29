@@ -31,8 +31,8 @@ namespace snek {
 
         sf::TcpSocket socket;
 
+        static inline sf::TcpSocket* active_socket = nullptr;
         static inline bool handlers_initialized = false;
-        static inline std::vector<sf::TcpSocket*> active_sockets;
 
         static void handle_signal(int);
 
