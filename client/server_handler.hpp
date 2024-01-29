@@ -27,7 +27,6 @@ namespace snek {
         static connection_status spawned_at(const sf::Vector2f& position);
     };
 
-
     class server_handler {
 
         sf::TcpSocket socket;
@@ -54,6 +53,8 @@ namespace snek {
         [[nodiscard]] snek::player::state send_player_velocity(const sf::Vector2f& velocity);
 
         [[nodiscard]] std::map<std::string, snek::player::state> get_players();
+
+        [[nodiscard]] std::vector<sf::Vector2f> get_food();
     };
 }
 

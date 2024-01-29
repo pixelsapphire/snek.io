@@ -3,6 +3,16 @@
 #include <string>
 #include "game.hpp"
 
+snek::vector2f snek::game::get_new_random_position(float radius, const std::string& nickname) const {
+    float x, y;
+    do {
+        x = float(snek::random_value(25, 775));
+        y = float(snek::random_value(25, 575));
+    }
+    while (collides({x, y}, nickname) or food_at({x, y}, radius));
+    return {x, y};
+}
+
 void snek::game::store_player_position(const std::string& nickname, const snek::vector2f& position) {
     const auto collided_player = collides(position, nickname);
     if (collided_player.has_value()) {
@@ -12,21 +22,19 @@ void snek::game::store_player_position(const std::string& nickname, const snek::
     }
     else {
         players.at(nickname).update(position);
-        if (hovers_food(position, nickname)) players.at(nickname).add_segments(position);
+        uint8_t eaten = remove_eaten_food(nickname);
+        if (eaten > 0) {
+            players.at(nickname).add_segments(eaten);
+            spawn_food();
+        }
     }
 }
 
 bool snek::game::is_alive(const std::string& nickname) const { return players.contains(nickname); }
 
 void snek::game::add_player(const std::string& nickname) {
-    float x, y;
-    do {
-        x = float(snek::random_value(25, 775));
-        y = float(snek::random_value(25, 575));
-    }
-    while (collides({x, y}, nickname));
-    players.emplace(nickname, player({x, y}));
-
+    players.emplace(nickname, player(get_new_random_position(PLAYER_HEAD_RADIUS, nickname)));
+    spawn_food();
 }
 
 snek::vector2f snek::game::player_position(const std::string& nickname) const { return players.at(nickname).get_head(); }
@@ -89,4 +97,31 @@ std::string snek::game::get_player_segments(const std::string& nickname) const {
 
 void snek::game::remove_player(const std::string& nickname) { players.erase(nickname); }
 
-bool snek::game::hovers_food(const snek::vector2f&, const std::string&) { return false; }
+bool snek::game::food_at(const snek::vector2f& position, float object_radius) const {
+    for (const auto& food_unit : food)
+        if (snek::is_nearby(food_unit, position, object_radius + FOOD_RADIUS)) return true;
+
+    return false;
+}
+
+void snek::game::spawn_food() {
+    while (food.size() < players.size() * FOOD_PER_PLAYER)
+        food.emplace_back(get_new_random_position(FOOD_RADIUS));
+}
+
+uint8_t snek::game::remove_eaten_food(const std::string& nickname) {
+    uint8_t removed = 0;
+    for (auto food_unit = food.begin(); food_unit != food.end(); ++food_unit)
+        if (snek::is_nearby(*food_unit, player_position(nickname), PLAYER_HEAD_RADIUS + FOOD_RADIUS)) {
+            food.erase(food_unit--);
+            ++removed;
+        }
+    return removed;
+}
+
+[[nodiscard]] std::string snek::game::get_food_str() const {
+    std::stringstream ss;
+    ss << "f" << food.size() << "n";
+    for (const auto& food_unit : food) ss << food_unit.str();
+    return ss.str();
+}

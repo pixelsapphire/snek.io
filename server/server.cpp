@@ -8,6 +8,7 @@ snek::server::server() : server_socket(-1), config(snek::config::path() + "/s_co
     requests["c"] = &snek::server::control_request;
     requests["n"] = &snek::server::new_player_request;
     requests["o"] = &snek::server::other_players_request;
+    requests["f"] = &snek::server::food_request;
 }
 
 std::string snek::server::control_request(snek::client_handler& client, const std::string& request) {
@@ -51,6 +52,10 @@ std::string snek::server::other_players_request(snek::client_handler& client, co
            << game_instance.get_player_segments(nickname);
     }
     return ss.str();
+}
+
+std::string snek::server::food_request(snek::client_handler&, const std::string&) {
+    return game_instance.get_food_str();
 }
 
 std::string snek::server::handle_request(snek::client_handler& client, const std::string& request) {

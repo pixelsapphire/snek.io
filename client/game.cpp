@@ -56,7 +56,9 @@ void snek::game::start(const std::string& player_nickname) {
             game_clock.restart();
             std::unique_ptr<snek::scene_main> scene = std::make_unique<snek::scene_main>(
                     [&](auto& p) { return player_movement(p); },
-                    [&] { return fetch_positions(); });
+                    [&] { return server.get_players(); },
+                    [&] { return server.get_food(); }
+            );
             scene->spawn_player(nickname, true, status.get_initial_position());
             set_scene(std::move(scene));
             return;
@@ -75,4 +77,3 @@ snek::player::state snek::game::player_movement(const sf::Vector2f& velocity) {
     return state;
 }
 
-std::map<std::string, snek::player::state> snek::game::fetch_positions() { return server.get_players(); }

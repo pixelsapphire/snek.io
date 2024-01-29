@@ -84,6 +84,10 @@ snek::player::state snek::server_handler::send_player_velocity(const sf::Vector2
 
 std::map<std::string, snek::player::state> snek::server_handler::get_players() {
     send("o");
-    const std::string response = receive();
-    return player::state::parse_others(response);
+    return player::state::parse_others(receive());
+}
+
+std::vector<sf::Vector2f> snek::server_handler::get_food() {
+    send("f");
+    return snek::serial::decode_vector_array(receive().substr(1));
 }

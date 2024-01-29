@@ -4,6 +4,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <vector>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
@@ -20,6 +21,7 @@ namespace snek {
 
         [[nodiscard]] std::string encode_vector(const sf::Vector2f& vector);
 
+        [[nodiscard]] std::vector<sf::Vector2f> decode_vector_array(const std::string& array_data);
     }
 }
 

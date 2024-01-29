@@ -22,7 +22,7 @@ void snek::player::update(const snek::vector2f& head) {
     }
 }
 
-void snek::player::add_segments(const vector2f& position, uint8_t count) {
-    if (this->segments_queue == 0) new_segment = position;
+void snek::player::add_segments(uint8_t count) {
+    if (segments_queue == 0) new_segment = segments.back();
     segments_queue += count;
 }

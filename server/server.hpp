@@ -28,6 +28,8 @@ namespace snek {
 
         [[nodiscard]] std::string other_players_request(snek::client_handler& client, const std::string& request);
 
+        [[nodiscard]] std::string food_request(snek::client_handler& client, const std::string& request);
+
         [[nodiscard]] std::string handle_request(snek::client_handler& client, const std::string& request);
 
         void close_client(std::vector<snek::client_handler>::iterator& client, std::vector<pollfd>& poll_events);

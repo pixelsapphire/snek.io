@@ -13,7 +13,7 @@ namespace snek {
     class player {
 
         std::vector<snek::vector2f> segments;
-        uint8_t segments_queue = 5;
+        uint8_t segments_queue = 4;
         std::optional<snek::vector2f> new_segment;
 
     public:
@@ -30,7 +30,7 @@ namespace snek {
 
         [[nodiscard]] const std::vector<snek::vector2f>& get_segments() const;
 
-        void add_segments(const vector2f& position, uint8_t count = 1);
+        void add_segments(uint8_t count = 1);
 
     };
 

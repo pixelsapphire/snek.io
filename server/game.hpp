@@ -10,20 +10,33 @@
 #include "vector2f.hpp"
 
 #define PLAYER_HEAD_RADIUS 25
+#define FOOD_RADIUS 5
+#define FOOD_PER_PLAYER 5
 
 namespace snek {
 
     class game {
 
         std::map<std::string, snek::player> players;
+        std::vector<snek::vector2f> food;
+
+        [[nodiscard]] snek::vector2f get_new_random_position(float radius, const std::string& nickname = "") const;
 
         [[nodiscard]] snek::vector2f player_position(const std::string& nickname) const;
+
+        [[nodiscard]] bool food_at(const snek::vector2f& position, float object_radius) const;
+
+        uint8_t remove_eaten_food(const std::string& nickname);
+
+        void spawn_food();
 
     public:
 
         bool is_alive(const std::string& nickname) const;
 
         void add_player(const std::string& nickname);
+
+        void remove_player(const std::string& nickname);
 
         void store_player_position(const std::string& nickname, const snek::vector2f& position);
 
@@ -42,9 +55,7 @@ namespace snek {
         [[nodiscard]] std::optional<std::string> collides(const snek::vector2f& position,
                                                           const std::string& nickname) const;
 
-        void remove_player(const std::string& nickname);
-
-        [[nodiscard]] bool hovers_food(const snek::vector2f& position, const std::string& nickname);
+        [[nodiscard]] std::string get_food_str() const;
     };
 
 }
