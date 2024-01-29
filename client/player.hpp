@@ -13,6 +13,9 @@ namespace snek {
         std::string nickname;
         std::vector<sf::CircleShape> segments;
         sf::Text nickname_view;
+        sf::CircleShape template_segment;
+
+        inline static const sf::Color head_color = sf::Color(255, 0, 0), body_color = sf::Color(176, 0, 0);
 
     public:
 

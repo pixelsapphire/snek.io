@@ -1,3 +1,4 @@
+#include <ranges>
 #include <utility>
 #include "assets.hpp"
 #include "player.hpp"
@@ -7,13 +8,17 @@ snek::player::player(std::string nickname)
         : nickname(std::move(nickname)),
           nickname_view(this->nickname, snek::assets::get_font(), 16) {
     auto& head = segments.emplace_back(25);
-    head.setFillColor(sf::Color::Red);
     head.setOrigin(25, 25);
+    head.setFillColor(snek::player::body_color);
+    template_segment = head;
+    head.setFillColor(snek::player::head_color);
     nickname_view.setOrigin(nickname_view.getLocalBounds().width / 2, 20);
+    nickname_view.setOutlineColor(sf::Color(0, 0, 0, 128));
+    nickname_view.setOutlineThickness(2);
 }
 
 void snek::player::draw(sf::RenderTarget& target) const {
-    for (const auto& segment : segments) {
+    for (const auto& segment : std::ranges::reverse_view(segments)) {
         auto* s = &segment;
         target.draw(*s);
     }
@@ -26,13 +31,13 @@ const sf::Vector2f& snek::player::get_position() const {
 
 void snek::player::set_position(float x, float y) {
     segments[0].setPosition(x, y);
-    nickname_view.setPosition(x, y - 25);
+    nickname_view.setPosition(x, y >= 45 ? y - 25 : y + 45);
 }
 
 void snek::player::set_state(const snek::player::state& state) {
     if (state.alive) {
         set_position(state.segments[0].x, state.segments[0].y);
-        segments.resize(state.segments.size(), segments[0]);
+        segments.resize(state.segments.size(), template_segment);
         for (size_t i = 1; i < state.segments.size(); ++i) segments[i].setPosition(state.segments[i].x, state.segments[i].y);
     }
     else {

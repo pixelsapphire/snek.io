@@ -60,7 +60,7 @@ namespace snek {
     };
 
     template<typename T, typename... Args>
-    std::shared_ptr<basic_entity<T>> make_entity(Args&& ... args) {
+    [[nodiscard]] std::shared_ptr<basic_entity<T>> make_entity(Args&& ... args) {
         return std::make_shared<basic_entity<T>>(std::forward<Args>(args)...);
     }
 }
