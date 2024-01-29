@@ -1,7 +1,7 @@
 .PHONY: all clean
 
 CXX = g++
-CXXFLAGS = -g -Wall -Wextra -Werror -std=gnu++2b
+CXXFLAGS = -O3 -Wall -Wextra -Werror -std=gnu++2b
 SRC = server
 COMMON_SRC = common
 INCLUDE = -Icommon

@@ -9,7 +9,7 @@ file(COPY assets/ DESTINATION assets)
 
 file(GLOB common_sources "common/*.cpp")
 include_directories(common)
-add_compile_options("-Wall" "-Werror" "-Wextra" "-Wno-unused-command-line-argument")
+add_compile_options("-O3" "-Wall" "-Werror" "-Wextra" "-Wno-unused-command-line-argument")
 
 file(GLOB client_sources "client/*.cpp")
 add_executable(snek_io_client ${client_sources} ${common_sources})

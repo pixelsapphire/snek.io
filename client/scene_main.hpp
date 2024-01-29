@@ -14,13 +14,13 @@ namespace snek {
         std::shared_ptr<snek::player> client_player;
         std::map<std::string, std::shared_ptr<snek::player>> other_players;
         std::vector<std::shared_ptr<snek::entity>> food_units;
-        std::function<snek::player::state(const sf::Vector2f& position)> player_moved;
+        std::function<snek::player::state(const sf::Vector2i&)> player_moved;
         std::function<std::map<std::string, snek::player::state>()> fetch_players;
         std::function<std::vector<sf::Vector2f>()> fetch_food;
 
     public:
 
-        scene_main(const std::function<snek::player::state(const sf::Vector2f& position)>& on_player_movement,
+        scene_main(const std::function<snek::player::state(const sf::Vector2i&)>& on_player_movement,
                    const std::function<std::map<std::string, snek::player::state>()>& players_provider,
                    const std::function<std::vector<sf::Vector2f>()>& food_provider);
 

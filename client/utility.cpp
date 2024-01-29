@@ -15,7 +15,7 @@ sf::Vector2f snek::serial::decode_vector(const std::string& vector_data) {
     return {std::stof(x), std::stof(y)};
 }
 
-std::string snek::serial::encode_vector(const sf::Vector2f& vector) {
+std::string snek::serial::encode_vector(const sf::Vector2i& vector) {
     return std::to_string(vector.x) + "x" + std::to_string(vector.y) + "y";
 }
 

@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cmath>
 #include "common_utility.hpp"
+#include "utility.hpp"
 #include "vector2f.hpp"
 
 snek::vector2f::vector2f() : x(0), y(0) {}
@@ -37,7 +38,7 @@ snek::vector2f snek::vector2f::normalized() const {
     return l == 0 ? snek::vector2f::zero : snek::vector2f(x / l, y / l);
 }
 
-std::string snek::vector2f::str() const { return std::to_string(x) + "x" + std::to_string(y) + "y"; }
+std::string snek::vector2f::str() const { return snek::to_string(x) + "x" + snek::to_string(y) + "y"; }
 
 snek::vector2f snek::vector2f::direction_change(const snek::vector2f& origin, const snek::vector2f& target,
                                                 float delta_max) {

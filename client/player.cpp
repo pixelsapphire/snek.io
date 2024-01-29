@@ -29,14 +29,11 @@ void snek::player::set_position(float x, float y) {
     nickname_view.setPosition(x, y - 25);
 }
 
-void snek::player::set_position(const sf::Vector2f& position) { set_position(position.x, position.y); }
-
 void snek::player::set_state(const snek::player::state& state) {
     if (state.alive) {
         set_position(state.segments[0].x, state.segments[0].y);
         segments.resize(state.segments.size(), segments[0]);
-        for (size_t i = 1; i < state.segments.size(); ++i)
-            segments[i].setPosition(state.segments[i].x, state.segments[i].y);
+        for (size_t i = 1; i < state.segments.size(); ++i) segments[i].setPosition(state.segments[i].x, state.segments[i].y);
     }
     else {
         nickname_view.setString(nickname + " (dead)");

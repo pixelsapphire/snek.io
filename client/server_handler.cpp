@@ -77,7 +77,7 @@ snek::connection_status snek::server_handler::join(const std::string& nickname) 
     else return snek::connection_status::error;
 }
 
-snek::player::state snek::server_handler::send_player_velocity(const sf::Vector2f& velocity) {
+snek::player::state snek::server_handler::send_player_velocity(const sf::Vector2i& velocity) {
     send("c" + snek::serial::encode_vector(velocity));
     return snek::player::state::parse_client(receive());
 }

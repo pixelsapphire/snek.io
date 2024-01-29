@@ -1,11 +1,9 @@
 #include <iostream>
 #include "game.hpp"
-#include "scene_error.hpp"
 #include "scene_main.hpp"
-#include "scene_nickname.hpp"
 
 snek::game::game() : config(snek::config::path() + "/c_config.txt"),
-                     window(sf::VideoMode(800, 600), "Projekt na sieciuhy", sf::Style::Titlebar | sf::Style::Close),
+                     window(sf::VideoMode(800, 600), "snek.io", sf::Style::Titlebar | sf::Style::Close),
                      current_scene(welcome_scene()) {
     window.setVerticalSyncEnabled(false);
     window.setFramerateLimit(60);
@@ -71,7 +69,7 @@ void snek::game::start(const std::string& player_nickname) {
     set_scene(error_scene(error_message));
 }
 
-snek::player::state snek::game::player_movement(const sf::Vector2f& velocity) {
+snek::player::state snek::game::player_movement(const sf::Vector2i& velocity) {
     const auto state = server.send_player_velocity(velocity);
     if (not state.alive) set_scene(error_scene("Game over"));
     return state;

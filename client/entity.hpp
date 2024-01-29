@@ -20,7 +20,7 @@ namespace snek {
 
         virtual void set_position(float x, float y) = 0;
 
-        void set_position(const sf::Vector2f& position) { set_position(position.x, position.y); }
+        virtual void set_position(const sf::Vector2f& position) { set_position(position.x, position.y); }
 
         void move(const sf::Vector2f& offset) { set_position(get_position() + offset); }
     };

@@ -38,7 +38,7 @@ namespace snek {
 
         void start(const std::string& player_nickname);
 
-        snek::player::state player_movement(const sf::Vector2f& velocity);
+        snek::player::state player_movement(const sf::Vector2i& velocity);
     };
 }
 

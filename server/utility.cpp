@@ -10,6 +10,11 @@ float snek::sgn(float value, float if_zero) {
     else return if_zero;
 }
 
+std::string snek::to_string(float value) {
+    const std::string str = std::to_string(value);
+    return str.substr(0, str.find('.') + 2);
+}
+
 bool snek::is_nearby(const snek::vector2f& position1, const snek::vector2f& position2, float distance) {
     float length = __clang_std::powf(position1.x - position2.x, 2) +
                    __clang_std::powf(position1.y - position2.y, 2);

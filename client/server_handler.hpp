@@ -50,7 +50,7 @@ namespace snek {
 
         [[nodiscard]] snek::connection_status join(const std::string& nickname);
 
-        [[nodiscard]] snek::player::state send_player_velocity(const sf::Vector2f& velocity);
+        [[nodiscard]] snek::player::state send_player_velocity(const sf::Vector2i& velocity);
 
         [[nodiscard]] std::map<std::string, snek::player::state> get_players();
 

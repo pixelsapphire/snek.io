@@ -1,7 +1,7 @@
 #include "scene_main.hpp"
 #include "utility.hpp"
 
-snek::scene_main::scene_main(const std::function<snek::player::state(const sf::Vector2f& position)>& on_player_movement,
+snek::scene_main::scene_main(const std::function<snek::player::state(const sf::Vector2i&)>& on_player_movement,
                              const std::function<std::map<std::string, snek::player::state>()>& players_provider,
                              const std::function<std::vector<sf::Vector2f>()>& food_provider)
         : player_moved(on_player_movement), fetch_players(players_provider), fetch_food(food_provider) {}
@@ -11,7 +11,7 @@ void snek::scene_main::spawn_player(const std::string& nickname, bool client, co
     add(player);
     if (client) {
         client_player = player;
-        player->set_position(client_position);
+        player->entity::set_position(client_position);
     }
     else other_players[nickname] = player;
 }
@@ -22,12 +22,12 @@ void snek::scene_main::remove_player(const std::string& nickname) {
 
 void snek::scene_main::update(const sf::Time& delta_time) {
     snek::scene::update(delta_time);
-    sf::Vector2f target_angle;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) target_angle.y -= 1;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) target_angle.y += 1;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) target_angle.x -= 1;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) target_angle.x += 1;
-    const auto player_state = player_moved(target_angle);
+    sf::Vector2i control_vector;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) control_vector.y -= 1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) control_vector.y += 1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) control_vector.x -= 1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) control_vector.x += 1;
+    const auto player_state = player_moved(control_vector);
     client_player->set_state(player_state);
     if (player_state.alive) {
         update_food();
