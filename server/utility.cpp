@@ -10,9 +10,9 @@ float snek::sgn(float value, float if_zero) {
     else return if_zero;
 }
 
-bool snek::is_nearby(const snek::vector2f& position, const snek::vector2f& segment, float distance) {
-    float length = __clang_std::powf(position.x - segment.x, 2) +
-                   __clang_std::powf(position.y - segment.y, 2);
+bool snek::is_nearby(const snek::vector2f& position1, const snek::vector2f& position2, float distance) {
+    float length = __clang_std::powf(position1.x - position2.x, 2) +
+                   __clang_std::powf(position1.y - position2.y, 2);
     return length <= __clang_std::powf(distance, 2);
 }
 

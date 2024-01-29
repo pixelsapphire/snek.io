@@ -26,7 +26,7 @@ namespace snek {
 
         void update(const snek::vector2f& head);
 
-        [[nodiscard]] const snek::vector2f& get_head();
+        [[nodiscard]] const snek::vector2f& get_head() const;
 
         [[nodiscard]] const std::vector<snek::vector2f>& get_segments() const;
 

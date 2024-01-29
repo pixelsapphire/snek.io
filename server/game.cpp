@@ -6,7 +6,7 @@
 void snek::game::store_player_position(const std::string& nickname, const snek::vector2f& position) {
     const auto collided_player = collides(position, nickname);
     if (collided_player.has_value()) {
-        if (snek::is_nearby(position, player_position(*collided_player), PLAYER_HEAD_RADIUS * 2))
+        if (snek::is_nearby(position, player_position(*collided_player), 2 * PLAYER_HEAD_RADIUS))
             players.erase(*collided_player);
         players.erase(nickname);
     }
@@ -16,7 +16,7 @@ void snek::game::store_player_position(const std::string& nickname, const snek::
     }
 }
 
-bool snek::game::is_alive(const std::string& nickname) { return players.contains(nickname); }
+bool snek::game::is_alive(const std::string& nickname) const { return players.contains(nickname); }
 
 void snek::game::add_player(const std::string& nickname) {
     float x, y;
@@ -29,16 +29,16 @@ void snek::game::add_player(const std::string& nickname) {
 
 }
 
-snek::vector2f snek::game::player_position(const std::string& nickname) { return players.at(nickname).get_head(); }
+snek::vector2f snek::game::player_position(const std::string& nickname) const { return players.at(nickname).get_head(); }
 
-std::string snek::game::get_player_position_str(const std::string& nickname) {
+std::string snek::game::player_position_str(const std::string& nickname) const {
     const auto position = player_position(nickname);
     return std::to_string(position.x) + "x" + std::to_string(position.y) + "y";
 }
 
-size_t snek::game::player_count() { return players.size(); }
+size_t snek::game::player_count() const { return players.size(); }
 
-bool snek::game::nickname_taken(const std::string& nickname) { return players.contains(nickname); }
+bool snek::game::nickname_taken(const std::string& nickname) const { return players.contains(nickname); }
 
 const std::map<std::string, snek::player>& snek::game::get_players() { return players; }
 
@@ -81,7 +81,7 @@ void snek::game::move_player(const std::string& nickname, const snek::vector2f& 
     store_player_position(nickname, {std::clamp(expected.x, 25.0f, 775.0f), std::clamp(expected.y, 25.0f, 575.0f)});
 }
 
-std::string snek::game::get_player_segments(const std::string& nickname) {
+std::string snek::game::get_player_segments(const std::string& nickname) const {
     std::stringstream ss;
     for (auto& segment : players.at(nickname).get_segments()) ss << segment.str();
     return ss.str();

@@ -6,7 +6,7 @@ snek::player::player(const snek::vector2f& position) {
     new_segment = position;
 }
 
-const snek::vector2f& snek::player::get_head() { return segments[0]; }
+const snek::vector2f& snek::player::get_head() const { return segments[0]; }
 
 const std::vector<snek::vector2f>& snek::player::get_segments() const { return segments; }
 

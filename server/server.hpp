@@ -2,7 +2,6 @@
 #define SNEK_IO_SERVER_HPP
 
 #include <cstdio>
-#include <functional>
 #include <iostream>
 #include <map>
 #include <netinet/in.h>
@@ -17,22 +16,32 @@ namespace snek {
 
     class server {
 
+        int server_socket;
         snek::game game_instance;
         snek::config config;
         std::vector<snek::client_handler> client_sockets;
-        std::map<std::string, std::function<std::string(snek::client_handler&, std::string)>> requests;
+        std::map<std::string, std::string (snek::server::*)(snek::client_handler&, const std::string&)> requests;
 
-        std::string handle_request(snek::client_handler& client, const std::string& request);
+        [[nodiscard]] std::string control_request(snek::client_handler& client, const std::string& request);
 
-        void start_server(int server_socket);
+        [[nodiscard]] std::string new_player_request(snek::client_handler& client, const std::string& request);
 
-        void remove_player(std::vector<snek::client_handler>::iterator& it);
+        [[nodiscard]] std::string other_players_request(snek::client_handler& client, const std::string& request);
+
+        [[nodiscard]] std::string handle_request(snek::client_handler& client, const std::string& request);
+
+        void close_client(std::vector<snek::client_handler>::iterator& client, std::vector<pollfd>& poll_events);
+
+        bool handle_client(std::vector<snek::client_handler>::iterator& client,
+                           std::vector<pollfd>& poll_events, int& ready_events);
+
+        void loop();
 
     public:
 
         server();
 
-        void init();
+        void start();
     };
 }
 

@@ -17,7 +17,7 @@ namespace snek {
 
     [[nodiscard]] float sgn(float value, float if_zero = 0);
 
-    [[nodiscard]] bool is_nearby(const snek::vector2f& position, const snek::vector2f& segment, float distance);
+    [[nodiscard]] bool is_nearby(const snek::vector2f& position1, const snek::vector2f& position2, float distance);
 
     [[nodiscard]] std::string get_local_ip();
 }

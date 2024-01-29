@@ -2,6 +2,6 @@
 
 int main() {
     snek::server server;
-    server.init();
+    server.start();
     return 0;
 }

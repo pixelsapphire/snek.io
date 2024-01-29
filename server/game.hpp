@@ -9,7 +9,7 @@
 #include "utility.hpp"
 #include "vector2f.hpp"
 
-#define PLAYER_HEAD_RADIUS 26.0
+#define PLAYER_HEAD_RADIUS 25
 
 namespace snek {
 
@@ -17,11 +17,11 @@ namespace snek {
 
         std::map<std::string, snek::player> players;
 
-        [[nodiscard]] snek::vector2f player_position(const std::string& nickname);
+        [[nodiscard]] snek::vector2f player_position(const std::string& nickname) const;
 
     public:
 
-        bool is_alive(const std::string& nickname);
+        bool is_alive(const std::string& nickname) const;
 
         void add_player(const std::string& nickname);
 
@@ -29,13 +29,13 @@ namespace snek {
 
         void move_player(const std::string& nickname, const snek::vector2f& target_direction, float time);
 
-        [[nodiscard]] std::string get_player_position_str(const std::string& nickname);
+        [[nodiscard]] std::string player_position_str(const std::string& nickname) const;
 
-        [[nodiscard]] std::string get_player_segments(const std::string& nickname);
+        [[nodiscard]] std::string get_player_segments(const std::string& nickname) const;
 
-        [[nodiscard]] size_t player_count();
+        [[nodiscard]] size_t player_count() const;
 
-        bool nickname_taken(const std::string& nickname);
+        [[nodiscard]] bool nickname_taken(const std::string& nickname) const;
 
         [[nodiscard]] const std::map<std::string, player>& get_players();
 
