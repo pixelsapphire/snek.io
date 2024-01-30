@@ -32,6 +32,8 @@ namespace snek {
 
     public:
 
+        void start_game_loop();
+
         void set_player_direction(const std::string& nickname, const snek::vector2i& target_direction);
 
         [[nodiscard]] bool is_alive(const std::string& nickname) const;

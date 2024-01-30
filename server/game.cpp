@@ -3,6 +3,8 @@
 #include <string>
 #include "game.hpp"
 
+void snek::game::start_game_loop() {}
+
 snek::vector2f snek::game::get_new_random_position(float radius, const std::string& nickname) const {
     float x, y;
     do {
