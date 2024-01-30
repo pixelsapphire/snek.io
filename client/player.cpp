@@ -25,9 +25,7 @@ void snek::player::draw(sf::RenderTarget& target) const {
     target.draw(nickname_view);
 }
 
-const sf::Vector2f& snek::player::get_position() const {
-    return segments[0].getPosition();
-}
+const sf::Vector2f& snek::player::get_position() const { return segments[0].getPosition(); }
 
 void snek::player::set_position(float x, float y) {
     segments[0].setPosition(x, y);

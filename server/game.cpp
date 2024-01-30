@@ -97,7 +97,7 @@ std::string snek::game::get_player_segments(const std::string& nickname) const {
 }
 
 void snek::game::remove_player(const std::string& nickname) {
-    if (is_alive(nickname)) return;
+    if (not is_alive(nickname)) return;
 
     static std::mt19937 rng{std::random_device{}()};
     const auto& segments = players.at(nickname).get_segments();

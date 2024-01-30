@@ -6,7 +6,7 @@
 
 namespace snek {
 
-    class client_handler {
+    class client_session {
 
         int socket;
         std::string player_nickname;
@@ -16,7 +16,7 @@ namespace snek {
 
     public:
 
-        explicit client_handler(int socket);
+        explicit client_session(int socket);
 
         [[nodiscard]] int get_socket() const;
 
@@ -32,7 +32,7 @@ namespace snek {
 
         void update_activity_time();
 
-        bool operator==(const client_handler& other) const;
+        bool operator==(const client_session& other) const;
 
         [[nodiscard]] bool has_message_to_send() const;
 
