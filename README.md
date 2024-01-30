@@ -3,6 +3,16 @@
 ## Wstęp
 Snek.io to wieloosobowa gra czasu rzeczywistego inspirowana grami Snake i Slither.io. Podobnie jak w tych grach, rozgrywka snek.io skupia się na sterowaniu wężami na dwuwymiarowej planszy.
 
+## Budowanie i uruchamianie
+1. Wymagania
+- System operacyjny Linux lub macOS (działa również na WSL)
+- Biblioteka SFML (w systemie Linux/WSL można ją zainstalować za pomocą polecenia: `sudo apt-get install libsfml-dev`, a w systemie macOS zgnodnie z instrukcjami na [stronie SFML](https://www.sfml-dev.org/tutorials/2.6/start-osx.php))
+- Kompilator GCC lub Clang obsługujący standard C++23
+2. Instalacja - niniejsze repozytorium należy pobrać lub sklonować poleceniem `git clone`.
+3. Budowanie - w katalogu głównym repozytorium należy wykonać polecenie `make client` lub `make server`.
+4. Po wykonaniu kompilacji, w katalogu `build` znajdują się wyniki kompilacji oraz pliki konfiguracyjne.
+5. Uruchamianie - w katalogu głównym repozytorium należy wykonać polecenie `make run-client` lub `make run-server`. Polecenia te wykonują także kompilację jeśli nie została jeszcze wykonana.
+
 ## Konfiguracja
 Parametry konfigurowalne:
 - adres serwera (dla klienta) oraz port serwera (dla klienta i serwera)
@@ -28,25 +38,15 @@ Parametry konfigurowalne:
 12. Gracz może wyjść z gry w dowolnym momencie. W takiej sytuacji, jego wąż znika z planszy.
 13. Wąż który zniknął z planszy (w dowolny sposób), pozostawia za sobą jedzenie, którego ilość jest zależna od wielkości, jaką osiągnął.
 
-## Obsługa nadzwyczajnego przerwania/zakończenia rozgrywki
-1. Wąż gracza, który stracił połączenie, traktowany jest identycznie jak inne węże, co oznacza, że może zbierać jedzenie lub zginąć.
-2. W przypadku zerwania połączenia, z perspektywy serwera wąż utrzymuje swój kierunek i prędkość do momentu przywrócenia połączenia, lub upłynięcia 5 sekund. Po tym czasie, serwer uznaje, że gracz zakończył grę i usuwa jego węża z planszy. 
-3. W przypadku przywróceniu połączenia w ciągu 5 sekund, jeśli wąż gracza nie zginął, odzyskuje on nad nim kontrolę i kontynuuje rozgrywkę od miejsca, które wynika z jego ruchu obliczanego przez serwer.
-4. Jeśli gracz zamknie okno podczas gry (lub zakończy proces w inny sposób), klient wysyła do serwera wiadomość, że gracz opuścił grę.
-
-## Budowanie i uruchamianie
-1. Wymagania
-- System operacyjny Linux lub macOS (działa również na WSL)
-- Biblioteka SFML (w systemie Linux/WSL można ją zainstalować za pomocą polecenia: `sudo apt-get install libsfml-dev`, a w systemie macOS zgnodnie z instrukcjami na [stronie SFML](https://www.sfml-dev.org/tutorials/2.6/start-osx.php))
-- Kompilator GCC lub Clang obsługujący standard C++23
-2. Instalacja - niniejsze repozytorium należy pobrać lub sklonować poleceniem `git clone`.
-3. Budowanie - w katalogu głównym repozytorium należy wykonać polecenie `make client` lub `make server`.
-4. Po wykonaniu kompilacji, w katalogu `build` znajdują się wyniki kompilacji oraz pliki konfiguracyjne.
-5. Uruchamianie - w katalogu głównym repozytorium należy wykonać polecenie `make run-client` lub `make run-server`. Polecenia te wykonują także kompilację jeśli nie została jeszcze wykonana.
-
 ## Sterowanie
 1. Po uruchomieniu gry należy wpisać na klawiaturze swoją nazwę oraz wybrać kolor węża za pomocą myszki (lub innego urządzenia wskazującego).
 2. Sterowanie odbywa się za pomocą przycisków W (*kierunek: góra*), A (*kierunek: lewo*), S (*kierunek: dół*) oraz D (*kierunek: prawo*).
 3. Od momentu wciśnięcia dowolnego z tych przycisków, wąż zaczyna się poruszać i nie można go zatrzymać.
 4. Przyciski służą do zmiany kierunku poruszania się węża. Kierunek ten będzie stopniowo wyrównywany do tego wyznaczonego przez wciśnięty przycis. Wciśnięcie więcej niż jednego przycisku na raz spowoduje wybranie kierunku wypadkowego (np. jednocześnie W i D to kierunek w prawo-górę, a jednocześnie A, S i D to kierunek w dół).
 5. Przycisk Esc służy do wyjścia z gry.
+
+## Obsługa nadzwyczajnego przerwania/zakończenia rozgrywki
+1. Wąż gracza, który stracił połączenie, traktowany jest identycznie jak inne węże, co oznacza, że może zbierać jedzenie lub zginąć.
+2. W przypadku zerwania połączenia, z perspektywy serwera wąż utrzymuje swój kierunek i prędkość do momentu przywrócenia połączenia, lub upłynięcia 5 sekund. Po tym czasie, serwer uznaje, że gracz zakończył grę i usuwa jego węża z planszy. 
+3. W przypadku przywróceniu połączenia w ciągu 5 sekund, jeśli wąż gracza nie zginął, odzyskuje on nad nim kontrolę i kontynuuje rozgrywkę od miejsca, które wynika z jego ruchu obliczanego przez serwer.
+4. Jeśli gracz zamknie okno podczas gry (lub zakończy proces w inny sposób), klient wysyła do serwera wiadomość, że gracz opuścił grę.
