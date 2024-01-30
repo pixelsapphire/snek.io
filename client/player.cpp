@@ -10,6 +10,8 @@ snek::player::player(std::string nickname)
     auto& head = segments.emplace_back(25);
     head.setOrigin(25, 25);
     head.setFillColor(snek::player::body_color);
+    head.setOutlineColor(sf::Color(0, 0, 0, 48));
+    head.setOutlineThickness(-2);
     template_segment = head;
     head.setFillColor(snek::player::head_color);
     nickname_view.setOrigin(nickname_view.getLocalBounds().width / 2, 20);
