@@ -1,6 +1,6 @@
 #include "client_handler.hpp"
 
-snek::client_handler::client_handler(int socket) : socket(socket), has_message(false),
+snek::client_handler::client_handler(int socket) : socket(socket), is_alive(true), has_message(false),
                                                    last_activity_time(std::chrono::high_resolution_clock::now()) {}
 
 int snek::client_handler::get_socket() const { return socket; }
@@ -8,6 +8,10 @@ int snek::client_handler::get_socket() const { return socket; }
 const std::string& snek::client_handler::get_nickname() const { return player_nickname; }
 
 void snek::client_handler::set_nickname(const std::string& nickname) { this->player_nickname = nickname; }
+
+bool snek::client_handler::active() const { return is_alive; }
+
+void snek::client_handler::kill() { is_alive = false; }
 
 std::chrono::milliseconds snek::client_handler::get_time_passed_from_last_activity() const {
     return std::chrono::duration_cast<std::chrono::milliseconds>(

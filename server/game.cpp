@@ -17,8 +17,8 @@ void snek::game::store_player_position(const std::string& nickname, const snek::
     const auto collided_player = collides(position, nickname);
     if (collided_player.has_value()) {
         if (snek::vector2f::distance(position, player_position(*collided_player)) <= 2 * PLAYER_HEAD_RADIUS)
-            players.erase(*collided_player);
-        players.erase(nickname);
+            remove_player(*collided_player);
+        remove_player(nickname);
     }
     else {
         players.at(nickname).update(position);
@@ -39,10 +39,7 @@ void snek::game::add_player(const std::string& nickname) {
 
 snek::vector2f snek::game::player_position(const std::string& nickname) const { return players.at(nickname).get_head(); }
 
-std::string snek::game::player_position_str(const std::string& nickname) const {
-    const auto position = player_position(nickname);
-    return std::to_string(position.x) + "x" + std::to_string(position.y) + "y";
-}
+std::string snek::game::player_position_str(const std::string& nickname) const { return player_position(nickname).str(); }
 
 size_t snek::game::player_count() const { return players.size(); }
 
@@ -60,9 +57,11 @@ std::optional<std::string> snek::game::collides(const snek::vector2f& position, 
 void snek::game::move_player(const std::string& nickname, const snek::vector2i& target_direction, float time) {
 
     player& player = players.at(nickname);
-    const float offset = snek::player::speed * time;
-    const auto future_position = [&] { return player.get_head() + player.direction * offset; };
+    const auto head_offset = snek::player::speed * time;
+    player.set_offset(head_offset + player.get_offset());
+
     const float epsilon = 1.0f;
+    const auto future_position = [&] { return player.get_head() + player.direction * head_offset; };
 
     if (target_direction != snek::vector2i::zero) {
         if (player.direction == snek::vector2f::zero) player.direction = target_direction.cast<float>();
@@ -95,7 +94,19 @@ std::string snek::game::get_player_segments(const std::string& nickname) const {
     return ss.str();
 }
 
-void snek::game::remove_player(const std::string& nickname) { players.erase(nickname); }
+void snek::game::remove_player(const std::string& nickname) {
+    if (is_alive(nickname)) return;
+
+    static std::mt19937 rng{std::random_device{}()};
+    const auto& segments = players.at(nickname).get_segments();
+    std::vector<size_t> food_segments(segments.size());
+    std::iota(food_segments.begin(), food_segments.end(), 0);
+    std::shuffle(food_segments.begin(), food_segments.end(), rng);
+    food_segments.resize(std::ceil(segments.size() / 3));
+
+    for (const auto& segment : food_segments) food.emplace_back(segments[segment]);
+    players.erase(nickname);
+}
 
 bool snek::game::food_at(const snek::vector2f& position, float object_radius) const {
     for (const auto& food_unit : food)

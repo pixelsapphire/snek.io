@@ -1,4 +1,6 @@
+#include <netinet/in.h>
 #include <sstream>
+#include <unistd.h>
 #include "server.hpp"
 #include "utility.hpp"
 
@@ -19,14 +21,17 @@ std::string snek::server::control_request(snek::client_handler& client, const st
 
     const auto time = float(client.get_time_passed_from_last_activity().count()) / 1000.0f;
     if (!game_instance.is_alive(nickname)) {
-        client.set_nickname("");
+        client.kill();
         return "d";
     }
+//    else {
+//        game_instance.set_player_direction(nickname, {x, y});
+//    }
     game_instance.move_player(nickname, {x, y}, time);
 
     if (game_instance.is_alive(nickname)) return "a" + game_instance.get_player_segments(nickname);
     else {
-        client.set_nickname("");
+        client.kill();
         return "d";
     }
 }
@@ -68,9 +73,12 @@ std::string snek::server::handle_request(snek::client_handler& client, const std
 }
 
 void snek::server::close_client(std::vector<snek::client_handler>::iterator& client, std::vector<pollfd>& poll_events) {
+    if (client->active()) {
+        game_instance.remove_player(client->get_nickname());
+        client->kill();
+    }
     close(client->get_socket());
     poll_events.erase(poll_events.begin() + (client - client_sockets.begin() + 1));
-    game_instance.remove_player(client->get_nickname());
     client_sockets.erase(client--);
 }
 
@@ -109,7 +117,7 @@ bool snek::server::handle_client(std::vector<snek::client_handler>::iterator& cl
 #ifdef SNEK_DEBUG
             std::cout << "Wysłano wiadomość do klienta: " << client->get_socket() << std::endl;
 #endif
-            if (client->get_nickname().empty()) { close_client(client, poll_events); }
+            if (not client->active()) { close_client(client, poll_events); }
         }
         else if (bytes_sent == 0) {
 #ifdef SNEK_DEBUG
@@ -125,7 +133,7 @@ bool snek::server::handle_client(std::vector<snek::client_handler>::iterator& cl
     return true;
 }
 
-void snek::server::loop() {
+void snek::server::event_loop() {
 
     while (true) {
         std::vector<pollfd> poll_events;
@@ -216,7 +224,8 @@ void snek::server::start() {
     if (not ip.empty()) std::cout << "Server is running on: " << ip << ':' << config.get_string("port") << std::endl;
     else std::cerr << "Could not get local IP address" << std::endl;
 
-    loop();
+    game_instance.start_game_loop();
+    event_loop();
 
     close(server_socket);
 }

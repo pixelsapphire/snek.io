@@ -4,9 +4,7 @@
 #include <cstdio>
 #include <iostream>
 #include <map>
-#include <netinet/in.h>
 #include <poll.h>
-#include <unistd.h>
 #include <vector>
 #include "client_handler.hpp"
 #include "config.hpp"
@@ -37,7 +35,7 @@ namespace snek {
         bool handle_client(std::vector<snek::client_handler>::iterator& client,
                            std::vector<pollfd>& poll_events, int& ready_events);
 
-        void loop();
+        void event_loop();
 
     public:
 

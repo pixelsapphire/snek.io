@@ -10,7 +10,7 @@ namespace snek {
 
         int socket;
         std::string player_nickname;
-        bool has_message;
+        bool is_alive, has_message;
         std::chrono::time_point<std::chrono::high_resolution_clock> last_activity_time;
         std::string stored_message;
 
@@ -23,6 +23,10 @@ namespace snek {
         [[nodiscard]] const std::string& get_nickname() const;
 
         void set_nickname(const std::string& nickname);
+
+        [[nodiscard]] bool active() const;
+
+        void kill();
 
         [[nodiscard]] std::chrono::milliseconds get_time_passed_from_last_activity() const;
 

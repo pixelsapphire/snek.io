@@ -32,7 +32,9 @@ namespace snek {
 
     public:
 
-        bool is_alive(const std::string& nickname) const;
+        void set_player_direction(const std::string& nickname, const snek::vector2i& target_direction);
+
+        [[nodiscard]] bool is_alive(const std::string& nickname) const;
 
         void add_player(const std::string& nickname);
 

@@ -6,15 +6,19 @@
 #include <vector>
 #include "vector2.hpp"
 
-#define LEAST_SEGMENT_DISTANCE 12.5f
+#define SEGMENT_DISTANCE 12.5f
 
 namespace snek {
 
     class player {
 
         std::vector<snek::vector2f> segments;
-        uint8_t segments_queue = 4;
+        uint8_t segments_queue;
         std::optional<snek::vector2f> new_segment;
+
+        float offset;
+
+        void update_segments();
 
     public:
 
@@ -32,6 +36,9 @@ namespace snek {
 
         void add_segments(uint8_t count = 1);
 
+        [[nodiscard]] float get_offset() const;
+
+        void set_offset(float new_offset);
     };
 
 } // snek
