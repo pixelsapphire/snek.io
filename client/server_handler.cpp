@@ -2,6 +2,7 @@
 #include <iostream>
 #include <set>
 #include <sstream>
+#include "common_utility.hpp"
 #include "server_handler.hpp"
 #include "utility.hpp"
 
@@ -77,7 +78,7 @@ snek::connection_status snek::server_handler::join(const std::string& nickname) 
 }
 
 snek::player::state snek::server_handler::send_player_velocity(const sf::Vector2i& velocity) {
-    send("c" + snek::serial::encode_vector(velocity));
+    send(snek::concat("c", snek::serial::encode_vector(velocity)));
     return snek::player::state::parse_client(receive());
 }
 

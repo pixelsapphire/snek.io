@@ -1,6 +1,12 @@
 #include <filesystem>
 #include "common_utility.hpp"
 
+#ifdef __APPLE__
+
+#include <mach-o/dyld.h>
+
+#endif
+
 std::string snek::get_executable_path() {
 #ifdef __APPLE__
     std::string path(1024, 0);

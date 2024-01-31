@@ -1,6 +1,7 @@
 #include <netinet/in.h>
 #include <sstream>
 #include <unistd.h>
+#include "common_utility.hpp"
 #include "server.hpp"
 #include "utility.hpp"
 
@@ -29,7 +30,7 @@ std::string snek::server::control_request(snek::client_session& client, const st
 //    }
     game_instance.move_player(nickname, {x, y}, time);
 
-    if (game_instance.is_alive(nickname)) return "a" + game_instance.get_player_segments(nickname);
+    if (game_instance.is_alive(nickname)) return snek::concat("a", game_instance.get_player_segments(nickname));
     else {
         client.kill();
         return "d";
@@ -44,7 +45,7 @@ std::string snek::server::new_player_request(snek::client_session& client, const
 
     client.set_nickname(request);
     game_instance.add_player(nickname);
-    return "y" + game_instance.player_position_str(nickname);
+    return snek::concat("y", game_instance.player_position_str(nickname));
 }
 
 std::string snek::server::other_players_request(snek::client_session& client, const std::string&) {
