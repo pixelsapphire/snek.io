@@ -1,4 +1,3 @@
-#include <cmath>
 #include <cstdio>
 #include <sstream>
 #include "common_utility.hpp"
