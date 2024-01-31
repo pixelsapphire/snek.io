@@ -1,6 +1,7 @@
 #ifndef SNEK_IO_CONFIG_HPP
 #define SNEK_IO_CONFIG_HPP
 
+#include <cstdint>
 #include <map>
 #include <string>
 
